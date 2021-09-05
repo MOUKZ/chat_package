@@ -1,7 +1,7 @@
 name: chat_package
 description:  Flutter chat ui with voice record/note functionality
 version: 0.0.1
-homepage: 
+homepage: https://github.com/MOUKZ/chat_package
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -11,13 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
   transparent_image: ^2.0.0
-  google_fonts: ^2.0.0
-  rect_getter: ^1.0.0
   flutter_slidable: ^0.6.0
   flutter_keyboard_visibility: ^5.0.3
   permission_handler: ^8.1.4+2
   image_picker: ^0.8.4
-  # flutter_sound: any
   just_audio: ^0.9.10
   record: ^3.0.0
   intl: ^0.17.0
