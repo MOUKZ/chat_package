@@ -29,6 +29,8 @@ class ChatInputField extends StatefulWidget {
   final String imageAttachmentFromGalary;
   final String imageAttachmentFromCamery;
   final String imageAttachmentCancelText;
+  // image attachment text color
+  final Color imageAttachmentTextColor;
 
   /// the color of the outer container and the color used to hide
   /// the text on slide
@@ -70,6 +72,7 @@ class ChatInputField extends StatefulWidget {
     required this.imageAttachmentFromGalary,
     required this.imageAttachmentFromCamery,
     required this.imageAttachmentCancelText,
+    required this.imageAttachmentTextColor,
   }) : assert(height >= 25);
 
   @override
@@ -424,7 +427,10 @@ class ChatInputFieldState extends State<ChatInputField>
                 },
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text(widget.imageAttachmentFromCamery),
+                  child: Text(
+                    widget.imageAttachmentFromCamery,
+                    style: TextStyle(color: widget.imageAttachmentTextColor),
+                  ),
                 ),
               ),
               TextButton(
@@ -434,14 +440,20 @@ class ChatInputFieldState extends State<ChatInputField>
                 },
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text(widget.imageAttachmentFromGalary),
+                  child: Text(
+                    widget.imageAttachmentFromGalary,
+                    style: TextStyle(color: widget.imageAttachmentTextColor),
+                  ),
                 ),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text(widget.imageAttachmentCancelText),
+                  child: Text(
+                    widget.imageAttachmentCancelText,
+                    style: TextStyle(color: widget.imageAttachmentTextColor),
+                  ),
                 ),
               ),
             ],

@@ -9,7 +9,8 @@ An easy to implement whatssapp like chat ui. with voice note feature and image v
 
 ## Screenshots
 
-<img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/1.jpeg" height="500em"><img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/2.jpeg" height="500em"><img src="https://raw.githubusercontent.com/dbenitez-bcn/solid_bottom_sheet/master/controller.gif" height="500em">
+<img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/1.jpeg" height="500em"><img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/2.jpeg" height="500em">
+<img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/3.jpeg" height="500em">
 <img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/4.jpeg" height="500em">
 
 ## Usage
@@ -32,7 +33,7 @@ List<ChatMessage> messages = [
 
 ## Properties
 ```dart
-  /// The button widget used on the moving element of the slider. Defaults to Icon(Icons.chevron_right).
+ /// The button widget used on the moving element of the slider. Defaults to Icon(Icons.chevron_right).
   final Widget sliderButtonContent;
   //hit text to be shown for sending messages
   final String sendMessageHintText;
@@ -46,6 +47,8 @@ List<ChatMessage> messages = [
   final String imageAttachmentFromGalary;
   final String imageAttachmentFromCamery;
   final String imageAttachmentCancelText;
+  // image attachment text color
+  final Color imageAttachmentTextColor;
 
   /// the color of the outer container and the color used to hide
   /// the text on slide
@@ -64,5 +67,6 @@ List<ChatMessage> messages = [
   final Function(String? path, bool cnaceled)? handleRecord;
 
   final TextEditingController textController;
+
 ```
 

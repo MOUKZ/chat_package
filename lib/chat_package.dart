@@ -19,6 +19,7 @@ class ChatScreen extends StatefulWidget {
   final String imageAttachmentFromGalary;
   final String imageAttachmentFromCamery;
   final String imageAttachmentCancelText;
+  final Color imageAttachmentTextColor;
 
   //hit text to be shown for recording voice note
   final String recordinNoteHintText;
@@ -39,6 +40,7 @@ class ChatScreen extends StatefulWidget {
     this.imageAttachmentFromCamery = 'From Camera',
     this.imageAttachmentCancelText = 'Cancel',
     this.containerColor = const Color(0xFFCFD8DC),
+    this.imageAttachmentTextColor = const Color(0xFF255965),
   }) : super(key: key);
   // final
   @override
@@ -72,6 +74,7 @@ class _ChatScreenState extends State<ChatScreen> {
             imageAttachmentCancelText: widget.imageAttachmentCancelText,
             imageAttachmentFromCamery: widget.imageAttachmentFromCamery,
             imageAttachmentFromGalary: widget.imageAttachmentFromGalary,
+            imageAttachmentTextColor: widget.imageAttachmentTextColor,
             containerColor: widget.containerColor,
             recordinNoteHintText: widget.recordinNoteHintText,
             sendMessageHintText: widget.sendMessageHintText,
