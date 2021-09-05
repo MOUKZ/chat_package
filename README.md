@@ -7,7 +7,10 @@ Flutter chat ui with full voice record/note functionality and image sending
 
 An easy to implement whatssapp like chat ui. with voice note feature and image viewing. 
 
+## Screenshots
 
+<img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/1.jpeg" height="500em"><img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/2.jpeg" height="500em"><img src="https://raw.githubusercontent.com/dbenitez-bcn/solid_bottom_sheet/master/controller.gif" height="500em">
+<img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/4.jpeg" height="500em">
 
 ## Usage
 
