@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:chat_package/enums/chat_message_type.dart';
 
 class ChatMessage {
+  //plese note that only one of the following [text,imageUrl,imagePath,audioUrl,audioPath ]
+//must not be null at a time if more is provided an error will occure
   String? text;
   String? imageUrl;
   String? imagePath;
@@ -99,6 +101,7 @@ class ChatMessage {
         createdAt.hashCode;
   }
 
+// check message type to render the right widget
   ChatMessageType getType() {
     if (imageUrl != null) {
       return ChatMessageType.ImageMessage;

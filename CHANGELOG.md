@@ -4,3 +4,6 @@
 ## 0.0.2
 
 * documinting the package and general improvments.
+## 0.0.3
+
+* adding example and more functionality for hundling record sliding.

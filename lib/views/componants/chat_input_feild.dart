@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:chat_package/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -17,7 +16,7 @@ class ChatInputField extends StatefulWidget {
 
   /// The button widget used on the moving element of the slider. Defaults to Icon(Icons.chevron_right).
   final Widget sliderButtonContent;
-  //hit text to be shown for sending messages
+  //hint text to be shown for sending messages
   final String sendMessageHintText;
 
   //hit text to be shown for recording voice note

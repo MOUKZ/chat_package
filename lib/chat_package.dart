@@ -8,24 +8,42 @@ import 'package:chat_package/views/componants/chat_input_feild.dart';
 import 'package:chat_package/views/componants/message_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatScreen extends StatefulWidget {
+  //color of all message containers if its belongs to the user
   final Color? senderColor;
+  //color of the inactive part of the audio slider
   final Color? inActiveAudioSliderColor;
+  //color of the active part of the audio slider
   final Color? activeAudioSliderColor;
+  //scrollcontroller for the chat screen
   ScrollController? scrollController;
+
+  /// the color of the outer container and the color used to hide
+  /// the text on slide
   final Color containerColor;
+//hint text to be shown for sending messages
   final String sendMessageHintText;
+  // texts shown wen trying to chose image attachment
   final String imageAttachmentFromGalary;
   final String imageAttachmentFromCamery;
   final String imageAttachmentCancelText;
   final Color imageAttachmentTextColor;
 
-  //hit text to be shown for recording voice note
+  //hint text to be shown for recording voice note
   final String recordinNoteHintText;
   Function(String? text)? onSubmit;
-
+// [required] the list of chat messages
   List<ChatMessage> messages;
+  // function to handel sucessful recordings, bass to override
+  final Function(String? path, bool cnaceled)? handleRecord;
+// function to handel image selection
+  final Function(XFile)? handleImageSelect;
+// to handel canceling of the record
+  final VoidCallback? onSlideToCancelRecord;
+  //TextEditingController to handel input text
+  final TextEditingController? textEditingController;
 
   ChatScreen({
     Key? key,
@@ -41,6 +59,10 @@ class ChatScreen extends StatefulWidget {
     this.imageAttachmentCancelText = 'Cancel',
     this.containerColor = const Color(0xFFCFD8DC),
     this.imageAttachmentTextColor = const Color(0xFF255965),
+    this.handleRecord,
+    this.handleImageSelect,
+    this.onSlideToCancelRecord,
+    this.textEditingController,
   }) : super(key: key);
   // final
   @override
@@ -78,33 +100,38 @@ class _ChatScreenState extends State<ChatScreen> {
             containerColor: widget.containerColor,
             recordinNoteHintText: widget.recordinNoteHintText,
             sendMessageHintText: widget.sendMessageHintText,
-            handleRecord: (source, canceled) {
-              if (!canceled && source != null) {
-                setState(() {
-                  widget.messages
-                      .add(ChatMessage(isSender: true, audioPath: source));
-                  widget.scrollController?.jumpTo(
-                      widget.scrollController!.position.maxScrollExtent + 90);
-                });
-              }
-            },
-            handleImageSelect: (file) async {
-              final bytes = await file.readAsBytes();
-              final image = await decodeImageFromList(bytes);
-              final name = file.path.split('/').last;
-              setState(() {
-                widget.messages
-                    .add(ChatMessage(isSender: true, imagePath: file.path));
-              });
+            handleRecord: widget.handleRecord ??
+                (source, canceled) {
+                  if (!canceled && source != null) {
+                    setState(() {
+                      widget.messages
+                          .add(ChatMessage(isSender: true, audioPath: source));
+                      widget.scrollController?.jumpTo(
+                          widget.scrollController!.position.maxScrollExtent +
+                              90);
+                    });
+                  }
+                },
+            handleImageSelect: widget.handleImageSelect ??
+                (file) async {
+                  final bytes = await file.readAsBytes();
+                  final image = await decodeImageFromList(bytes);
+                  final name = file.path.split('/').last;
+                  setState(() {
+                    widget.messages
+                        .add(ChatMessage(isSender: true, imagePath: file.path));
+                  });
 
-              setState(() {
-                widget.scrollController?.jumpTo(
-                    widget.scrollController!.position.maxScrollExtent + 300);
-              });
-            },
-            onSlideToCancelRecord: () {
-              log('slide to cancel');
-            },
+                  setState(() {
+                    widget.scrollController?.jumpTo(
+                        widget.scrollController!.position.maxScrollExtent +
+                            300);
+                  });
+                },
+            onSlideToCancelRecord: widget.onSlideToCancelRecord ??
+                () {
+                  log('slide to cancel');
+                },
             onSubmit: (text) {
               if (widget.onSubmit != null) {
                 widget.onSubmit!(text);
@@ -120,7 +147,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
               }
             },
-            textController: TextEditingController(),
+            textController:
+                widget.textEditingController ?? TextEditingController(),
           ),
         ),
       ],

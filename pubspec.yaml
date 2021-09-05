@@ -1,6 +1,6 @@
 name: chat_package
-description:  Flutter chat ui with voice record/note functionality
-version: 0.0.2
+description:  Fully functional chat ui for flutter, with functionality to send text, voice notes,and images
+version: 0.0.3
 homepage: https://github.com/MOUKZ/chat_package
 
 environment:

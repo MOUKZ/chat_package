@@ -25,6 +25,14 @@ List<ChatMessage> messages = [
     ChatMessage(isSender: false, text: 'wow that is cool'),
   ];
 ```
+-- plese note that only one of the following [text,imageUrl,imagePath,audioUrl,audioPath ] must not be null at a time if more is provided an error will occure 
+```
+ChatMessage(isSender: false, text: 'your.text')
+ChatMessage(isSender: false, imageUrl: image.url')
+ChatMessage(isSender: false, imagePath: 'image.path')
+ChatMessage(isSender: false, audioUrl: 'wow that is cool')
+ChatMessage(isSender: false, audioPath: 'wow that is cool')
+```
 ```
  ChatScreen(
           messages: messages,
