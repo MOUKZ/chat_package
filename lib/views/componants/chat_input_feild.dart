@@ -17,9 +17,22 @@ class ChatInputField extends StatefulWidget {
 
   /// The button widget used on the moving element of the slider. Defaults to Icon(Icons.chevron_right).
   final Widget sliderButtonContent;
+  //hit text to be shown for sending messages
+  final String sendMessageHintText;
+
+  //hit text to be shown for recording voice note
+  final String recordinNoteHintText;
 
   /// The Icon showed to send a text
   final IconData sendTextIcon;
+  // texts shown wen trying to chose image attachment
+  final String imageAttachmentFromGalary;
+  final String imageAttachmentFromCamery;
+  final String imageAttachmentCancelText;
+
+  /// the color of the outer container and the color used to hide
+  /// the text on slide
+  final Color containerColor;
 
   /// The callback when slider is completed. This is the only required field.
   final VoidCallback onSlideToCancelRecord;
@@ -27,12 +40,10 @@ class ChatInputField extends StatefulWidget {
   //The callback when send is pressed.
   Function(String? text)? onSubmit;
 
-  /// The shape of the moving element of the slider. Defaults to a circular border radius
-  final BorderRadius? foregroundShape;
-
-  /// The shape of the background of the slider. Defaults to a circular border radius
-  final BorderRadius? backgroundShape;
+  /// function to handle the selected image
   final Function(XFile) handleImageSelect;
+
+  /// function to handle the recorded audio
   final Function(String? path, bool cnaceled)? handleRecord;
 
   final TextEditingController textController;
@@ -42,6 +53,8 @@ class ChatInputField extends StatefulWidget {
   ChatInputField({
     Key? key,
     this.height = 70,
+    required this.sendMessageHintText,
+    required this.recordinNoteHintText,
     this.sliderButtonContent = const Icon(
       Icons.chevron_right,
       color: Colors.white,
@@ -49,12 +62,14 @@ class ChatInputField extends StatefulWidget {
     ),
     this.sendTextIcon = Icons.send,
     required this.onSlideToCancelRecord,
-    this.foregroundShape,
-    this.backgroundShape,
     this.handleRecord,
     this.onSubmit,
     required this.textController,
     required this.handleImageSelect,
+    required this.containerColor,
+    required this.imageAttachmentFromGalary,
+    required this.imageAttachmentFromCamery,
+    required this.imageAttachmentCancelText,
   }) : assert(height >= 25);
 
   @override
@@ -182,7 +197,7 @@ class ChatInputFieldState extends State<ChatInputField>
               ),
               decoration: BoxDecoration(
                 // color: kPrimaryColor.withOpacity(0.05),
-                color: Colors.blueGrey[100],
+                color: widget.containerColor,
                 borderRadius: BorderRadius.circular(40),
               ),
               child: Row(
@@ -194,18 +209,20 @@ class ChatInputFieldState extends State<ChatInputField>
                           ? Container(
                               height: 50,
                               child: Center(
-                                child: Text('يتم التسجيل' +
-                                    " " +
-                                    StopWatchTimer.getDisplayTime(recordTime)),
+                                child: Text(
+                                  widget.recordinNoteHintText +
+                                      " " +
+                                      StopWatchTimer.getDisplayTime(recordTime),
+                                ),
                               ),
                             )
                           : TextField(
                               controller: widget.textController,
                               decoration: InputDecoration(
-                                hintText: "ادخل رسالتك هنا",
+                                hintText: widget.sendMessageHintText,
                                 border: InputBorder.none,
                               ),
-                              textDirection: TextDirection.rtl,
+                              textDirection: TextDirection.ltr,
                               onSubmitted: (text) {
                                 if (widget.onSubmit != null) {
                                   widget.onSubmit!(text);
@@ -249,9 +266,8 @@ class ChatInputFieldState extends State<ChatInputField>
                 curve: Curves.ease,
 
                 decoration: BoxDecoration(
-                  borderRadius:
-                      widget.backgroundShape ?? BorderRadius.circular(40),
-                  color: Colors.blueGrey[100],
+                  borderRadius: BorderRadius.circular(40),
+                  color: widget.containerColor,
                 ),
               ),
             ),
@@ -273,7 +289,7 @@ class ChatInputFieldState extends State<ChatInputField>
                 },
 
                 onLongPress: () async {
-                  HapticFeedback.heavyImpact();
+                  // HapticFeedback.heavyImpact();
                   if (await record.hasPermission()) {
                     if (!widget.isText) {
                       _stopWatchTimer.onExecute.add(StopWatchExecute.start);
@@ -370,7 +386,7 @@ class ChatInputFieldState extends State<ChatInputField>
                     height: isRecording ? 60 : 45,
                     width: isRecording ? 60 : 45,
                     decoration: BoxDecoration(
-                      borderRadius: widget.foregroundShape ??
+                      borderRadius:
                           BorderRadius.all(Radius.circular(widget.height / 2)),
                       color: kSecondaryColor,
                     ),
@@ -406,9 +422,9 @@ class ChatInputFieldState extends State<ChatInputField>
 
                   pickImage(1);
                 },
-                child: const Align(
+                child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text('صورة من الكميرا'),
+                  child: Text(widget.imageAttachmentFromCamery),
                 ),
               ),
               TextButton(
@@ -416,16 +432,16 @@ class ChatInputFieldState extends State<ChatInputField>
                   Navigator.pop(context);
                   pickImage(2);
                 },
-                child: const Align(
+                child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text('صورة من المعرض'),
+                  child: Text(widget.imageAttachmentFromGalary),
                 ),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Align(
+                child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text('الغاء الأمر'),
+                  child: Text(widget.imageAttachmentCancelText),
                 ),
               ),
             ],

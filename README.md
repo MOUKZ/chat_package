@@ -1,14 +1,65 @@
 # chat_package
 
-A new Flutter package project.
+Flutter chat ui with full voice record/note functionality and image sending
 
-## Getting Started
+# Chat UI Package
+[![Pub]](https://pub.dev/packages/chat_package)
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+An easy to implement whatssapp like chat ui. with voice note feature and image viewing. 
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+
+
+## Usage
+
+the list of ChatMessages is the only required feild every thing else is optional
+```
+List<ChatMessage> messages = [
+    ChatMessage(
+        isSender: true,
+        imageUrl:
+            'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260'),
+    ChatMessage(isSender: false, text: 'wow that is cool'),
+  ];
+```
+```
+ ChatScreen(
+          messages: messages,
+        )
+```
+
+## Properties
+```dart
+  /// The button widget used on the moving element of the slider. Defaults to Icon(Icons.chevron_right).
+  final Widget sliderButtonContent;
+  //hit text to be shown for sending messages
+  final String sendMessageHintText;
+
+  //hit text to be shown for recording voice note
+  final String recordinNoteHintText;
+
+  /// The Icon showed to send a text
+  final IconData sendTextIcon;
+  // texts shown wen trying to chose image attachment
+  final String imageAttachmentFromGalary;
+  final String imageAttachmentFromCamery;
+  final String imageAttachmentCancelText;
+
+  /// the color of the outer container and the color used to hide
+  /// the text on slide
+  final Color containerColor;
+
+  /// The callback when slider is completed. This is the only required field.
+  final VoidCallback onSlideToCancelRecord;
+
+  //The callback when send is pressed.
+  Function(String? text)? onSubmit;
+
+  /// function to handle the selected image
+  final Function(XFile) handleImageSelect;
+
+  /// function to handle the recorded audio
+  final Function(String? path, bool cnaceled)? handleRecord;
+
+  final TextEditingController textController;
+```
+

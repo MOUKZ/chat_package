@@ -14,6 +14,14 @@ class ChatScreen extends StatefulWidget {
   final Color? inActiveAudioSliderColor;
   final Color? activeAudioSliderColor;
   ScrollController? scrollController;
+  final Color containerColor;
+  final String sendMessageHintText;
+  final String imageAttachmentFromGalary;
+  final String imageAttachmentFromCamery;
+  final String imageAttachmentCancelText;
+
+  //hit text to be shown for recording voice note
+  final String recordinNoteHintText;
   Function(String? text)? onSubmit;
 
   List<ChatMessage> messages;
@@ -25,6 +33,12 @@ class ChatScreen extends StatefulWidget {
     this.activeAudioSliderColor,
     required this.messages,
     this.scrollController,
+    this.sendMessageHintText = 'Enter message here',
+    this.recordinNoteHintText = 'Now Recording',
+    this.imageAttachmentFromGalary = 'From Galary',
+    this.imageAttachmentFromCamery = 'From Camera',
+    this.imageAttachmentCancelText = 'Cancel',
+    this.containerColor = const Color(0xFFCFD8DC),
   }) : super(key: key);
   // final
   @override
@@ -55,6 +69,12 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         KeyboardVisibilityProvider(
           child: ChatInputField(
+            imageAttachmentCancelText: widget.imageAttachmentCancelText,
+            imageAttachmentFromCamery: widget.imageAttachmentFromCamery,
+            imageAttachmentFromGalary: widget.imageAttachmentFromGalary,
+            containerColor: widget.containerColor,
+            recordinNoteHintText: widget.recordinNoteHintText,
+            sendMessageHintText: widget.sendMessageHintText,
             handleRecord: (source, canceled) {
               if (!canceled && source != null) {
                 setState(() {
