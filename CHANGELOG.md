@@ -7,3 +7,7 @@
 ## 0.0.3
 
 * adding example and more functionality for hundling record sliding.
+
+## 0.0.4
+
+* adding disable input functionality.

@@ -23,6 +23,21 @@ and the following permissions are required:
  3. local storage
 
 #### Android
+1. Add the following to your "gradle.properties" file:
+```
+android.useAndroidX=true
+android.enableJetifier=true
+```
+2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 30:
+```
+android {
+  compileSdkVersion 30
+  ...
+}
+```
+3. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found here: https://developer.android.com/jetpack/androidx/migrate).
+
+Add permissions to your `AndroidManifest.xml` file.
 ```
  <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Permissions options for the `storage` group -->
@@ -51,7 +66,7 @@ and the following permissions are required:
 
 
 the list of ChatMessages is the only required feild every thing else is optional
-```
+```dart
 List<ChatMessage> messages = [
     ChatMessage(
         isSender: true,
@@ -61,14 +76,14 @@ List<ChatMessage> messages = [
   ];
 ```
 -- plese note that only one of the following [text,imageUrl,imagePath,audioUrl,audioPath ] must not be null at a time if more is provided an error will occure 
-```
+```dart
 ChatMessage(isSender: false, text: 'your.text')
 ChatMessage(isSender: false, imageUrl: image.url')
 ChatMessage(isSender: false, imagePath: 'image.path')
 ChatMessage(isSender: false, audioUrl: 'wow that is cool')
 ChatMessage(isSender: false, audioPath: 'wow that is cool')
 ```
-```
+```dart
  ChatScreen(
           messages: messages,
         )
