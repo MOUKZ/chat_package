@@ -28,11 +28,13 @@ class MessageWidget extends StatelessWidget {
       //check message type and render the right widget
       switch (message.getType()) {
         case ChatMessageType.TextMessage:
+          //render text messag
           return TextMessageWidget(
             message: message,
             senderColor: senderColor,
           );
         case ChatMessageType.AudioMessage:
+          //render audion messag
           return AudioMessageWidget(
             message: message,
             senderColor: senderColor,
@@ -40,6 +42,7 @@ class MessageWidget extends StatelessWidget {
             inActiveAudioSliderColor: inActiveAudioSliderColor,
           );
         case ChatMessageType.ImageMessage:
+          //render image messag
           return ImageMessageWidget(
             message: message,
             senderColor: senderColor,
