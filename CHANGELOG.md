@@ -15,3 +15,6 @@
 ## 0.0.5
 
 * bug fix.
+## 0.0.6
+
+* textController bug fix.

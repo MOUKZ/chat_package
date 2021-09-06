@@ -295,6 +295,7 @@ class ChatInputFieldState extends State<ChatInputField>
                         widget.textController.text != '') {
                       widget.onSubmit!(widget.textController.text);
                     }
+                    widget.textController.clear();
                   },
                   onTapDown: (details) async {
                     // await record.hasPermission();
