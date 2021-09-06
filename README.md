@@ -38,7 +38,7 @@ android {
 3. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found here: https://developer.android.com/jetpack/androidx/migrate).
 
 Add permissions to your `AndroidManifest.xml` file.
-```
+```xml
  <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Permissions options for the `storage` group -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -49,7 +49,7 @@ Add permissions to your `AndroidManifest.xml` file.
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 ```
 #### IOS
-```
+```xml
     <!-- Permission options for the `camera` group -->
     <key>NSCameraUsageDescription</key>
     <string>camera</string>
