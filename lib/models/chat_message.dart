@@ -42,6 +42,7 @@ class ChatMessage {
     );
   }
 
+  /// convert the ChatMessage object to json
   Map<String, dynamic> toMap() {
     return {
       'text': text,
@@ -54,6 +55,8 @@ class ChatMessage {
     };
   }
 
+  /// create ChatMessage from json and
+  /// retreve it from api
   factory ChatMessage.fromMap(Map<String, dynamic> map) {
     return ChatMessage(
       text: map['text'],
@@ -71,11 +74,13 @@ class ChatMessage {
   factory ChatMessage.fromJson(String source) =>
       ChatMessage.fromMap(json.decode(source));
 
+  /// override the toString function
   @override
   String toString() {
     return 'ChatMessage(text: $text, imageUrl: $imageUrl, imagePath: $imagePath, audioUrl: $audioUrl, audioPath: $audioPath, isSender: $isSender, createdAt: $createdAt)';
   }
 
+  /// override the '==' operator
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;

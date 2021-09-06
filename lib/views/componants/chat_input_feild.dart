@@ -49,6 +49,9 @@ class ChatInputField extends StatefulWidget {
 
   final TextEditingController textController;
 
+  // use this flag to disable the input
+  final bool disableInput;
+
   bool isText = false;
 
   ChatInputField({
@@ -72,6 +75,7 @@ class ChatInputField extends StatefulWidget {
     required this.imageAttachmentFromCamery,
     required this.imageAttachmentCancelText,
     required this.imageAttachmentTextColor,
+    required this.disableInput,
   }) : assert(height >= 25);
 
   @override
@@ -155,6 +159,7 @@ class ChatInputFieldState extends State<ChatInputField>
   //     return widget.backgroundColor;
   //   }
   // }
+  Permission micPermission = Permission.microphone;
 
   @override
   Widget build(BuildContext context) {
@@ -162,248 +167,256 @@ class ChatInputFieldState extends State<ChatInputField>
     widget.width = MediaQuery.of(context).size.width * 0.85;
     BoxShadow shadow;
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: _duration),
-        curve: Curves.ease,
-        height: widget.height,
-        // width: widget.width,
-        width: double.infinity,
-        padding: EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          // color: Colors.grey.shade200,
-          boxShadow: [
-            BoxShadow(
-              offset: Offset(0, 4),
-              blurRadius: 32,
-              color: Color(0xFF087949).withOpacity(0.08),
-            ),
-          ],
-        ),
-        child: Stack(
-          alignment: AlignmentDirectional.centerStart,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(
-                right: 60,
-                left: 10,
-                // top: kDefaultPadding / 2,
-                // bottom: kDefaultPadding / 2,
+    return IgnorePointer(
+      ignoring: widget.disableInput,
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: _duration),
+          curve: Curves.ease,
+          height: widget.height,
+          // width: widget.width,
+          width: double.infinity,
+          padding: EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            // color: Colors.grey.shade200,
+            boxShadow: [
+              BoxShadow(
+                offset: Offset(0, 4),
+                blurRadius: 32,
+                color: Color(0xFF087949).withOpacity(0.08),
               ),
-              margin: EdgeInsets.only(
-                left: 10,
-                right: 10,
-                // top: kDefaultPadding / 2,
-                // bottom: kDefaultPadding / 2,
-              ),
-              decoration: BoxDecoration(
-                // color: kPrimaryColor.withOpacity(0.05),
-                color: widget.containerColor,
-                borderRadius: BorderRadius.circular(40),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.only(top: 0.0, right: 0),
-                      child: isRecording
-                          ? Container(
-                              height: 50,
-                              child: Center(
-                                child: Text(
-                                  widget.recordinNoteHintText +
-                                      " " +
-                                      StopWatchTimer.getDisplayTime(recordTime),
-                                ),
-                              ),
-                            )
-                          : TextField(
-                              controller: widget.textController,
-                              decoration: InputDecoration(
-                                hintText: widget.sendMessageHintText,
-                                border: InputBorder.none,
-                              ),
-                              textDirection: TextDirection.ltr,
-                              onSubmitted: (text) {
-                                if (widget.onSubmit != null) {
-                                  widget.onSubmit!(text);
-                                }
-                                widget.textController.clear();
-                                setState(() {});
-                              },
-                            ),
-                    ),
-                  ),
-                  InkWell(
-                      onTap: () {
-                        attachmintClick(context);
-                      },
-                      child: Icon(
-                        isRecording ? Icons.delete : Icons.camera_alt_outlined,
-                        color: isRecording
-                            ? kErrorColor
-                            : Theme.of(context)
-                                .textTheme
-                                .bodyText1!
-                                .color!
-                                .withOpacity(0.64),
-                      )),
-                ],
-              ),
-            ),
-            Positioned(
-              top: 10,
-              right: widget.height / 2,
-              bottom: 5,
-              child: AnimatedContainer(
-                // padding: EdgeInsets.symmetric(
-                //     // horizontal: kDefaultPadding,
-                //     // vertical: 100,
-                //     ),
-
-                height: 100,
-                width: getPosition(),
-                duration: Duration(milliseconds: _duration),
-                curve: Curves.ease,
-
+            ],
+          ),
+          child: Stack(
+            alignment: AlignmentDirectional.centerStart,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(
+                  right: 60,
+                  left: 10,
+                  // top: kDefaultPadding / 2,
+                  // bottom: kDefaultPadding / 2,
+                ),
+                margin: EdgeInsets.only(
+                  left: 10,
+                  right: 10,
+                  // top: kDefaultPadding / 2,
+                  // bottom: kDefaultPadding / 2,
+                ),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(40),
+                  // color: kPrimaryColor.withOpacity(0.05),
                   color: widget.containerColor,
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.only(top: 0.0, right: 0),
+                        child: isRecording
+                            ? Container(
+                                height: 50,
+                                child: Center(
+                                  child: Text(
+                                    widget.recordinNoteHintText +
+                                        " " +
+                                        StopWatchTimer.getDisplayTime(
+                                            recordTime),
+                                  ),
+                                ),
+                              )
+                            : TextField(
+                                controller: widget.textController,
+                                decoration: InputDecoration(
+                                  hintText: widget.sendMessageHintText,
+                                  border: InputBorder.none,
+                                ),
+                                textDirection: TextDirection.ltr,
+                                onSubmitted: (text) {
+                                  if (widget.onSubmit != null) {
+                                    widget.onSubmit!(text);
+                                  }
+                                  widget.textController.clear();
+                                  setState(() {});
+                                },
+                              ),
+                      ),
+                    ),
+                    InkWell(
+                        onTap: () {
+                          attachmintClick(context);
+                        },
+                        child: Icon(
+                          isRecording
+                              ? Icons.delete
+                              : Icons.camera_alt_outlined,
+                          color: isRecording
+                              ? kErrorColor
+                              : Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .color!
+                                  .withOpacity(0.64),
+                        )),
+                  ],
                 ),
               ),
-            ),
-            AnimatedPositioned(
-              duration: Duration(milliseconds: _duration),
-              curve: Curves.bounceOut,
-              right: getPosition(),
-              top: 0,
-              child: GestureDetector(
-                onTap: () {
-                  if (widget.isText &&
-                      widget.onSubmit != null &&
-                      widget.textController.text != '') {
-                    widget.onSubmit!(widget.textController.text);
-                  }
-                },
-                onTapDown: (details) async {
-                  await record.hasPermission();
-                },
+              Positioned(
+                top: 10,
+                right: widget.height / 2,
+                bottom: 5,
+                child: AnimatedContainer(
+                  // padding: EdgeInsets.symmetric(
+                  //     // horizontal: kDefaultPadding,
+                  //     // vertical: 100,
+                  //     ),
 
-                onLongPress: () async {
-                  // HapticFeedback.heavyImpact();
-                  if (await record.hasPermission()) {
-                    if (!widget.isText) {
-                      _stopWatchTimer.onExecute.add(StopWatchExecute.start);
-                      _stopWatchTimer.rawTime.listen((value) {
-                        setState(() {
-                          recordTime = value;
-                        });
-                        print(
-                            'rawTime $value ${StopWatchTimer.getDisplayTime(recordTime)}');
-                      });
-                      setState(() {
-                        widget.textController.clear();
-                        recordAudio();
+                  height: 100,
+                  width: getPosition(),
+                  duration: Duration(milliseconds: _duration),
+                  curve: Curves.ease,
 
-                        isRecording = true;
-                      });
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40),
+                    color: widget.containerColor,
+                  ),
+                ),
+              ),
+              AnimatedPositioned(
+                duration: Duration(milliseconds: _duration),
+                curve: Curves.bounceOut,
+                right: getPosition(),
+                top: 0,
+                child: GestureDetector(
+                  onTap: () {
+                    if (widget.isText &&
+                        widget.onSubmit != null &&
+                        widget.textController.text != '') {
+                      widget.onSubmit!(widget.textController.text);
                     }
-                  }
-                },
-                onLongPressMoveUpdate: (details) async {
-                  if (await record.hasPermission()) {
-                    if (!widget.isText) {
+                  },
+                  onTapDown: (details) async {
+                    // await record.hasPermission();
+                  },
+
+                  onLongPress: () async {
+                    // HapticFeedback.heavyImpact();
+
+                    if (await micPermission.isGranted) {
+                      if (!widget.isText) {
+                        _stopWatchTimer.onExecute.add(StopWatchExecute.start);
+                        _stopWatchTimer.rawTime.listen((value) {
+                          setState(() {
+                            recordTime = value;
+                          });
+                          print(
+                              'rawTime $value ${StopWatchTimer.getDisplayTime(recordTime)}');
+                        });
+                        setState(() {
+                          widget.textController.clear();
+                          recordAudio();
+
+                          isRecording = true;
+                        });
+                      }
+                    }
+                    if (await micPermission.isDenied) {
+                      await Permission.microphone.request();
+                    }
+                  },
+                  onLongPressMoveUpdate: (details) async {
+                    if (!widget.isText && isRecording == true) {
                       setState(() {
                         _duration = 0;
                         _position = details.localPosition.dx * -1;
                       });
                     }
-                  }
-                },
-                onLongPressEnd: (details) async {
-                  final res = await stopRecord();
-                  // Stop
-                  _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+                  },
+                  onLongPressEnd: (details) async {
+                    final res = await stopRecord();
+                    // Stop
+                    _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
 
-                  // Reset
-                  _stopWatchTimer.onExecute.add(StopWatchExecute.reset);
+                    // Reset
+                    _stopWatchTimer.onExecute.add(StopWatchExecute.reset);
 
-                  if (!widget.isText && await record.hasPermission()) {
-                    if (_position > widget.width! - widget.height) {
-                      log('canceled');
+                    if (!widget.isText && await micPermission.isGranted) {
+                      if (_position > widget.width! - widget.height) {
+                        log('canceled');
 
-                      widget.handleRecord != null
-                          ? widget.handleRecord!(res, true)
-                          : null;
+                        widget.handleRecord != null
+                            ? widget.handleRecord!(res, true)
+                            : null;
 
-                      widget.onSlideToCancelRecord();
-                    } else {
-                      widget.handleRecord != null
-                          ? widget.handleRecord!(res, false)
-                          : null;
+                        widget.onSlideToCancelRecord();
+                      } else {
+                        widget.handleRecord != null
+                            ? widget.handleRecord!(res, false)
+                            : null;
+                      }
+
+                      setState(() {
+                        isRecording = false;
+                      });
+                      setState(() {
+                        _duration = 600;
+                        _position = 0;
+                        isRecording = false;
+                      });
                     }
 
-                    setState(() {
-                      isRecording = false;
-                    });
-                    setState(() {
-                      _duration = 600;
-                      _position = 0;
-                      isRecording = false;
-                    });
-                  }
+                    log(res ?? "");
+                  },
 
-                  log(res ?? "");
-                },
+                  // onHorizontalDragStart: (d) {
+                  //   updatePosition(d);
+                  // },
+                  // onHorizontalDragStart: (d) {
+                  //   updatePosition(d);
 
-                // onHorizontalDragStart: (d) {
-                //   updatePosition(d);
-                // },
-                // onHorizontalDragStart: (d) {
-                //   updatePosition(d);
-
-                //   log('fuck');
-                // },
-                // onTapDown: (_) =>
-                //     widget.onTapDown != null ? widget.onTapDown!() : null,
-                // onTapUp: (_) => widget.onTapUp != null ? widget.onTapUp!() : null,
-                // onPanUpdate: (details) {
-                //   log('pan');
-                //   updatePosition(details);
-                // },
-                // onSecondaryLongPressMoveUpdate: (s) {
-                //   log('sexond');
-                // },
-                // onPanEnd: (details) {
-                //   if (widget.onTapUp != null) widget.onTapUp!();
-                //   sliderReleased(details);
-                // },
-                child: AnimatedSize(
-                  curve: Curves.easeIn,
-                  vsync: this,
-                  duration: Duration(microseconds: 500),
-                  child: Container(
-                    margin: EdgeInsets.only(top: isRecording ? 0 : 8),
-                    height: isRecording ? 60 : 45,
-                    width: isRecording ? 60 : 45,
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(widget.height / 2)),
-                      color: kSecondaryColor,
+                  //   log('fuck');
+                  // },
+                  // onTapDown: (_) =>
+                  //     widget.onTapDown != null ? widget.onTapDown!() : null,
+                  // onTapUp: (_) => widget.onTapUp != null ? widget.onTapUp!() : null,
+                  // onPanUpdate: (details) {
+                  //   log('pan');
+                  //   updatePosition(details);
+                  // },
+                  // onSecondaryLongPressMoveUpdate: (s) {
+                  //   log('sexond');
+                  // },
+                  // onPanEnd: (details) {
+                  //   if (widget.onTapUp != null) widget.onTapUp!();
+                  //   sliderReleased(details);
+                  // },
+                  child: AnimatedSize(
+                    curve: Curves.easeIn,
+                    vsync: this,
+                    duration: Duration(microseconds: 500),
+                    child: Container(
+                      margin: EdgeInsets.only(top: isRecording ? 0 : 8),
+                      height: isRecording ? 60 : 45,
+                      width: isRecording ? 60 : 45,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(widget.height / 2)),
+                        color: kSecondaryColor,
+                      ),
+                      child: isRecording
+                          ? widget.sliderButtonContent
+                          : Icon(
+                              widget.isText ? widget.sendTextIcon : Icons.mic,
+                              color: Colors.white,
+                              size: 25,
+                            ),
                     ),
-                    child: isRecording
-                        ? widget.sliderButtonContent
-                        : Icon(
-                            widget.isText ? widget.sendTextIcon : Icons.mic,
-                            color: Colors.white,
-                            size: 25,
-                          ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

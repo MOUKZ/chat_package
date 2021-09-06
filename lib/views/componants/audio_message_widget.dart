@@ -4,6 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
+/// this widget is used to render voice note container
+/// with ist full functionality
+
 class AudioMessageWidget extends StatefulWidget {
   final ChatMessage message;
   final Color senderColor;
@@ -117,6 +120,7 @@ class _AudioMessageWidgetState extends State<AudioMessageWidget> {
     );
   }
 
+  /// this function is used to play audio wither its from url or path file
   void play() {
     if (player.duration != null && player.position >= player.duration!) {
       player.seek(Duration.zero);
@@ -144,6 +148,7 @@ class _AudioMessageWidgetState extends State<AudioMessageWidget> {
     });
   }
 
+  /// function used to print the duration of the current audio duration
   String _printDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, "0");
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));

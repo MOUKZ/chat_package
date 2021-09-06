@@ -45,6 +45,9 @@ class ChatScreen extends StatefulWidget {
   //TextEditingController to handel input text
   final TextEditingController? textEditingController;
 
+// use this flag to disable the input
+  final bool disableInput;
+
   ChatScreen({
     Key? key,
     this.senderColor,
@@ -63,8 +66,9 @@ class ChatScreen extends StatefulWidget {
     this.handleImageSelect,
     this.onSlideToCancelRecord,
     this.textEditingController,
+    this.disableInput = false,
   }) : super(key: key);
-  // final
+
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
@@ -100,6 +104,7 @@ class _ChatScreenState extends State<ChatScreen> {
             containerColor: widget.containerColor,
             recordinNoteHintText: widget.recordinNoteHintText,
             sendMessageHintText: widget.sendMessageHintText,
+            disableInput: widget.disableInput,
             handleRecord: widget.handleRecord ??
                 (source, canceled) {
                   if (!canceled && source != null) {

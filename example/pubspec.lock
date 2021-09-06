@@ -39,10 +39,10 @@ packages:
   chat_package:
     dependency: "direct main"
     description:
-      name: chat_package
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.2"
+      path: ".."
+      relative: true
+    source: path
+    version: "0.0.3"
   clock:
     dependency: transitive
     description:
