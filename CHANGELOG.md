@@ -11,3 +11,7 @@
 ## 0.0.4
 
 * adding disable input functionality.
+
+## 0.0.5
+
+* bug fix.

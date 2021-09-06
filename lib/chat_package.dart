@@ -67,6 +67,7 @@ class ChatScreen extends StatefulWidget {
     this.onSlideToCancelRecord,
     this.textEditingController,
     this.disableInput = false,
+    this.onSubmit,
   }) : super(key: key);
 
   @override
