@@ -15,6 +15,41 @@ An easy to implement whatssapp like chat ui. with voice note feature and image v
 
 ## Usage
 
+### Permission Setup
+This package uses [permission_handler](https://pub.dev/packages/permission_handler) plugin to access permissions,
+and the following permissions are required:
+ 1. camera
+ 2. microphone
+ 3. local storage
+
+#### Android
+```
+ <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Permissions options for the `storage` group -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- Permissions options for the `camera` group -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- Permissions options for the `RECORD_AUDIO` group -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+```
+#### IOS
+```
+    <!-- Permission options for the `camera` group -->
+    <key>NSCameraUsageDescription</key>
+    <string>camera</string>
+    <!-- Permission options for the `microphone` group -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>microphone</string>
+    <!-- Permission options for the `photos` group -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>photos</string>
+
+```
+
+### Calling
+
+
 the list of ChatMessages is the only required feild every thing else is optional
 ```
 List<ChatMessage> messages = [
@@ -75,6 +110,8 @@ ChatMessage(isSender: false, audioPath: 'wow that is cool')
   final Function(String? path, bool cnaceled)? handleRecord;
 
   final TextEditingController textController;
+  // use this flag to disable the input
+  final bool disableInput;
 
 ```
 
