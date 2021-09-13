@@ -1,7 +1,8 @@
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/utils/constants.dart';
 import 'package:flutter/material.dart';
-//this widget is used to render a text message container
+
+/// this widget is used to render a text message container
 
 class TextMessageWidget extends StatelessWidget {
   final ChatMessage message;
@@ -51,7 +52,7 @@ class TextMessageWidget extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.only(
-            // top: 2,
+            /// top: 2,
             left: kDefaultPadding / 2,
             right: kDefaultPadding / 2,
           ),

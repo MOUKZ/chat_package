@@ -7,9 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class ImageMessageWidget extends StatelessWidget {
-  // chat message model to get teh data
+  /// chat message model to get teh data
   final ChatMessage message;
-  //the color of the sender container
+
+  ///the color of the sender container
   final Color senderColor;
 
   const ImageMessageWidget(
@@ -23,7 +24,7 @@ class ImageMessageWidget extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            //navigate to to the photo galary view, for viewing the taped image
+            /// navigate to to the photo galary view, for viewing the taped image
             Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (BuildContext context) => PhotoGalleryView(
@@ -37,7 +38,9 @@ class ImageMessageWidget extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
               color: senderColor.withOpacity(message.isSender ? 1 : 0.1),
-            ), // 45% of total width
+            ),
+
+            /// 45% of total width
             child: AspectRatio(
               aspectRatio: 1,
               child: ClipRRect(

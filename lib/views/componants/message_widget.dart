@@ -6,7 +6,7 @@ import 'package:chat_package/views/componants/image_message_widget.dart';
 import 'package:chat_package/views/componants/text_message_widget.dart';
 import 'package:flutter/material.dart';
 
-// widet used to detairmen the right message type
+/// widet used to detairmen the right message type
 class MessageWidget extends StatelessWidget {
   final Color senderColor;
   final Color inActiveAudioSliderColor;
@@ -25,16 +25,18 @@ class MessageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget messageContaint(ChatMessage message) {
-      //check message type and render the right widget
+      /// check message type and render the right widget
       switch (message.getType()) {
         case ChatMessageType.TextMessage:
-          //render text messag
+
+          /// render text messag
           return TextMessageWidget(
             message: message,
             senderColor: senderColor,
           );
         case ChatMessageType.AudioMessage:
-          //render audion messag
+
+          /// render audion messag
           return AudioMessageWidget(
             message: message,
             senderColor: senderColor,
@@ -42,7 +44,8 @@ class MessageWidget extends StatelessWidget {
             inActiveAudioSliderColor: inActiveAudioSliderColor,
           );
         case ChatMessageType.ImageMessage:
-          //render image messag
+
+          /// render image messag
           return ImageMessageWidget(
             message: message,
             senderColor: senderColor,
@@ -57,7 +60,8 @@ class MessageWidget extends StatelessWidget {
       child: Align(
         alignment:
             message.isSender ? Alignment.centerRight : Alignment.centerLeft,
-        //check message type and render the right widget
+
+        /// check message type and render the right widget
         child: messageContaint(message),
       ),
     );

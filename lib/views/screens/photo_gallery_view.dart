@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:chat_package/models/chat_message.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-//this widget is used for viewing the image in full size
 
+/// this widget is used for viewing the image in full size
 class PhotoGalleryView extends StatefulWidget {
   final ChatMessage chatMessage;
 
@@ -21,7 +21,8 @@ class _PhotoGalleryViewState extends State<PhotoGalleryView> {
   @override
   void initState() {
     super.initState();
-    //check if url is provided or a path to a file
+
+    /// check if url is provided or a path to a file
     if (widget.chatMessage.imageUrl != null) {
       imageProvider = NetworkImage(widget.chatMessage.imageUrl!);
     } else {
@@ -61,7 +62,7 @@ class _PhotoGalleryViewState extends State<PhotoGalleryView> {
                 horizontal: size.width / 18,
               ),
               child: Container(
-                //icon to cancel and returne to the previous view
+                /// icon to cancel and returne to the previous view
                 child: IconButton(
                     onPressed: () => Navigator.of(context).pop(),
                     icon: Icon(

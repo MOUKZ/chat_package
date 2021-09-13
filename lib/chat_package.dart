@@ -11,41 +11,53 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ChatScreen extends StatefulWidget {
-  //color of all message containers if its belongs to the user
+  ///color of all message containers if its belongs to the user
   final Color? senderColor;
-  //color of the inactive part of the audio slider
+
+  ///color of the inactive part of the audio slider
   final Color? inActiveAudioSliderColor;
-  //color of the active part of the audio slider
+
+  ///color of the active part of the audio slider
   final Color? activeAudioSliderColor;
-  //scrollcontroller for the chat screen
-  ScrollController? scrollController;
+
+  ///scrollcontroller for the chat screen
+  final ScrollController? scrollController;
 
   /// the color of the outer container and the color used to hide
   /// the text on slide
   final Color containerColor;
-//hint text to be shown for sending messages
+
+  ///hint text to be shown for sending messages
   final String sendMessageHintText;
-  // texts shown wen trying to chose image attachment
+
+  /// texts shown wen trying to chose image attachment
   final String imageAttachmentFromGalary;
   final String imageAttachmentFromCamery;
   final String imageAttachmentCancelText;
   final Color imageAttachmentTextColor;
 
-  //hint text to be shown for recording voice note
+  ///hint text to be shown for recording voice note
   final String recordinNoteHintText;
-  Function(String? text)? onSubmit;
-// [required] the list of chat messages
-  List<ChatMessage> messages;
-  // function to handel sucessful recordings, bass to override
+
+  /// handel [text message] on submit
+  final Function(String? text)? onSubmit;
+
+  /// [required] the list of chat messages
+  final List<ChatMessage> messages;
+
+  /// function to handel sucessful recordings, bass to override
   final Function(String? path, bool cnaceled)? handleRecord;
-// function to handel image selection
+
+  /// function to handel image selection
   final Function(XFile)? handleImageSelect;
-// to handel canceling of the record
+
+  /// to handel canceling of the record
   final VoidCallback? onSlideToCancelRecord;
-  //TextEditingController to handel input text
+
+  ///TextEditingController to handel input text
   final TextEditingController? textEditingController;
 
-// use this flag to disable the input
+  /// use this flag to disable the input
   final bool disableInput;
 
   ChatScreen({
@@ -120,9 +132,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 },
             handleImageSelect: widget.handleImageSelect ??
                 (file) async {
-                  final bytes = await file.readAsBytes();
-                  final image = await decodeImageFromList(bytes);
-                  final name = file.path.split('/').last;
+                  // final bytes = await file.readAsBytes();
+                  // final image = await decodeImageFromList(bytes);
+                  // final name = file.path.split('/').last;
                   setState(() {
                     widget.messages
                         .add(ChatMessage(isSender: true, imagePath: file.path));

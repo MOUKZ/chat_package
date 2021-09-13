@@ -11,24 +11,30 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 class ChatInputField extends StatefulWidget {
   /// Height of the slider. Defaults to 70.
   final double height;
-
   double? width;
 
   /// The button widget used on the moving element of the slider. Defaults to Icon(Icons.chevron_right).
   final Widget sliderButtonContent;
-  //hint text to be shown for sending messages
+
+  /// hint text to be shown for sending messages
   final String sendMessageHintText;
 
-  //hit text to be shown for recording voice note
+  /// hit text to be shown for recording voice note
   final String recordinNoteHintText;
 
   /// The Icon showed to send a text
   final IconData sendTextIcon;
-  // texts shown wen trying to chose image attachment
+
+  /// texts shown wen trying to chose image attachment from galary
   final String imageAttachmentFromGalary;
+
+  /// texts shown wen trying to chose image attachment from camera
   final String imageAttachmentFromCamery;
+
+  /// texts shown wen trying to chose image attachment cancel text
   final String imageAttachmentCancelText;
-  // image attachment text color
+
+  /// image attachment text color
   final Color imageAttachmentTextColor;
 
   /// the color of the outer container and the color used to hide
@@ -38,8 +44,8 @@ class ChatInputField extends StatefulWidget {
   /// The callback when slider is completed. This is the only required field.
   final VoidCallback onSlideToCancelRecord;
 
-  //The callback when send is pressed.
-  Function(String? text)? onSubmit;
+  /// The callback when send is pressed.
+  final Function(String? text)? onSubmit;
 
   /// function to handle the selected image
   final Function(XFile) handleImageSelect;
@@ -49,7 +55,7 @@ class ChatInputField extends StatefulWidget {
 
   final TextEditingController textController;
 
-  // use this flag to disable the input
+  /// use this flag to disable the input
   final bool disableInput;
 
   bool isText = false;
@@ -165,7 +171,6 @@ class ChatInputFieldState extends State<ChatInputField>
   Widget build(BuildContext context) {
     widget.isText = KeyboardVisibilityProvider.isKeyboardVisible(context);
     widget.width = MediaQuery.of(context).size.width * 0.85;
-    BoxShadow shadow;
 
     return IgnorePointer(
       ignoring: widget.disableInput,
@@ -423,6 +428,8 @@ class ChatInputFieldState extends State<ChatInputField>
     );
   }
 
+  /// show a widget to choose picker type
+
   void attachmintClick(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
@@ -476,6 +483,7 @@ class ChatInputFieldState extends State<ChatInputField>
     );
   }
 
+  /// open image pickerfrom camera, galary, or cancel the selection
   void pickImage(int type) async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.camera,
@@ -499,6 +507,7 @@ class ChatInputFieldState extends State<ChatInputField>
     }
   }
 
+  /// function used to record audio
   void recordAudio() async {
     if (await record.isRecording()) {
       record.stop();
@@ -511,6 +520,9 @@ class ChatInputFieldState extends State<ChatInputField>
       // sampleRate: 44100, // by default
     );
   }
+
+  /// function used to stop recording
+  /// and returns the record path as a string
 
   Future<String?> stopRecord() async {
     return await record.stop();
