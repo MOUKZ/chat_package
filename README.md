@@ -1,4 +1,10 @@
 # chat_package
+![Pub Version](https://img.shields.io/pub/v/chat_bubbles?color=blue)
+![likes](https://badges.bar/chat_bubbles/likes)
+![popularity](https://badges.bar/chat_bubbles/popularity)
+![pub points](https://badges.bar/sentry/pub%20points)
+![GitHub](https://img.shields.io/github/license/prahack/chat_bubbles)
+
 
 Flutter chat ui with full voice record/note functionality and image sending
 
@@ -133,4 +139,11 @@ ChatMessage(isSender: false, audioPath: 'wow that is cool')
   final bool disableInput;
 
 ```
+## Found this project useful?
 
+If you found this project useful, then please consider giving it a ⭐️ on Github and why dont you share it with your friends.
+
+
+## Issues and feedback
+
+Feel free to open a Github [issue](https://github.com/MOUKZ/chat_package/issues) to give a suggestion.
