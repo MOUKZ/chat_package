@@ -2,7 +2,7 @@
 ![Pub Version](https://img.shields.io/pub/v/chat_package?color=blue)
 ![likes](https://badges.bar/chat_package/likes)
 ![popularity](https://badges.bar/chat_package/popularity)
-![GitHub](https://img.shields.io/github/license/prahack/chat_package)
+![GitHub](https://img.shields.io/github/license/MOUKZ/chat_package)
 
 
 Flutter chat ui with full voice record/note functionality and image sending
