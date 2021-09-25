@@ -64,7 +64,7 @@ class _AudioMessageWidgetState extends State<AudioMessageWidget> {
                 .withOpacity(widget.message.isSender ? 1 : 0.1),
           ),
           child: Row(
-            // mainAxisAlignment: MainAxisAlignment.end,
+            /// mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
                 onPressed: () {

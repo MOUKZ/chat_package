@@ -117,7 +117,6 @@ class ChatInputFieldState extends State<ChatInputField>
   }
 
   void updatePosition(details) {
-    // log();
     if (details is DragEndDetails) {
       setState(() {
         _duration = 600;
