@@ -2,9 +2,9 @@
 
 Flutter chat ui with full voice record/note functionality and image sending
 
-### Created by
+### Created by Omar Mouki
 
-[Omar Mouki](https://github.com/MOUKZ) ([LinkedIn](https://www.linkedin.com/in/omar-mouki-15988b130/))
+[GitHub](https://github.com/MOUKZ) [LinkedIn](https://www.linkedin.com/in/omar-mouki-15988b130/)
 
 # Chat UI Package
 [![Pub]](https://pub.dev/packages/chat_package)
