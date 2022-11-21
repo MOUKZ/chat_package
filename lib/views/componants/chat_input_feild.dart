@@ -514,7 +514,6 @@ class ChatInputFieldState extends State<ChatInputField>
 
     await record.start(
       // path: 'aFullPath/myFile.m4a', // required
-      encoder: AudioEncoder.AAC, // by default
       bitRate: 128000, // by default
       // sampleRate: 44100, // by default
     );
