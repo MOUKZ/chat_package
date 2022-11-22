@@ -27,7 +27,7 @@ class AudioMessageWidget extends StatefulWidget {
 class _AudioMessageWidgetState extends State<AudioMessageWidget> {
   final player = AudioPlayer();
   Duration? duration = Duration.zero;
-  Duration seekBarposition = Duration.zero;
+  Duration seekBarPosition = Duration.zero;
   bool isPlaying = false;
 
   @override
@@ -134,14 +134,14 @@ class _AudioMessageWidgetState extends State<AudioMessageWidget> {
     player.positionStream.listen((duration) {
       // duration == player.duration;
       setState(() {
-        seekBarposition = duration;
+        seekBarPosition = duration;
       });
       if (player.duration != null && player.position >= player.duration!) {
         player.stop();
         player.seek(Duration.zero);
         setState(() {
           isPlaying = false;
-          seekBarposition = Duration.zero;
+          seekBarPosition = Duration.zero;
         });
       }
     });

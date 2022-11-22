@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:chat_package/views/chat_input_field/chat_input_field_provider.dart';
 import 'package:chat_package/views/chat_input_field/widgets/chat_animated_button.dart';
-import 'package:chat_package/views/chat_input_field/widgets/chat_textview_widget.dart';
+import 'package:chat_package/views/chat_input_field/widgets/chat_text_view_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';
@@ -51,7 +51,7 @@ class ChatInputField extends StatelessWidget {
   final Function(XFile) handleImageSelect;
 
   /// function to handle the recorded audio
-  final Function(String? path, bool canceled)? handleRecord;
+  final Function(String? path, bool canceled) handleRecord;
 
   final TextEditingController textController;
 
@@ -70,7 +70,7 @@ class ChatInputField extends StatelessWidget {
     ),
     this.sendTextIcon = Icons.send,
     required this.onSlideToCancelRecord,
-    this.handleRecord,
+    required this.handleRecord,
     required this.onSubmit,
     required this.textController,
     required this.handleImageSelect,
@@ -91,6 +91,7 @@ class ChatInputField extends StatelessWidget {
         textController: textController,
         onSlideToCancelRecord: onSlideToCancelRecord,
         cancelPosition: cancelPosition,
+        handleRecord: handleRecord,
       ),
       child: Consumer<ChatInputFieldProvider>(
         builder: (context, provider, child) {

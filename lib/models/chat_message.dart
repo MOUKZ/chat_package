@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:chat_package/enums/chat_message_type.dart';
 
 class ChatMessage {
-  ///plese note that only one of the following [text,imageUrl,imagePath,audioUrl,audioPath ]
-  ///must not be null at a time if more is provided an error will occure
+  /// please note that only one of the following [text,imageUrl,imagePath,audioUrl,audioPath ]
+  ///must not be null at a time if more is provided an error will occur
   String? text;
   String? imageUrl;
   String? imagePath;
@@ -56,7 +56,7 @@ class ChatMessage {
   }
 
   /// create ChatMessage from json and
-  /// retreve it from api
+  /// retrieve it from api
   factory ChatMessage.fromMap(Map<String, dynamic> map) {
     return ChatMessage(
       text: map['text'],

@@ -6,7 +6,7 @@ import 'package:record/record.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class ChatInputFieldProvider extends ChangeNotifier {
-  final Function(String? path, bool cancel)? handleRecord;
+  final Function(String? path, bool cancel) handleRecord;
   final VoidCallback onSlideToCancelRecord;
 
   /// The callback when send is pressed.
@@ -19,8 +19,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
   int _duration = 0;
   bool _isRecording = false;
   int _recordTime = 0;
-  bool _isText = false;
-  //TODO : create setter for this
+  bool isText = false;
   double _height = 70;
   final StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
@@ -28,22 +27,22 @@ class ChatInputFieldProvider extends ChangeNotifier {
   int get duration => _duration;
   bool get isRecording => _isRecording;
   int get recordTime => _recordTime;
-  bool get isText => _isText;
 
   /// setters
-  set isText(bool val) => _isText = val;
+  set height(double val) => _height = val;
+
   Permission micPermission = Permission.microphone;
   ChatInputFieldProvider({
     required this.onSubmit,
     required this.textController,
-    this.handleRecord,
+    required this.handleRecord,
     required this.onSlideToCancelRecord,
     required this.cancelPosition,
   });
 
   /// animated button on tap
   void onAnimatedButtonTap() {
-    if (_isText && textController.text.isNotEmpty) {
+    if (isText && textController.text.isNotEmpty) {
       onSubmit(textController.text);
     }
     textController.clear();
@@ -54,7 +53,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
     // HapticFeedback.heavyImpact();
 
     if (await micPermission.isGranted) {
-      if (!_isText) {
+      if (!isText) {
         _stopWatchTimer.onStartTimer();
         _stopWatchTimer.rawTime.listen((value) {
           _recordTime = value;
@@ -78,7 +77,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
   /// animated button on Long Press Move Update
   void onAnimatedButtonLongPressMoveUpdate(
       LongPressMoveUpdateDetails details) async {
-    if (!_isText && _isRecording == true) {
+    if (!isText && _isRecording == true) {
       _duration = 0;
       _position = details.localPosition.dx * -1;
       notifyListeners();
@@ -94,15 +93,15 @@ class ChatInputFieldProvider extends ChangeNotifier {
     // Reset
     _stopWatchTimer.onResetTimer();
 
-    if (!_isText && await micPermission.isGranted) {
+    if (!isText && await micPermission.isGranted) {
       if (_position > cancelPosition - _height) {
         log('canceled');
 
-        handleRecord?.call(res, true);
+        handleRecord(res, true);
 
         onSlideToCancelRecord();
       } else {
-        handleRecord?.call(res, false);
+        handleRecord(res, false);
       }
 
       _duration = 600;
