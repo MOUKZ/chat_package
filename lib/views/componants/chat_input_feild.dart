@@ -1,12 +1,14 @@
 import 'dart:developer';
-
-import 'package:chat_package/utils/constants.dart';
+import 'package:chat_package/views/componants/widgets/chat_input_feild/chat_animated_button.dart';
+import 'package:chat_package/views/componants/widgets/chat_input_feild/chat_input_feild.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+
+import 'widgets/chat_input_feild/chat_drag_trail.dart';
 
 class ChatInputField extends StatefulWidget {
   /// Height of the slider. Defaults to 70.
@@ -142,120 +144,36 @@ class ChatInputFieldState extends State<ChatInputField> {
   }
 
   /// build Input Feild widget
-  Widget get _buildInputFeild => Container(
-        padding: EdgeInsets.only(
-          right: 60,
-          left: 10,
-        ),
-        margin: EdgeInsets.only(
-          left: 10,
-          right: 10,
-        ),
-        decoration: BoxDecoration(
-          color: widget.containerColor,
-          borderRadius: BorderRadius.circular(40),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.only(top: 0.0, right: 0),
-                child: isRecording
-                    ? Container(
-                        height: 50,
-                        child: Center(
-                          child: Text(
-                            widget.recordinNoteHintText +
-                                " " +
-                                StopWatchTimer.getDisplayTime(recordTime),
-                          ),
-                        ),
-                      )
-                    : TextField(
-                        controller: widget.textController,
-                        decoration: InputDecoration(
-                          hintText: widget.sendMessageHintText,
-                          border: InputBorder.none,
-                        ),
-                        textDirection: TextDirection.ltr,
-                        onSubmitted: (text) {
-                          if (widget.onSubmit != null) {
-                            widget.onSubmit!(text);
-                          }
-                          widget.textController.clear();
-                          setState(() {});
-                        },
-                      ),
-              ),
-            ),
-            InkWell(
-                onTap: () {
-                  attachmintClick(context);
-                },
-                child: Icon(
-                  isRecording ? Icons.delete : Icons.camera_alt_outlined,
-                  color: isRecording
-                      ? kErrorColor
-                      : Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .color!
-                          .withOpacity(0.64),
-                )),
-          ],
-        ),
+  Widget get _buildInputFeild => ChatInputFeild(
+      containerColor: widget.containerColor,
+      isRecording: isRecording,
+      recordinNoteHintText: widget.recordinNoteHintText,
+      recordTime: recordTime,
+      textController: widget.textController,
+      sendMessageHintText: widget.sendMessageHintText,
+      attachmintClick: attachmintClick);
+
+  Widget _buildDragTrail(double cancelPossition) => ChatDragTrail(
+        rightPosstion: widget.height / 2,
+        cancelPossition: getPosition(cancelPossition),
+        duration: _duration,
+        trailColor: widget.containerColor,
       );
 
-  Widget _buildDragTrail(double cancelPossition) => Positioned(
-        top: 10,
-        right: widget.height / 2,
-        bottom: 5,
-        child: AnimatedContainer(
-          height: 100,
-          width: getPosition(cancelPossition),
-          duration: Duration(milliseconds: _duration),
-          curve: Curves.ease,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(40),
-            color: widget.containerColor,
-          ),
-        ),
-      );
-
-  Widget _buildAnimatedButton(double cancelPossition) => AnimatedPositioned(
-        duration: Duration(milliseconds: _duration),
-        curve: Curves.bounceOut,
-        right: getPosition(cancelPossition),
-        top: 0,
-        child: GestureDetector(
-          onTap: onAnimatedButtonTap,
-          onLongPress: onAnimatedButtonLongPress,
-          onLongPressMoveUpdate: onAnimatedButtonLongPressMoveUpdate,
-          onLongPressEnd: (details) {
-            onAnimatedButtonLongPressEnd(details, cancelPossition);
-          },
-          child: AnimatedSize(
-            curve: Curves.easeIn,
-            duration: Duration(microseconds: 500),
-            child: Container(
-              margin: EdgeInsets.only(top: isRecording ? 0 : 8),
-              height: isRecording ? 60 : 45,
-              width: isRecording ? 60 : 45,
-              decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.all(Radius.circular(widget.height / 2)),
-                color: kSecondaryColor,
-              ),
-              child: isRecording
-                  ? widget.sliderButtonContent
-                  : Icon(
-                      isText ? widget.sendTextIcon : Icons.mic,
-                      color: Colors.white,
-                      size: 25,
-                    ),
-            ),
-          ),
-        ),
+  Widget _buildAnimatedButton(double cancelPossition) => ChatAnimatedButton(
+        duration: _duration,
+        rightPosstion: getPosition(cancelPossition),
+        isRecording: isRecording,
+        isText: isText,
+        animatedButtonWidget: widget.sliderButtonContent,
+        onAnimatedButtonTap: onAnimatedButtonTap,
+        onAnimatedButtonLongPress: onAnimatedButtonLongPress,
+        onAnimatedButtonLongPressMoveUpdate:
+            onAnimatedButtonLongPressMoveUpdate,
+        onAnimatedButtonLongPressEnd: (details) =>
+            onAnimatedButtonLongPressEnd(details, cancelPossition),
+        borderRadius: BorderRadius.all(Radius.circular(widget.height / 2)),
+        sendTextIcon: widget.sendTextIcon,
       );
 
   /// animated button on tap
