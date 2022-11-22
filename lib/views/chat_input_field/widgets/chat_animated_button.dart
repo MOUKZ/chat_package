@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ChatAnimatedButton extends StatelessWidget {
   final int duration;
-  final rightPosstion;
+  final rightPosition;
   final bool isRecording;
   final bool isText;
   final Widget? animatedButtonWidget;
@@ -18,7 +18,7 @@ class ChatAnimatedButton extends StatelessWidget {
   const ChatAnimatedButton(
       {super.key,
       required this.duration,
-      this.rightPosstion,
+      this.rightPosition,
       required this.isRecording,
       required this.isText,
       this.animatedButtonWidget,
@@ -34,7 +34,7 @@ class ChatAnimatedButton extends StatelessWidget {
     return AnimatedPositioned(
       duration: Duration(milliseconds: duration),
       curve: Curves.bounceOut,
-      right: rightPosstion,
+      right: rightPosition,
       top: 0,
       child: GestureDetector(
         onTap: onAnimatedButtonTap,

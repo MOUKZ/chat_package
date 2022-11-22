@@ -4,7 +4,7 @@ import 'dart:developer';
 
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/utils/constants.dart';
-import 'package:chat_package/views/componants/chat_input_feild.dart';
+import 'package:chat_package/views/chat_input_field/chat_input_field.dart';
 import 'package:chat_package/views/componants/message_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -20,7 +20,7 @@ class ChatScreen extends StatefulWidget {
   ///color of the active part of the audio slider
   final Color? activeAudioSliderColor;
 
-  ///scrollcontroller for the chat screen
+  ///scrollController for the chat screen
   final ScrollController? scrollController;
 
   /// the color of the outer container and the color used to hide
@@ -31,13 +31,13 @@ class ChatScreen extends StatefulWidget {
   final String sendMessageHintText;
 
   /// texts shown wen trying to chose image attachment
-  final String imageAttachmentFromGalary;
-  final String imageAttachmentFromCamery;
+  final String imageAttachmentFromGallery;
+  final String imageAttachmentFromCamera;
   final String imageAttachmentCancelText;
   final Color imageAttachmentTextColor;
 
   ///hint text to be shown for recording voice note
-  final String recordinNoteHintText;
+  final String recordingNoteHintText;
 
   /// handel [text message] on submit
   final Function(String? text)? onSubmit;
@@ -45,8 +45,8 @@ class ChatScreen extends StatefulWidget {
   /// [required] the list of chat messages
   final List<ChatMessage> messages;
 
-  /// function to handel sucessful recordings, bass to override
-  final Function(String? path, bool cnaceled)? handleRecord;
+  /// function to handel successful recordings, bass to override
+  final Function(String? path, bool canceled)? handleRecord;
 
   /// function to handel image selection
   final Function(XFile)? handleImageSelect;
@@ -68,9 +68,9 @@ class ChatScreen extends StatefulWidget {
     required this.messages,
     this.scrollController,
     this.sendMessageHintText = 'Enter message here',
-    this.recordinNoteHintText = 'Now Recording',
-    this.imageAttachmentFromGalary = 'From Galary',
-    this.imageAttachmentFromCamery = 'From Camera',
+    this.recordingNoteHintText = 'Now Recording',
+    this.imageAttachmentFromGallery = 'From Gallery',
+    this.imageAttachmentFromCamera = 'From Camera',
     this.imageAttachmentCancelText = 'Cancel',
     this.containerColor = const Color(0xFFCFD8DC),
     this.imageAttachmentTextColor = const Color(0xFF255965),
@@ -111,11 +111,11 @@ class _ChatScreenState extends State<ChatScreen> {
         KeyboardVisibilityProvider(
           child: ChatInputField(
             imageAttachmentCancelText: widget.imageAttachmentCancelText,
-            imageAttachmentFromCamery: widget.imageAttachmentFromCamery,
-            imageAttachmentFromGalary: widget.imageAttachmentFromGalary,
+            imageAttachmentFromCamera: widget.imageAttachmentFromCamera,
+            imageAttachmentFromGallery: widget.imageAttachmentFromGallery,
             imageAttachmentTextColor: widget.imageAttachmentTextColor,
             containerColor: widget.containerColor,
-            recordinNoteHintText: widget.recordinNoteHintText,
+            recordingNoteHintText: widget.recordingNoteHintText,
             sendMessageHintText: widget.sendMessageHintText,
             disableInput: widget.disableInput,
             handleRecord: widget.handleRecord ??

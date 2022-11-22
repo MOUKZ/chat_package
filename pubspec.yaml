@@ -20,6 +20,7 @@ dependencies:
   intl: ^0.17.0
   photo_view: ^0.14.0
   stop_watch_timer: ^2.0.0
+  provider: ^6.0.4
 
 dev_dependencies:
   flutter_test:

@@ -1,35 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-import '../../../../utils/constants.dart';
+import '../../../utils/constants.dart';
 
-class ChatInputFeild extends StatefulWidget {
+class ChatTextViewWidget extends StatefulWidget {
   final Color containerColor;
   final bool isRecording;
-  final String recordinNoteHintText;
+  final String recordingNoteHintText;
   final int recordTime;
   final TextEditingController textController;
   final String sendMessageHintText;
   final Function(String? text)? onSubmit;
-  final Function(BuildContext context) attachmintClick;
+  final Function(BuildContext context) attachmentClick;
 
-  const ChatInputFeild({
+  const ChatTextViewWidget({
     super.key,
     required this.containerColor,
     required this.isRecording,
-    required this.recordinNoteHintText,
+    required this.recordingNoteHintText,
     required this.recordTime,
     required this.textController,
     required this.sendMessageHintText,
     this.onSubmit,
-    required this.attachmintClick,
+    required this.attachmentClick,
   });
 
   @override
-  State<ChatInputFeild> createState() => _ChatInputFeildState();
+  State<ChatTextViewWidget> createState() => _ChatTextViewWidgetState();
 }
 
-class _ChatInputFeildState extends State<ChatInputFeild> {
+class _ChatTextViewWidgetState extends State<ChatTextViewWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -55,7 +55,7 @@ class _ChatInputFeildState extends State<ChatInputFeild> {
                       height: 50,
                       child: Center(
                         child: Text(
-                          widget.recordinNoteHintText +
+                          widget.recordingNoteHintText +
                               " " +
                               StopWatchTimer.getDisplayTime(widget.recordTime),
                         ),
@@ -80,7 +80,7 @@ class _ChatInputFeildState extends State<ChatInputFeild> {
           ),
           InkWell(
               onTap: () {
-                widget.attachmintClick(context);
+                widget.attachmentClick(context);
               },
               child: Icon(
                 widget.isRecording ? Icons.delete : Icons.camera_alt_outlined,

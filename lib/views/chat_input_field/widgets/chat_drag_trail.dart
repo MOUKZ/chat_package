@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class ChatDragTrail extends StatelessWidget {
-  final double rightPosstion;
-  final double cancelPossition;
+  final double rightPosition;
+  final double cancelPosition;
   final int duration;
   final Color trailColor;
   const ChatDragTrail(
       {super.key,
-      required this.rightPosstion,
-      required this.cancelPossition,
+      required this.rightPosition,
+      required this.cancelPosition,
       required this.duration,
       required this.trailColor});
 
@@ -16,11 +16,11 @@ class ChatDragTrail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       top: 10,
-      right: rightPosstion,
+      right: rightPosition,
       bottom: 5,
       child: AnimatedContainer(
         height: 100,
-        width: cancelPossition,
+        width: cancelPosition,
         duration: Duration(milliseconds: duration),
         curve: Curves.ease,
         decoration: BoxDecoration(

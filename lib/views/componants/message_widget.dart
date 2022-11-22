@@ -1,7 +1,7 @@
 import 'package:chat_package/enums/chat_message_type.dart';
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/utils/constants.dart';
-import 'package:chat_package/views/componants/audio_message_widget.dart';
+import 'package:chat_package/views/audio_message/audio_message_widget.dart';
 import 'package:chat_package/views/componants/image_message_widget.dart';
 import 'package:chat_package/views/componants/text_message_widget.dart';
 import 'package:flutter/material.dart';
