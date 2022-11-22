@@ -11,7 +11,6 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 class ChatInputField extends StatefulWidget {
   /// Height of the slider. Defaults to 70.
   final double height;
-  double? width;
 
   /// The button widget used on the moving element of the slider. Defaults to Icon(Icons.chevron_right).
   final Widget sliderButtonContent;
@@ -58,8 +57,6 @@ class ChatInputField extends StatefulWidget {
   /// use this flag to disable the input
   final bool disableInput;
 
-  bool isText = false;
-
   ChatInputField({
     Key? key,
     this.height = 70,
@@ -90,21 +87,21 @@ class ChatInputField extends StatefulWidget {
   }
 }
 
-class ChatInputFieldState extends State<ChatInputField>
-    with TickerProviderStateMixin {
+class ChatInputFieldState extends State<ChatInputField> {
   late Record record;
   double _position = 0;
   int _duration = 0;
   bool isRecording = false;
   int recordTime = 0;
+  bool isText = false;
   final StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
-  double getPosition() {
+  double getPosition(double cancelPossition) {
     log(_position.toString());
     if (_position < 0) {
       return 0;
-    } else if (_position > widget.width! - widget.height) {
-      return widget.width! - widget.height;
+    } else if (_position > cancelPossition - widget.height) {
+      return cancelPossition - widget.height;
     } else {
       return _position;
     }
@@ -116,12 +113,12 @@ class ChatInputFieldState extends State<ChatInputField>
     record = Record();
   }
 
-  void updatePosition(details) {
+  void updatePosition(details, double cancelPossition) {
     if (details is DragEndDetails) {
       setState(() {
         _duration = 600;
-        if (_position > widget.width! - widget.height) {
-          _position = widget.width! - widget.height;
+        if (_position > cancelPossition - widget.height) {
+          _position = cancelPossition - widget.height;
         } else {
           _position = 0;
         }
@@ -134,42 +131,19 @@ class ChatInputFieldState extends State<ChatInputField>
     }
   }
 
-  void sliderReleased(details) {
-    if (_position > widget.width! - widget.height) {
+  void sliderReleased(details, double cancelPossition) {
+    if (_position > cancelPossition - widget.height) {
       widget.onSlideToCancelRecord();
     }
-    updatePosition(details);
+    updatePosition(details, cancelPossition);
   }
 
-  // Color calculateBackground() {
-  //   if (widget.backgroundColorEnd != null) {
-  //     double percent;
-
-  //     // calculates the percentage of the position of the slider
-  //     if (_position > widget.width! - widget.height) {
-  //       percent = 1.0;
-  //     } else if (_position / (widget.width! - widget.height) > 0) {
-  //       percent = _position / (widget.width! - widget.height);
-  //     } else {
-  //       percent = 0.0;
-  //     }
-
-  //     int red = widget.backgroundColorEnd!.red;
-  //     int green = widget.backgroundColorEnd!.green;
-  //     int blue = widget.backgroundColorEnd!.blue;
-
-  //     return Color.alphaBlend(
-  //         Color.fromRGBO(red, green, blue, percent), widget.backgroundColor);
-  //   } else {
-  //     return widget.backgroundColor;
-  //   }
-  // }
   Permission micPermission = Permission.microphone;
 
   @override
   Widget build(BuildContext context) {
-    widget.isText = KeyboardVisibilityProvider.isKeyboardVisible(context);
-    widget.width = MediaQuery.of(context).size.width * 0.85;
+    isText = KeyboardVisibilityProvider.isKeyboardVisible(context);
+    final cancelPossition = MediaQuery.of(context).size.width * 0.85;
 
     return IgnorePointer(
       ignoring: widget.disableInput,
@@ -179,11 +153,9 @@ class ChatInputFieldState extends State<ChatInputField>
           duration: Duration(milliseconds: _duration),
           curve: Curves.ease,
           height: widget.height,
-          // width: widget.width,
           width: double.infinity,
           padding: EdgeInsets.all(5),
           decoration: BoxDecoration(
-            // color: Colors.grey.shade200,
             boxShadow: [
               BoxShadow(
                 offset: Offset(0, 4),
@@ -277,7 +249,7 @@ class ChatInputFieldState extends State<ChatInputField>
                   //     ),
 
                   height: 100,
-                  width: getPosition(),
+                  width: getPosition(cancelPossition),
                   duration: Duration(milliseconds: _duration),
                   curve: Curves.ease,
 
@@ -290,11 +262,11 @@ class ChatInputFieldState extends State<ChatInputField>
               AnimatedPositioned(
                 duration: Duration(milliseconds: _duration),
                 curve: Curves.bounceOut,
-                right: getPosition(),
+                right: getPosition(cancelPossition),
                 top: 0,
                 child: GestureDetector(
                   onTap: () {
-                    if (widget.isText &&
+                    if (isText &&
                         widget.onSubmit != null &&
                         widget.textController.text != '') {
                       widget.onSubmit!(widget.textController.text);
@@ -304,13 +276,12 @@ class ChatInputFieldState extends State<ChatInputField>
                   onTapDown: (details) async {
                     // await record.hasPermission();
                   },
-
                   onLongPress: () async {
                     // HapticFeedback.heavyImpact();
 
                     if (await micPermission.isGranted) {
-                      if (!widget.isText) {
-                        _stopWatchTimer.onExecute.add(StopWatchExecute.start);
+                      if (!isText) {
+                        _stopWatchTimer.onStartTimer();
                         _stopWatchTimer.rawTime.listen((value) {
                           setState(() {
                             recordTime = value;
@@ -331,7 +302,7 @@ class ChatInputFieldState extends State<ChatInputField>
                     }
                   },
                   onLongPressMoveUpdate: (details) async {
-                    if (!widget.isText && isRecording == true) {
+                    if (!isText && isRecording == true) {
                       setState(() {
                         _duration = 0;
                         _position = details.localPosition.dx * -1;
@@ -341,24 +312,20 @@ class ChatInputFieldState extends State<ChatInputField>
                   onLongPressEnd: (details) async {
                     final res = await stopRecord();
                     // Stop
-                    _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+                    _stopWatchTimer.onStopTimer();
 
                     // Reset
-                    _stopWatchTimer.onExecute.add(StopWatchExecute.reset);
+                    _stopWatchTimer.onResetTimer();
 
-                    if (!widget.isText && await micPermission.isGranted) {
-                      if (_position > widget.width! - widget.height) {
+                    if (!isText && await micPermission.isGranted) {
+                      if (_position > cancelPossition - widget.height) {
                         log('canceled');
 
-                        widget.handleRecord != null
-                            ? widget.handleRecord!(res, true)
-                            : null;
+                        widget.handleRecord?.call(res, true);
 
                         widget.onSlideToCancelRecord();
                       } else {
-                        widget.handleRecord != null
-                            ? widget.handleRecord!(res, false)
-                            : null;
+                        widget.handleRecord?.call(res, false);
                       }
 
                       setState(() {
@@ -370,35 +337,9 @@ class ChatInputFieldState extends State<ChatInputField>
                         isRecording = false;
                       });
                     }
-
-                    log(res ?? "");
                   },
-
-                  // onHorizontalDragStart: (d) {
-                  //   updatePosition(d);
-                  // },
-                  // onHorizontalDragStart: (d) {
-                  //   updatePosition(d);
-
-                  //   log('fuck');
-                  // },
-                  // onTapDown: (_) =>
-                  //     widget.onTapDown != null ? widget.onTapDown!() : null,
-                  // onTapUp: (_) => widget.onTapUp != null ? widget.onTapUp!() : null,
-                  // onPanUpdate: (details) {
-                  //   log('pan');
-                  //   updatePosition(details);
-                  // },
-                  // onSecondaryLongPressMoveUpdate: (s) {
-                  //   log('sexond');
-                  // },
-                  // onPanEnd: (details) {
-                  //   if (widget.onTapUp != null) widget.onTapUp!();
-                  //   sliderReleased(details);
-                  // },
                   child: AnimatedSize(
                     curve: Curves.easeIn,
-                    vsync: this,
                     duration: Duration(microseconds: 500),
                     child: Container(
                       margin: EdgeInsets.only(top: isRecording ? 0 : 8),
@@ -412,7 +353,7 @@ class ChatInputFieldState extends State<ChatInputField>
                       child: isRecording
                           ? widget.sliderButtonContent
                           : Icon(
-                              widget.isText ? widget.sendTextIcon : Icons.mic,
+                              isText ? widget.sendTextIcon : Icons.mic,
                               color: Colors.white,
                               size: 25,
                             ),
