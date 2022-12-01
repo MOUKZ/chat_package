@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:chat_package/views/chat_input_field/chat_input_field_provider.dart';
 import 'package:chat_package/views/chat_input_field/widgets/chat_animated_button.dart';
+import 'package:chat_package/views/chat_input_field/widgets/chat_attachment_bottom_sheet.dart';
 import 'package:chat_package/views/chat_input_field/widgets/chat_text_view_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -173,51 +174,20 @@ class ChatInputField extends StatelessWidget {
     showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return SizedBox(
-          height: 144,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
+        return ChatBottomSheet(
+            imageFromCameraOnTap: () {
+              Navigator.pop(context);
 
-                  pickImage(1);
-                },
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    imageAttachmentFromCamera,
-                    style: TextStyle(color: imageAttachmentTextColor),
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  pickImage(2);
-                },
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    imageAttachmentFromGallery,
-                    style: TextStyle(color: imageAttachmentTextColor),
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    imageAttachmentCancelText,
-                    style: TextStyle(color: imageAttachmentTextColor),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
+              pickImage(1);
+            },
+            imageFromGalleryOnTap: () {
+              Navigator.pop(context);
+              pickImage(2);
+            },
+            imageAttachmentFromCameraText: imageAttachmentFromCamera,
+            imageAttachmentTextColor: imageAttachmentTextColor,
+            imageAttachmentFromGalleryText: imageAttachmentFromGallery,
+            imageAttachmentCancelText: imageAttachmentCancelText);
       },
     );
   }
