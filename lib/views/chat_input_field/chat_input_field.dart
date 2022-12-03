@@ -192,6 +192,7 @@ class ChatInputField extends StatelessWidget {
     );
   }
 
+  // TODO: make this custom from user
   /// open image picker from camera, gallery, or cancel the selection
   void pickImage(int type) async {
     Map<Permission, PermissionStatus> statuses = await [
@@ -210,8 +211,6 @@ class ChatInputField extends StatelessWidget {
         handleImageSelect(result);
 
         print(result.path);
-      } else {
-        // User canceled the picker
       }
     }
   }
