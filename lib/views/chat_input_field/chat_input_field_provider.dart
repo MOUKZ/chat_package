@@ -10,7 +10,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
   final VoidCallback onSlideToCancelRecord;
 
   /// The callback when send is pressed.
-  final Function(String? text) onSubmit;
+  final Function(String? text) onTextSubmit;
   final TextEditingController textController;
   final double cancelPosition;
 
@@ -33,7 +33,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
 
   Permission micPermission = Permission.microphone;
   ChatInputFieldProvider({
-    required this.onSubmit,
+    required this.onTextSubmit,
     required this.textController,
     required this.handleRecord,
     required this.onSlideToCancelRecord,
@@ -43,7 +43,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
   /// animated button on tap
   void onAnimatedButtonTap() {
     if (isText && textController.text.isNotEmpty) {
-      onSubmit(textController.text);
+      onTextSubmit(textController.text);
     }
     textController.clear();
   }

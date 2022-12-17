@@ -14,6 +14,7 @@ class ChatAnimatedButton extends StatelessWidget {
   final Function(LongPressEndDetails details) onAnimatedButtonLongPressEnd;
   final BorderRadiusGeometry? borderRadius;
   final IconData sendTextIcon;
+  //TODO SHould add button shape
 
   const ChatAnimatedButton(
       {super.key,

@@ -25,14 +25,14 @@ class ChatScreen extends StatefulWidget {
 
   /// the color of the outer container and the color used to hide
   /// the text on slide
-  final Color containerColor;
+  final Color chatInputFieldColor;
 
   ///hint text to be shown for sending messages
   final String sendMessageHintText;
 
   /// texts shown wen trying to chose image attachment
-  final String imageAttachmentFromGallery;
-  final String imageAttachmentFromCamera;
+  final String imageAttachmentFromGalleryText;
+  final String imageAttachmentFromCameraText;
   final String imageAttachmentCancelText;
   final Color imageAttachmentTextColor;
 
@@ -57,6 +57,8 @@ class ChatScreen extends StatefulWidget {
   ///TextEditingController to handel input text
   final TextEditingController? textEditingController;
 
+  final BoxDecoration? chatInputFieldDecoration;
+
   /// use this flag to disable the input
   final bool disableInput;
 
@@ -69,16 +71,17 @@ class ChatScreen extends StatefulWidget {
     this.scrollController,
     this.sendMessageHintText = 'Enter message here',
     this.recordingNoteHintText = 'Now Recording',
-    this.imageAttachmentFromGallery = 'From Gallery',
-    this.imageAttachmentFromCamera = 'From Camera',
+    this.imageAttachmentFromGalleryText = 'From Gallery',
+    this.imageAttachmentFromCameraText = 'From Camera',
     this.imageAttachmentCancelText = 'Cancel',
-    this.containerColor = const Color(0xFFCFD8DC),
-    this.imageAttachmentTextColor = const Color(0xFF255965),
+    this.chatInputFieldColor = const Color(0xFFCFD8DC),
+    this.imageAttachmentTextColor = kPrimaryColor,
     this.handleRecord,
     this.handleImageSelect,
     this.onSlideToCancelRecord,
     this.textEditingController,
     this.disableInput = false,
+    this.chatInputFieldDecoration,
     this.onSubmit,
   }) : super(key: key);
 
@@ -111,13 +114,15 @@ class _ChatScreenState extends State<ChatScreen> {
         KeyboardVisibilityProvider(
           child: ChatInputField(
             imageAttachmentCancelText: widget.imageAttachmentCancelText,
-            imageAttachmentFromCamera: widget.imageAttachmentFromCamera,
-            imageAttachmentFromGallery: widget.imageAttachmentFromGallery,
+            imageAttachmentFromCameraText: widget.imageAttachmentFromCameraText,
+            imageAttachmentFromGalleryText:
+                widget.imageAttachmentFromGalleryText,
             imageAttachmentTextColor: widget.imageAttachmentTextColor,
-            containerColor: widget.containerColor,
+            chatInputFieldColor: widget.chatInputFieldColor,
             recordingNoteHintText: widget.recordingNoteHintText,
             sendMessageHintText: widget.sendMessageHintText,
             disableInput: widget.disableInput,
+            chatInputFieldDecoration: widget.chatInputFieldDecoration,
             handleRecord: widget.handleRecord ??
                 (source, canceled) {
                   if (!canceled && source != null) {
@@ -150,7 +155,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 () {
                   log('slide to cancel');
                 },
-            onSubmit: (text) {
+            onTextSubmit: (text) {
               if (widget.onSubmit != null) {
                 widget.onSubmit!(text);
               } else {
@@ -165,8 +170,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
               }
             },
-            textController:
-                widget.textEditingController ?? TextEditingController(),
           ),
         ),
       ],

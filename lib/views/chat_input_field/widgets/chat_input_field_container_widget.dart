@@ -3,8 +3,8 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '../../../utils/constants.dart';
 
-class ChatTextViewWidget extends StatefulWidget {
-  final Color containerColor;
+class ChatInputFieldContainerWidget extends StatefulWidget {
+  final Color chatInputFieldColor;
   final bool isRecording;
   final String recordingNoteHintText;
   final int recordTime;
@@ -12,10 +12,11 @@ class ChatTextViewWidget extends StatefulWidget {
   final String sendMessageHintText;
   final Function(String? text)? onSubmit;
   final Function(BuildContext context) attachmentClick;
+  //TODO should add container shape
 
-  const ChatTextViewWidget({
+  const ChatInputFieldContainerWidget({
     super.key,
-    required this.containerColor,
+    required this.chatInputFieldColor,
     required this.isRecording,
     required this.recordingNoteHintText,
     required this.recordTime,
@@ -26,27 +27,24 @@ class ChatTextViewWidget extends StatefulWidget {
   });
 
   @override
-  State<ChatTextViewWidget> createState() => _ChatTextViewWidgetState();
+  State<ChatInputFieldContainerWidget> createState() =>
+      _ChatTextViewWidgetState();
 }
 
-class _ChatTextViewWidgetState extends State<ChatTextViewWidget> {
+class _ChatTextViewWidgetState extends State<ChatInputFieldContainerWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(
-        right: 60,
-        left: 10,
-      ),
-      margin: EdgeInsets.only(
-        left: 10,
-        right: 10,
-      ),
       decoration: BoxDecoration(
-        color: widget.containerColor,
+        color: widget.chatInputFieldColor,
+        //TODO the shape should be from user
         borderRadius: BorderRadius.circular(40),
       ),
       child: Row(
         children: [
+          SizedBox(
+            width: 50,
+          ),
           Expanded(
             child: Container(
               padding: const EdgeInsets.only(top: 0.0, right: 0),
@@ -79,19 +77,23 @@ class _ChatTextViewWidgetState extends State<ChatTextViewWidget> {
             ),
           ),
           InkWell(
-              onTap: () {
-                widget.attachmentClick(context);
-              },
-              child: Icon(
-                widget.isRecording ? Icons.delete : Icons.camera_alt_outlined,
-                color: widget.isRecording
-                    ? kErrorColor
-                    : Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .color!
-                        .withOpacity(0.64),
-              )),
+            onTap: () {
+              widget.attachmentClick(context);
+            },
+            child: Icon(
+              widget.isRecording ? Icons.delete : Icons.camera_alt_outlined,
+              color: widget.isRecording
+                  ? kErrorColor
+                  : Theme.of(context)
+                      .textTheme
+                      .bodyText1!
+                      .color!
+                      .withOpacity(0.64),
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
         ],
       ),
     );

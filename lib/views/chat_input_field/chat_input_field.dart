@@ -1,8 +1,9 @@
 import 'dart:developer';
+import 'package:chat_package/utils/constants.dart';
 import 'package:chat_package/views/chat_input_field/chat_input_field_provider.dart';
 import 'package:chat_package/views/chat_input_field/widgets/chat_animated_button.dart';
 import 'package:chat_package/views/chat_input_field/widgets/chat_attachment_bottom_sheet.dart';
-import 'package:chat_package/views/chat_input_field/widgets/chat_text_view_widget.dart';
+import 'package:chat_package/views/chat_input_field/widgets/chat_input_field_container_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,10 +28,10 @@ class ChatInputField extends StatelessWidget {
   final IconData sendTextIcon;
 
   /// texts shown wen trying to chose image attachment from gallery
-  final String imageAttachmentFromGallery;
+  final String imageAttachmentFromGalleryText;
 
   /// texts shown wen trying to chose image attachment from camera
-  final String imageAttachmentFromCamera;
+  final String imageAttachmentFromCameraText;
 
   /// texts shown wen trying to chose image attachment cancel text
   final String imageAttachmentCancelText;
@@ -40,13 +41,17 @@ class ChatInputField extends StatelessWidget {
 
   /// the color of the outer container and the color used to hide
   /// the text on slide
-  final Color containerColor;
+  final Color chatInputFieldColor;
+
+  // TODO  right description
+  final TextDirection textDirection;
+  final BoxDecoration? chatInputFieldDecoration;
 
   /// The callback when slider is completed. This is the only required field.
   final VoidCallback onSlideToCancelRecord;
 
   /// The callback when send is pressed.
-  final Function(String? text) onSubmit;
+  final Function(String? text) onTextSubmit;
 
   /// function to handle the selected image
   final Function(XFile) handleImageSelect;
@@ -54,7 +59,7 @@ class ChatInputField extends StatelessWidget {
   /// function to handle the recorded audio
   final Function(String? path, bool canceled) handleRecord;
 
-  final TextEditingController textController;
+  final TextEditingController _textController = TextEditingController();
 
   /// use this flag to disable the input
   final bool disableInput;
@@ -64,6 +69,8 @@ class ChatInputField extends StatelessWidget {
     this.height = 70,
     required this.sendMessageHintText,
     required this.recordingNoteHintText,
+    this.textDirection = TextDirection.rtl,
+    this.chatInputFieldDecoration,
     this.sliderButtonContent = const Icon(
       Icons.chevron_right,
       color: Colors.white,
@@ -72,12 +79,11 @@ class ChatInputField extends StatelessWidget {
     this.sendTextIcon = Icons.send,
     required this.onSlideToCancelRecord,
     required this.handleRecord,
-    required this.onSubmit,
-    required this.textController,
+    required this.onTextSubmit,
     required this.handleImageSelect,
-    required this.containerColor,
-    required this.imageAttachmentFromGallery,
-    required this.imageAttachmentFromCamera,
+    required this.chatInputFieldColor,
+    required this.imageAttachmentFromGalleryText,
+    required this.imageAttachmentFromCameraText,
     required this.imageAttachmentCancelText,
     required this.imageAttachmentTextColor,
     required this.disableInput,
@@ -88,8 +94,8 @@ class ChatInputField extends StatelessWidget {
     final cancelPosition = MediaQuery.of(context).size.width * 0.95;
     return ChangeNotifierProvider(
       create: (context) => ChatInputFieldProvider(
-        onSubmit: onSubmit,
-        textController: textController,
+        onTextSubmit: onTextSubmit,
+        textController: _textController,
         onSlideToCancelRecord: onSlideToCancelRecord,
         cancelPosition: cancelPosition,
         handleRecord: handleRecord,
@@ -101,22 +107,14 @@ class ChatInputField extends StatelessWidget {
           return IgnorePointer(
             ignoring: disableInput,
             child: Directionality(
-              textDirection: TextDirection.rtl,
+              textDirection: textDirection,
               child: AnimatedContainer(
                 duration: Duration(milliseconds: provider.duration),
                 curve: Curves.ease,
                 height: height,
                 width: double.infinity,
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      offset: Offset(0, 4),
-                      blurRadius: 32,
-                      color: Color(0xFF087949).withOpacity(0.08),
-                    ),
-                  ],
-                ),
+                padding: EdgeInsets.all(3),
+                decoration: chatInputFieldDecoration,
                 child: Stack(
                   alignment: AlignmentDirectional.centerStart,
                   children: <Widget>[
@@ -135,12 +133,12 @@ class ChatInputField extends StatelessWidget {
 
   /// build Input Field widget
   Widget _buildInputField(ChatInputFieldProvider provider) =>
-      ChatTextViewWidget(
-          containerColor: containerColor,
+      ChatInputFieldContainerWidget(
+          chatInputFieldColor: chatInputFieldColor,
           isRecording: provider.isRecording,
           recordingNoteHintText: recordingNoteHintText,
           recordTime: provider.recordTime,
-          textController: textController,
+          textController: _textController,
           sendMessageHintText: sendMessageHintText,
           attachmentClick: attachmentClick);
 
@@ -148,7 +146,7 @@ class ChatInputField extends StatelessWidget {
         rightPosition: height / 2,
         cancelPosition: provider.getPosition(),
         duration: provider.duration,
-        trailColor: containerColor,
+        trailColor: chatInputFieldColor,
       );
 
   Widget _buildAnimatedButton(ChatInputFieldProvider provider) =>
@@ -174,6 +172,7 @@ class ChatInputField extends StatelessWidget {
     showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
+        //TODO should accep custom chld
         return ChatBottomSheet(
             imageFromCameraOnTap: () {
               Navigator.pop(context);
@@ -184,9 +183,9 @@ class ChatInputField extends StatelessWidget {
               Navigator.pop(context);
               pickImage(2);
             },
-            imageAttachmentFromCameraText: imageAttachmentFromCamera,
+            imageAttachmentFromCameraText: imageAttachmentFromCameraText,
             imageAttachmentTextColor: imageAttachmentTextColor,
-            imageAttachmentFromGalleryText: imageAttachmentFromGallery,
+            imageAttachmentFromGalleryText: imageAttachmentFromGalleryText,
             imageAttachmentCancelText: imageAttachmentCancelText);
       },
     );
