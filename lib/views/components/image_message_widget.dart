@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/utils/constants.dart';
+import 'package:chat_package/utils/transparent_image.dart';
 import 'package:chat_package/views/screens/photo_gallery_view.dart';
 import 'package:flutter/material.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class ImageMessageWidget extends StatelessWidget {
   /// chat message model to get teh data
@@ -47,7 +47,7 @@ class ImageMessageWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 child: message.imageUrl != null
                     ? FadeInImage.memoryNetwork(
-                        placeholder: kTransparentImage,
+                        placeholder: transparentImage,
                         image: message.imageUrl!,
                         fit: BoxFit.cover,
                       )
