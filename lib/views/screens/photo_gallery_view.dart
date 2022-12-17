@@ -62,7 +62,7 @@ class _PhotoGalleryViewState extends State<PhotoGalleryView> {
                 horizontal: size.width / 18,
               ),
               child: Container(
-                /// icon to cancel and returne to the previous view
+                /// icon to cancel and return to the previous view
                 child: IconButton(
                     onPressed: () => Navigator.of(context).pop(),
                     icon: Icon(

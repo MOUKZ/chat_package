@@ -24,10 +24,6 @@ class TextMessageWidget extends StatelessWidget {
           constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width / 2, minWidth: 50),
           child: Container(
-            // width: 200,
-            // color: MediaQuery.of(context).platformBrightness == Brightness.dark
-            //     ? Colors.white
-            //     : Colors.black,
             padding: EdgeInsets.symmetric(
               horizontal: kDefaultPadding * 0.75,
               vertical: kDefaultPadding / 2,

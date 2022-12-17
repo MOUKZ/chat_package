@@ -4,8 +4,8 @@ import 'dart:developer';
 
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/utils/constants.dart';
-import 'package:chat_package/views/componants/chat_input_feild.dart';
-import 'package:chat_package/views/componants/message_widget.dart';
+import 'package:chat_package/views/chat_input_field/chat_input_field.dart';
+import 'package:chat_package/views/components/message_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,24 +20,24 @@ class ChatScreen extends StatefulWidget {
   ///color of the active part of the audio slider
   final Color? activeAudioSliderColor;
 
-  ///scrollcontroller for the chat screen
+  ///scrollController for the chat screen
   final ScrollController? scrollController;
 
   /// the color of the outer container and the color used to hide
   /// the text on slide
-  final Color containerColor;
+  final Color chatInputFieldColor;
 
   ///hint text to be shown for sending messages
   final String sendMessageHintText;
 
   /// texts shown wen trying to chose image attachment
-  final String imageAttachmentFromGalary;
-  final String imageAttachmentFromCamery;
+  final String imageAttachmentFromGalleryText;
+  final String imageAttachmentFromCameraText;
   final String imageAttachmentCancelText;
   final Color imageAttachmentTextColor;
 
   ///hint text to be shown for recording voice note
-  final String recordinNoteHintText;
+  final String recordingNoteHintText;
 
   /// handel [text message] on submit
   final Function(String? text)? onSubmit;
@@ -45,8 +45,8 @@ class ChatScreen extends StatefulWidget {
   /// [required] the list of chat messages
   final List<ChatMessage> messages;
 
-  /// function to handel sucessful recordings, bass to override
-  final Function(String? path, bool cnaceled)? handleRecord;
+  /// function to handel successful recordings, bass to override
+  final Function(String? path, bool canceled)? handleRecord;
 
   /// function to handel image selection
   final Function(XFile)? handleImageSelect;
@@ -56,6 +56,8 @@ class ChatScreen extends StatefulWidget {
 
   ///TextEditingController to handel input text
   final TextEditingController? textEditingController;
+
+  final BoxDecoration? chatInputFieldDecoration;
 
   /// use this flag to disable the input
   final bool disableInput;
@@ -68,17 +70,18 @@ class ChatScreen extends StatefulWidget {
     required this.messages,
     this.scrollController,
     this.sendMessageHintText = 'Enter message here',
-    this.recordinNoteHintText = 'Now Recording',
-    this.imageAttachmentFromGalary = 'From Galary',
-    this.imageAttachmentFromCamery = 'From Camera',
+    this.recordingNoteHintText = 'Now Recording',
+    this.imageAttachmentFromGalleryText = 'From Gallery',
+    this.imageAttachmentFromCameraText = 'From Camera',
     this.imageAttachmentCancelText = 'Cancel',
-    this.containerColor = const Color(0xFFCFD8DC),
-    this.imageAttachmentTextColor = const Color(0xFF255965),
+    this.chatInputFieldColor = const Color(0xFFCFD8DC),
+    this.imageAttachmentTextColor = kPrimaryColor,
     this.handleRecord,
     this.handleImageSelect,
     this.onSlideToCancelRecord,
     this.textEditingController,
     this.disableInput = false,
+    this.chatInputFieldDecoration,
     this.onSubmit,
   }) : super(key: key);
 
@@ -111,13 +114,15 @@ class _ChatScreenState extends State<ChatScreen> {
         KeyboardVisibilityProvider(
           child: ChatInputField(
             imageAttachmentCancelText: widget.imageAttachmentCancelText,
-            imageAttachmentFromCamery: widget.imageAttachmentFromCamery,
-            imageAttachmentFromGalary: widget.imageAttachmentFromGalary,
+            imageAttachmentFromCameraText: widget.imageAttachmentFromCameraText,
+            imageAttachmentFromGalleryText:
+                widget.imageAttachmentFromGalleryText,
             imageAttachmentTextColor: widget.imageAttachmentTextColor,
-            containerColor: widget.containerColor,
-            recordinNoteHintText: widget.recordinNoteHintText,
+            chatInputFieldColor: widget.chatInputFieldColor,
+            recordingNoteHintText: widget.recordingNoteHintText,
             sendMessageHintText: widget.sendMessageHintText,
             disableInput: widget.disableInput,
+            chatInputFieldDecoration: widget.chatInputFieldDecoration,
             handleRecord: widget.handleRecord ??
                 (source, canceled) {
                   if (!canceled && source != null) {
@@ -150,7 +155,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 () {
                   log('slide to cancel');
                 },
-            onSubmit: (text) {
+            onTextSubmit: (text) {
               if (widget.onSubmit != null) {
                 widget.onSubmit!(text);
               } else {
@@ -165,8 +170,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
               }
             },
-            textController:
-                widget.textEditingController ?? TextEditingController(),
           ),
         ),
       ],

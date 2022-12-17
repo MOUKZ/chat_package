@@ -24,7 +24,7 @@ class ImageMessageWidget extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            /// navigate to to the photo galary view, for viewing the taped image
+            /// navigate to to the photo gallery view, for viewing the taped image
             Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (BuildContext context) => PhotoGalleryView(
