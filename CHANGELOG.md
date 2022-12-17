@@ -19,3 +19,5 @@
 * textController bug fix.
 ## 0.0.7
 * more documintation.
+## 1.0.0-beta
+* Add Support For Flutter 3.
