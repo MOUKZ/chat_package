@@ -26,14 +26,23 @@ class ChatInputField extends StatelessWidget {
   /// The Icon showed to send a text
   final IconData sendTextIcon;
 
-  /// texts shown wen trying to chose image attachment from gallery
+  /// text shown wen trying to chose image attachment from gallery
   final String imageAttachmentFromGalleryText;
 
-  /// texts shown wen trying to chose image attachment from camera
+  /// Icon shown wen trying to chose image attachment from gallery
+  final Icon? imageAttachmentFromGalleryIcon;
+
+  /// text shown wen trying to chose image attachment from camera
   final String imageAttachmentFromCameraText;
 
-  /// texts shown wen trying to chose image attachment cancel text
+  /// Icon shown wen trying to chose image attachment from camera
+  final Icon? imageAttachmentFromCameraIcon;
+
+  /// text shown wen trying to chose image attachment cancel text
   final String imageAttachmentCancelText;
+
+  /// Icon shown wen trying to chose image attachment cancel text
+  final Icon? imageAttachmentCancelIcon;
 
   /// image attachment text style
   final TextStyle? imageAttachmentTextStyle;
@@ -86,9 +95,12 @@ class ChatInputField extends StatelessWidget {
     required this.imageAttachmentFromGalleryText,
     required this.imageAttachmentFromCameraText,
     required this.imageAttachmentCancelText,
-    this.imageAttachmentTextStyle,
     required this.disableInput,
     this.chatInputFieldPadding,
+    this.imageAttachmentFromGalleryIcon,
+    this.imageAttachmentFromCameraIcon,
+    this.imageAttachmentCancelIcon,
+    this.imageAttachmentTextStyle,
   });
 
   // : assert(height >= 25);
@@ -187,19 +199,23 @@ class ChatInputField extends StatelessWidget {
       builder: (BuildContext context) {
         //TODO should accep custom chld
         return ChatBottomSheet(
-            imageFromCameraOnTap: () {
-              Navigator.pop(context);
+          imageFromCameraOnTap: () {
+            Navigator.pop(context);
 
-              pickImage(1);
-            },
-            imageFromGalleryOnTap: () {
-              Navigator.pop(context);
-              pickImage(2);
-            },
-            imageAttachmentFromCameraText: imageAttachmentFromCameraText,
-            imageAttachmentTextStyle: imageAttachmentTextStyle,
-            imageAttachmentFromGalleryText: imageAttachmentFromGalleryText,
-            imageAttachmentCancelText: imageAttachmentCancelText);
+            pickImage(1);
+          },
+          imageFromGalleryOnTap: () {
+            Navigator.pop(context);
+            pickImage(2);
+          },
+          imageAttachmentFromCameraText: imageAttachmentFromCameraText,
+          imageAttachmentTextStyle: imageAttachmentTextStyle,
+          imageAttachmentFromGalleryText: imageAttachmentFromGalleryText,
+          imageAttachmentCancelText: imageAttachmentCancelText,
+          imageAttachmentFromGalleryIcon: imageAttachmentFromGalleryIcon,
+          imageAttachmentFromCameraIcon: imageAttachmentFromCameraIcon,
+          imageAttachmentCancelIcon: imageAttachmentCancelIcon,
+        );
       },
     );
   }

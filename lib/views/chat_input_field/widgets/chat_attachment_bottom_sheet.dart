@@ -2,19 +2,31 @@ import 'package:flutter/material.dart';
 
 class ChatBottomSheet extends StatelessWidget {
   final Function() imageFromCameraOnTap;
+
   final Function() imageFromGalleryOnTap;
+  //TODO: add disable functionality
   final String imageAttachmentFromCameraText;
-  final TextStyle? imageAttachmentTextStyle;
+  final Icon? imageAttachmentFromCameraIcon;
+
   final String imageAttachmentFromGalleryText;
+  final Icon? imageAttachmentFromGalleryIcon;
+
   final String imageAttachmentCancelText;
-  const ChatBottomSheet(
-      {super.key,
-      required this.imageFromCameraOnTap,
-      required this.imageFromGalleryOnTap,
-      required this.imageAttachmentFromCameraText,
-      this.imageAttachmentTextStyle,
-      required this.imageAttachmentFromGalleryText,
-      required this.imageAttachmentCancelText});
+  final Icon? imageAttachmentCancelIcon;
+
+  final TextStyle? imageAttachmentTextStyle;
+  const ChatBottomSheet({
+    super.key,
+    required this.imageFromCameraOnTap,
+    required this.imageFromGalleryOnTap,
+    required this.imageAttachmentFromCameraText,
+    this.imageAttachmentTextStyle,
+    required this.imageAttachmentFromGalleryText,
+    required this.imageAttachmentCancelText,
+    this.imageAttachmentFromCameraIcon,
+    this.imageAttachmentFromGalleryIcon,
+    this.imageAttachmentCancelIcon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +35,7 @@ class ChatBottomSheet extends StatelessWidget {
       child: Wrap(
         children: [
           ListTile(
-            leading: Icon(Icons.camera),
+            leading: imageAttachmentFromCameraIcon ?? Icon(Icons.camera),
             title: Text(
               imageAttachmentFromCameraText,
               style: imageAttachmentTextStyle,
@@ -31,7 +43,7 @@ class ChatBottomSheet extends StatelessWidget {
             onTap: imageFromCameraOnTap,
           ),
           ListTile(
-            leading: Icon(Icons.image),
+            leading: imageAttachmentFromGalleryIcon ?? Icon(Icons.image),
             title: Text(
               imageAttachmentFromGalleryText,
               style: imageAttachmentTextStyle,
@@ -39,7 +51,7 @@ class ChatBottomSheet extends StatelessWidget {
             onTap: imageFromGalleryOnTap,
           ),
           ListTile(
-            leading: Icon(Icons.cancel),
+            leading: imageAttachmentCancelIcon ?? Icon(Icons.cancel),
             title: Text(
               imageAttachmentCancelText,
               style: imageAttachmentTextStyle,
