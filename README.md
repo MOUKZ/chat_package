@@ -2,7 +2,7 @@
 ![Pub Version](https://img.shields.io/pub/v/chat_package?color=blue)
 ![likes](https://img.shields.io/pub/likes/chat_package)
 ![popularity](https://img.shields.io/pub/popularity/chat_package)
-<a href="https://github.com/MOUKZ/chat_package" target="_blank">![GitHub](https://img.shields.io/github/stars/MOUKZ/chat_package?style=social)</a>
+<a href="https://github.com/MOUKZ/chat_package" target="_blank">![GitHub](https://img.shields.io/github/stars/MOUKZ/chat_package)</a>
 
 
 
