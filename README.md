@@ -1,8 +1,9 @@
 # chat_package
 ![Pub Version](https://img.shields.io/pub/v/chat_package?color=blue)
-![likes](https://badges.bar/chat_package/likes)
-![popularity](https://badges.bar/chat_package/popularity)
-![GitHub](https://img.shields.io/github/license/MOUKZ/chat_package)
+![likes](https://img.shields.io/pub/likes/chat_package)
+![popularity](https://img.shields.io/pub/popularity/chat_package)
+<a href="https://github.com/MOUKZ/chat_package" target="_blank">![GitHub](https://img.shields.io/github/stars/MOUKZ/chat_package?style=social)</a>
+
 
 
 Flutter chat ui with full voice record/note functionality and image sending
