@@ -63,7 +63,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
         });
 
         textController.clear();
-        recordAudio();
+        // recordAudio();
 
         _isRecording = true;
         notifyListeners();

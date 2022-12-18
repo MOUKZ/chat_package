@@ -62,6 +62,8 @@ class ChatScreen extends StatefulWidget {
   /// use this flag to disable the input
   final bool disableInput;
 
+  final EdgeInsets? chatInputFieldPadding;
+
   ChatScreen({
     Key? key,
     this.senderColor,
@@ -83,6 +85,7 @@ class ChatScreen extends StatefulWidget {
     this.disableInput = false,
     this.chatInputFieldDecoration,
     this.onSubmit,
+    this.chatInputFieldPadding,
   }) : super(key: key);
 
   @override
@@ -123,6 +126,7 @@ class _ChatScreenState extends State<ChatScreen> {
             sendMessageHintText: widget.sendMessageHintText,
             disableInput: widget.disableInput,
             chatInputFieldDecoration: widget.chatInputFieldDecoration,
+            chatInputFieldPadding: widget.chatInputFieldPadding,
             handleRecord: widget.handleRecord ??
                 (source, canceled) {
                   if (!canceled && source != null) {

@@ -60,6 +60,8 @@ class ChatInputField extends StatelessWidget {
 
   final TextEditingController _textController = TextEditingController();
 
+  final EdgeInsets? chatInputFieldPadding;
+
   /// use this flag to disable the input
   final bool disableInput;
 
@@ -86,6 +88,7 @@ class ChatInputField extends StatelessWidget {
     required this.imageAttachmentCancelText,
     required this.imageAttachmentTextColor,
     required this.disableInput,
+    this.chatInputFieldPadding,
   });
 
   // : assert(height >= 25);
@@ -106,7 +109,7 @@ class ChatInputField extends StatelessWidget {
           provider.isText =
               KeyboardVisibilityProvider.isKeyboardVisible(context);
           return Padding(
-            padding: EdgeInsets.only(bottom: 3),
+            padding: chatInputFieldPadding ?? EdgeInsets.only(bottom: 3),
             child: IgnorePointer(
               ignoring: disableInput,
               child: Directionality(
