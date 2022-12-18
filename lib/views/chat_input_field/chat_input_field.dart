@@ -146,7 +146,9 @@ class ChatInputField extends StatelessWidget {
           recordTime: provider.recordTime,
           textController: _textController,
           sendMessageHintText: sendMessageHintText,
-          attachmentClick: attachmentClick);
+          attachmentClick: attachmentClick,
+          formKey: provider.formKey,
+          onSubmitted: provider.onAnimatedButtonTap);
 
   Widget _buildDragTrail(ChatInputFieldProvider provider) => ChatDragTrail(
         cancelPosition: provider.getPosition(),

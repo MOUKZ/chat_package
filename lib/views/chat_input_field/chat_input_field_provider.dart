@@ -22,11 +22,13 @@ class ChatInputFieldProvider extends ChangeNotifier {
   bool isText = false;
   double _height = 70;
   final StopWatchTimer _stopWatchTimer = StopWatchTimer();
+  final _formKey = GlobalKey<FormState>();
 
   /// getters
   int get duration => _duration;
   bool get isRecording => _isRecording;
   int get recordTime => _recordTime;
+  GlobalKey<FormState> get formKey => _formKey;
 
   /// setters
   set height(double val) => _height = val;
@@ -42,6 +44,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
 
   /// animated button on tap
   void onAnimatedButtonTap() {
+    _formKey.currentState?.save();
     if (isText && textController.text.isNotEmpty) {
       onTextSubmit(textController.text);
     }
