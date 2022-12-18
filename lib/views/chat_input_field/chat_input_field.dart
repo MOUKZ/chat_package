@@ -114,7 +114,6 @@ class ChatInputField extends StatelessWidget {
                 child: AnimatedContainer(
                   duration: Duration(milliseconds: provider.duration),
                   curve: Curves.ease,
-                  // height: height,
                   width: double.infinity,
                   padding: EdgeInsets.all(3),
                   decoration: chatInputFieldDecoration,
