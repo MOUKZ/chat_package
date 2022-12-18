@@ -35,8 +35,8 @@ class ChatInputField extends StatelessWidget {
   /// texts shown wen trying to chose image attachment cancel text
   final String imageAttachmentCancelText;
 
-  /// image attachment text color
-  final Color imageAttachmentTextColor;
+  /// image attachment text style
+  final TextStyle? imageAttachmentTextStyle;
 
   /// the color of the outer container and the color used to hide
   /// the text on slide
@@ -86,7 +86,7 @@ class ChatInputField extends StatelessWidget {
     required this.imageAttachmentFromGalleryText,
     required this.imageAttachmentFromCameraText,
     required this.imageAttachmentCancelText,
-    required this.imageAttachmentTextColor,
+    this.imageAttachmentTextStyle,
     required this.disableInput,
     this.chatInputFieldPadding,
   });
@@ -175,6 +175,9 @@ class ChatInputField extends StatelessWidget {
 
   void attachmentClick(BuildContext context) {
     showModalBottomSheet<void>(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
       context: context,
       builder: (BuildContext context) {
         //TODO should accep custom chld
@@ -189,7 +192,7 @@ class ChatInputField extends StatelessWidget {
               pickImage(2);
             },
             imageAttachmentFromCameraText: imageAttachmentFromCameraText,
-            imageAttachmentTextColor: imageAttachmentTextColor,
+            imageAttachmentTextStyle: imageAttachmentTextStyle,
             imageAttachmentFromGalleryText: imageAttachmentFromGalleryText,
             imageAttachmentCancelText: imageAttachmentCancelText);
       },
