@@ -4,7 +4,7 @@ class ChatBottomSheet extends StatelessWidget {
   final Function() imageFromCameraOnTap;
 
   final Function() imageFromGalleryOnTap;
-
+  //TODO: add disable functionality
   final String imageAttachmentFromCameraText;
   final Icon? imageAttachmentFromCameraIcon;
 
