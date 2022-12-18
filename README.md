@@ -15,7 +15,7 @@ Flutter chat ui with full voice record/note functionality and image sending
 # Chat UI Package
 ![Pub](https://img.shields.io/pub/v/chat_package)
 
-An easy to implement whatssapp like chat ui. with voice note feature and image viewing. 
+An easy to implement whatsapp like chat ui. with voice note feature and image viewing. 
 
 ## Screenshots
 
@@ -75,7 +75,7 @@ Add permissions to your `AndroidManifest.xml` file.
 ### Calling
 
 
-the list of ChatMessages is the only required feild every thing else is optional
+the list of ChatMessages is the only required field every thing else is optional
 ```dart
 List<ChatMessage> messages = [
     ChatMessage(
@@ -85,7 +85,7 @@ List<ChatMessage> messages = [
     ChatMessage(isSender: false, text: 'wow that is cool'),
   ];
 ```
--- plese note that only one of the following [text,imageUrl,imagePath,audioUrl,audioPath ] must not be null at a time if more is provided an error will occure 
+-- please note that only one of the following [text,imageUrl,imagePath,audioUrl,audioPath ] must not be null at a time if more is provided an error will occure 
 ```dart
 ChatMessage(isSender: false, text: 'your.text')
 ChatMessage(isSender: false, imageUrl: image.url')
@@ -141,7 +141,7 @@ ChatMessage(isSender: false, audioPath: 'wow that is cool')
 ```
 ## Found this project useful?
 
-If you found this project useful, then please consider giving it a ⭐️ on Github and why dont you share it with your friends.
+If you found this project useful, then please consider giving it a ⭐️ on Github and why don't you share it with your friends.
 
 
 ## Issues and feedback

@@ -36,7 +36,8 @@ class ChatAnimatedButton extends StatelessWidget {
       duration: Duration(milliseconds: duration),
       curve: Curves.bounceOut,
       right: rightPosition,
-      top: 0,
+      // top: 0,
+      bottom: 0,
       child: GestureDetector(
         onTap: onAnimatedButtonTap,
         onLongPress: onAnimatedButtonLongPress,
@@ -44,11 +45,10 @@ class ChatAnimatedButton extends StatelessWidget {
         onLongPressEnd: onAnimatedButtonLongPressEnd,
         child: AnimatedSize(
           curve: Curves.easeIn,
-          duration: Duration(microseconds: 500),
+          duration: Duration(milliseconds: 100),
           child: Container(
-            margin: EdgeInsets.only(top: isRecording ? 0 : 8),
-            height: isRecording ? 60 : 45,
-            width: isRecording ? 60 : 45,
+            height: 50,
+            width: 50,
             decoration: BoxDecoration(
               borderRadius: borderRadius,
               color: kSecondaryColor,

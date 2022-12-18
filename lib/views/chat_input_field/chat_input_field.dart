@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:chat_package/utils/constants.dart';
 import 'package:chat_package/views/chat_input_field/chat_input_field_provider.dart';
 import 'package:chat_package/views/chat_input_field/widgets/chat_animated_button.dart';
 import 'package:chat_package/views/chat_input_field/widgets/chat_attachment_bottom_sheet.dart';
@@ -13,7 +12,7 @@ import 'widgets/chat_drag_trail.dart';
 
 class ChatInputField extends StatelessWidget {
   /// Height of the slider. Defaults to 70.
-  final double height;
+  final double buttonRadios;
 
   /// The button widget used on the moving element of the slider. Defaults to Icon(Icons.chevron_right).
   final Widget sliderButtonContent;
@@ -66,7 +65,7 @@ class ChatInputField extends StatelessWidget {
 
   ChatInputField({
     Key? key,
-    this.height = 70,
+    this.buttonRadios = 35,
     required this.sendMessageHintText,
     required this.recordingNoteHintText,
     this.textDirection = TextDirection.rtl,
@@ -87,7 +86,9 @@ class ChatInputField extends StatelessWidget {
     required this.imageAttachmentCancelText,
     required this.imageAttachmentTextColor,
     required this.disableInput,
-  }) : assert(height >= 25);
+  });
+
+  // : assert(height >= 25);
 
   @override
   Widget build(BuildContext context) {
@@ -104,24 +105,27 @@ class ChatInputField extends StatelessWidget {
         builder: (context, provider, child) {
           provider.isText =
               KeyboardVisibilityProvider.isKeyboardVisible(context);
-          return IgnorePointer(
-            ignoring: disableInput,
-            child: Directionality(
-              textDirection: textDirection,
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: provider.duration),
-                curve: Curves.ease,
-                height: height,
-                width: double.infinity,
-                padding: EdgeInsets.all(3),
-                decoration: chatInputFieldDecoration,
-                child: Stack(
-                  alignment: AlignmentDirectional.centerStart,
-                  children: <Widget>[
-                    _buildInputField(provider),
-                    _buildDragTrail(provider),
-                    _buildAnimatedButton(provider),
-                  ],
+          return Padding(
+            padding: EdgeInsets.only(bottom: 3),
+            child: IgnorePointer(
+              ignoring: disableInput,
+              child: Directionality(
+                textDirection: textDirection,
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: provider.duration),
+                  curve: Curves.ease,
+                  // height: height,
+                  width: double.infinity,
+                  padding: EdgeInsets.all(3),
+                  decoration: chatInputFieldDecoration,
+                  child: Stack(
+                    alignment: AlignmentDirectional.centerStart,
+                    children: <Widget>[
+                      _buildInputField(provider),
+                      _buildDragTrail(provider),
+                      _buildAnimatedButton(provider),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -143,7 +147,6 @@ class ChatInputField extends StatelessWidget {
           attachmentClick: attachmentClick);
 
   Widget _buildDragTrail(ChatInputFieldProvider provider) => ChatDragTrail(
-        rightPosition: height / 2,
         cancelPosition: provider.getPosition(),
         duration: provider.duration,
         trailColor: chatInputFieldColor,
@@ -162,7 +165,7 @@ class ChatInputField extends StatelessWidget {
             provider.onAnimatedButtonLongPressMoveUpdate,
         onAnimatedButtonLongPressEnd: (details) =>
             provider.onAnimatedButtonLongPressEnd(details),
-        borderRadius: BorderRadius.all(Radius.circular(height / 2)),
+        borderRadius: BorderRadius.all(Radius.circular(buttonRadios)),
         sendTextIcon: sendTextIcon,
       );
 
