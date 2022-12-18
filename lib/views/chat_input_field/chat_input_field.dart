@@ -51,6 +51,9 @@ class ChatInputField extends StatelessWidget {
   /// the text on slide
   final Color chatInputFieldColor;
 
+  /// add padding for the attachment bottom sheet
+  final EdgeInsets? imageAttachmentBottomSheetPadding;
+
   // TODO  right description
   final TextDirection textDirection;
   final BoxDecoration? chatInputFieldDecoration;
@@ -101,6 +104,7 @@ class ChatInputField extends StatelessWidget {
     this.imageAttachmentFromCameraIcon,
     this.imageAttachmentCancelIcon,
     this.imageAttachmentTextStyle,
+    this.imageAttachmentBottomSheetPadding,
   });
 
   // : assert(height >= 25);
@@ -199,23 +203,24 @@ class ChatInputField extends StatelessWidget {
       builder: (BuildContext context) {
         //TODO should accep custom chld
         return ChatBottomSheet(
-          imageFromCameraOnTap: () {
-            Navigator.pop(context);
+            imageFromCameraOnTap: () {
+              Navigator.pop(context);
 
-            pickImage(1);
-          },
-          imageFromGalleryOnTap: () {
-            Navigator.pop(context);
-            pickImage(2);
-          },
-          imageAttachmentFromCameraText: imageAttachmentFromCameraText,
-          imageAttachmentTextStyle: imageAttachmentTextStyle,
-          imageAttachmentFromGalleryText: imageAttachmentFromGalleryText,
-          imageAttachmentCancelText: imageAttachmentCancelText,
-          imageAttachmentFromGalleryIcon: imageAttachmentFromGalleryIcon,
-          imageAttachmentFromCameraIcon: imageAttachmentFromCameraIcon,
-          imageAttachmentCancelIcon: imageAttachmentCancelIcon,
-        );
+              pickImage(1);
+            },
+            imageFromGalleryOnTap: () {
+              Navigator.pop(context);
+              pickImage(2);
+            },
+            imageAttachmentFromCameraText: imageAttachmentFromCameraText,
+            imageAttachmentTextStyle: imageAttachmentTextStyle,
+            imageAttachmentFromGalleryText: imageAttachmentFromGalleryText,
+            imageAttachmentCancelText: imageAttachmentCancelText,
+            imageAttachmentFromGalleryIcon: imageAttachmentFromGalleryIcon,
+            imageAttachmentFromCameraIcon: imageAttachmentFromCameraIcon,
+            imageAttachmentCancelIcon: imageAttachmentCancelIcon,
+            imageAttachmentBottomSheetPadding:
+                imageAttachmentBottomSheetPadding);
       },
     );
   }

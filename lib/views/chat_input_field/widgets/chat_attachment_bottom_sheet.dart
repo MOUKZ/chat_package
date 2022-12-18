@@ -14,6 +14,8 @@ class ChatBottomSheet extends StatelessWidget {
   final String imageAttachmentCancelText;
   final Icon? imageAttachmentCancelIcon;
 
+  final EdgeInsets? imageAttachmentBottomSheetPadding;
+
   final TextStyle? imageAttachmentTextStyle;
   const ChatBottomSheet({
     super.key,
@@ -26,12 +28,13 @@ class ChatBottomSheet extends StatelessWidget {
     this.imageAttachmentFromCameraIcon,
     this.imageAttachmentFromGalleryIcon,
     this.imageAttachmentCancelIcon,
+    this.imageAttachmentBottomSheetPadding,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: imageAttachmentBottomSheetPadding ?? const EdgeInsets.all(10),
       child: Wrap(
         children: [
           ListTile(

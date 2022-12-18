@@ -59,6 +59,9 @@ class ChatScreen extends StatefulWidget {
   /// bottom sheet
   final TextStyle? imageAttachmentTextStyle;
 
+  /// add padding for the attachment bottom sheet
+  final EdgeInsets? imageAttachmentBottomSheetPadding;
+
   ///hint text to be shown for recording voice note
   final String recordingNoteHintText;
 
@@ -113,6 +116,7 @@ class ChatScreen extends StatefulWidget {
     this.imageAttachmentFromGalleryIcon,
     this.imageAttachmentFromCameraIcon,
     this.imageAttachmentCancelIcon,
+    this.imageAttachmentBottomSheetPadding,
   }) : super(key: key);
 
   @override
@@ -158,6 +162,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 widget.imageAttachmentFromGalleryIcon,
             imageAttachmentFromCameraIcon: widget.imageAttachmentFromCameraIcon,
             imageAttachmentCancelIcon: widget.imageAttachmentCancelIcon,
+            imageAttachmentBottomSheetPadding:
+                widget.imageAttachmentBottomSheetPadding,
             handleRecord: widget.handleRecord ??
                 (source, canceled) {
                   if (!canceled && source != null) {
