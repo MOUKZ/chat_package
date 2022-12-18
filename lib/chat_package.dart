@@ -30,10 +30,33 @@ class ChatScreen extends StatefulWidget {
   ///hint text to be shown for sending messages
   final String sendMessageHintText;
 
-  /// texts shown wen trying to chose image attachment
+  /// these parameters for changing the text and icons in the [attachment-bottom-sheet]
+  /// text shown wen trying to chose image attachment from gallery in attachment
+  /// bottom sheet
   final String imageAttachmentFromGalleryText;
+
+  /// Icon shown wen trying to chose image attachment from gallery in attachment
+  /// bottom sheet
+  final Icon? imageAttachmentFromGalleryIcon;
+
+  /// text shown wen trying to chose image attachment from camera in attachment
+  /// bottom sheet
   final String imageAttachmentFromCameraText;
+
+  /// Icon shown wen trying to chose image attachment from camera in attachment
+  /// bottom sheet
+  final Icon? imageAttachmentFromCameraIcon;
+
+  /// text shown wen trying to chose image attachment cancel text in attachment
+  /// bottom sheet
   final String imageAttachmentCancelText;
+
+  /// Icon shown wen trying to chose image attachment cancel text in attachment
+  /// bottom sheet
+  final Icon? imageAttachmentCancelIcon;
+
+  /// image attachment text style in attachment
+  /// bottom sheet
   final TextStyle? imageAttachmentTextStyle;
 
   ///hint text to be shown for recording voice note
@@ -87,6 +110,9 @@ class ChatScreen extends StatefulWidget {
     this.chatInputFieldDecoration,
     this.onSubmit,
     this.chatInputFieldPadding,
+    this.imageAttachmentFromGalleryIcon,
+    this.imageAttachmentFromCameraIcon,
+    this.imageAttachmentCancelIcon,
   }) : super(key: key);
 
   @override
@@ -121,13 +147,17 @@ class _ChatScreenState extends State<ChatScreen> {
             imageAttachmentFromCameraText: widget.imageAttachmentFromCameraText,
             imageAttachmentFromGalleryText:
                 widget.imageAttachmentFromGalleryText,
-            imageAttachmentTextStyle: widget.imageAttachmentTextStyle,
             chatInputFieldColor: widget.chatInputFieldColor,
             recordingNoteHintText: widget.recordingNoteHintText,
             sendMessageHintText: widget.sendMessageHintText,
             disableInput: widget.disableInput,
             chatInputFieldDecoration: widget.chatInputFieldDecoration,
             chatInputFieldPadding: widget.chatInputFieldPadding,
+            imageAttachmentTextStyle: widget.imageAttachmentTextStyle,
+            imageAttachmentFromGalleryIcon:
+                widget.imageAttachmentFromGalleryIcon,
+            imageAttachmentFromCameraIcon: widget.imageAttachmentFromCameraIcon,
+            imageAttachmentCancelIcon: widget.imageAttachmentCancelIcon,
             handleRecord: widget.handleRecord ??
                 (source, canceled) {
                   if (!canceled && source != null) {
