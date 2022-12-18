@@ -62,6 +62,7 @@ class ChatScreen extends StatefulWidget {
   /// use this flag to disable the input
   final bool disableInput;
 
+  /// git the chat input field padding
   final EdgeInsets? chatInputFieldPadding;
 
   ChatScreen({
