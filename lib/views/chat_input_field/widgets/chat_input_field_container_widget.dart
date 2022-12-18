@@ -47,7 +47,7 @@ class _ChatTextViewWidgetState extends State<ChatInputFieldContainerWidget> {
           ),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.only(top: 0.0, right: 0),
+              padding: const EdgeInsets.only(top: 0.0, right: 10),
               child: widget.isRecording
                   ? Container(
                       height: 50,
