@@ -1,20 +1,21 @@
 # chat_package
 ![Pub Version](https://img.shields.io/pub/v/chat_package?color=blue)
-![likes](https://badges.bar/chat_package/likes)
-![popularity](https://badges.bar/chat_package/popularity)
-![GitHub](https://img.shields.io/github/license/MOUKZ/chat_package)
+![likes](https://img.shields.io/pub/likes/chat_package)
+![popularity](https://img.shields.io/pub/popularity/chat_package)
+<a href="https://github.com/MOUKZ/chat_package" target="_blank">![GitHub](https://img.shields.io/github/stars/MOUKZ/chat_package)</a>
+
 
 
 Flutter chat ui with full voice record/note functionality and image sending
 
 ### Created by Omar Mouki
-
-[GitHub](https://github.com/MOUKZ) [LinkedIn](https://www.linkedin.com/in/omar-mouki-15988b130/)
+<a href="https://github.com/MOUKZ">![GitHub](https://img.shields.io/badge/Github-808080?style=for-the-badge&logo=github&logoColor=white)</a>
+<a href="https://www.linkedin.com/in/omar-mouki"> ![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)</a>
 
 # Chat UI Package
-[![Pub]](https://pub.dev/packages/chat_package)
+![Pub](https://img.shields.io/pub/v/chat_package)
 
-An easy to implement whatssapp like chat ui. with voice note feature and image viewing. 
+An easy to implement whatsapp like chat ui. with voice note feature and image viewing. 
 
 ## Screenshots
 
@@ -74,7 +75,7 @@ Add permissions to your `AndroidManifest.xml` file.
 ### Calling
 
 
-the list of ChatMessages is the only required feild every thing else is optional
+the list of ChatMessages is the only required field every thing else is optional
 ```dart
 List<ChatMessage> messages = [
     ChatMessage(
@@ -84,7 +85,7 @@ List<ChatMessage> messages = [
     ChatMessage(isSender: false, text: 'wow that is cool'),
   ];
 ```
--- plese note that only one of the following [text,imageUrl,imagePath,audioUrl,audioPath ] must not be null at a time if more is provided an error will occure 
+-- please note that only one of the following [text,imageUrl,imagePath,audioUrl,audioPath ] must not be null at a time if more is provided an error will occure 
 ```dart
 ChatMessage(isSender: false, text: 'your.text')
 ChatMessage(isSender: false, imageUrl: image.url')
@@ -140,7 +141,7 @@ ChatMessage(isSender: false, audioPath: 'wow that is cool')
 ```
 ## Found this project useful?
 
-If you found this project useful, then please consider giving it a ⭐️ on Github and why dont you share it with your friends.
+If you found this project useful, then please consider giving it a ⭐️ on Github and why don't you share it with your friends.
 
 
 ## Issues and feedback

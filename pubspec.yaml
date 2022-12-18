@@ -10,8 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  transparent_image: ^2.0.0
-  flutter_slidable: ^2.0.0
   flutter_keyboard_visibility: ^5.4.0
   permission_handler: ^10.2.0
   image_picker: ^0.8.6

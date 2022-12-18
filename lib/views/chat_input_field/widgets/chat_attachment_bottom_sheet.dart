@@ -4,7 +4,7 @@ class ChatBottomSheet extends StatelessWidget {
   final Function() imageFromCameraOnTap;
   final Function() imageFromGalleryOnTap;
   final String imageAttachmentFromCameraText;
-  final Color imageAttachmentTextColor;
+  final TextStyle? imageAttachmentTextStyle;
   final String imageAttachmentFromGalleryText;
   final String imageAttachmentCancelText;
   const ChatBottomSheet(
@@ -12,46 +12,39 @@ class ChatBottomSheet extends StatelessWidget {
       required this.imageFromCameraOnTap,
       required this.imageFromGalleryOnTap,
       required this.imageAttachmentFromCameraText,
-      required this.imageAttachmentTextColor,
+      this.imageAttachmentTextStyle,
       required this.imageAttachmentFromGalleryText,
       required this.imageAttachmentCancelText});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 144,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          TextButton(
-            onPressed: imageFromCameraOnTap,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                imageAttachmentFromCameraText,
-                style: TextStyle(color: imageAttachmentTextColor),
-              ),
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Wrap(
+        children: [
+          ListTile(
+            leading: Icon(Icons.camera),
+            title: Text(
+              imageAttachmentFromCameraText,
+              style: imageAttachmentTextStyle,
             ),
+            onTap: imageFromCameraOnTap,
           ),
-          TextButton(
-            onPressed: imageFromGalleryOnTap,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                imageAttachmentFromGalleryText,
-                style: TextStyle(color: imageAttachmentTextColor),
-              ),
+          ListTile(
+            leading: Icon(Icons.image),
+            title: Text(
+              imageAttachmentFromGalleryText,
+              style: imageAttachmentTextStyle,
             ),
+            onTap: imageFromGalleryOnTap,
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                imageAttachmentCancelText,
-                style: TextStyle(color: imageAttachmentTextColor),
-              ),
+          ListTile(
+            leading: Icon(Icons.cancel),
+            title: Text(
+              imageAttachmentCancelText,
+              style: imageAttachmentTextStyle,
             ),
+            onTap: () => Navigator.pop(context),
           ),
         ],
       ),

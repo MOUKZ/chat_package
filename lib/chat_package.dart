@@ -34,7 +34,7 @@ class ChatScreen extends StatefulWidget {
   final String imageAttachmentFromGalleryText;
   final String imageAttachmentFromCameraText;
   final String imageAttachmentCancelText;
-  final Color imageAttachmentTextColor;
+  final TextStyle? imageAttachmentTextStyle;
 
   ///hint text to be shown for recording voice note
   final String recordingNoteHintText;
@@ -62,6 +62,8 @@ class ChatScreen extends StatefulWidget {
   /// use this flag to disable the input
   final bool disableInput;
 
+  final EdgeInsets? chatInputFieldPadding;
+
   ChatScreen({
     Key? key,
     this.senderColor,
@@ -75,7 +77,7 @@ class ChatScreen extends StatefulWidget {
     this.imageAttachmentFromCameraText = 'From Camera',
     this.imageAttachmentCancelText = 'Cancel',
     this.chatInputFieldColor = const Color(0xFFCFD8DC),
-    this.imageAttachmentTextColor = kPrimaryColor,
+    this.imageAttachmentTextStyle,
     this.handleRecord,
     this.handleImageSelect,
     this.onSlideToCancelRecord,
@@ -83,6 +85,7 @@ class ChatScreen extends StatefulWidget {
     this.disableInput = false,
     this.chatInputFieldDecoration,
     this.onSubmit,
+    this.chatInputFieldPadding,
   }) : super(key: key);
 
   @override
@@ -117,12 +120,13 @@ class _ChatScreenState extends State<ChatScreen> {
             imageAttachmentFromCameraText: widget.imageAttachmentFromCameraText,
             imageAttachmentFromGalleryText:
                 widget.imageAttachmentFromGalleryText,
-            imageAttachmentTextColor: widget.imageAttachmentTextColor,
+            imageAttachmentTextStyle: widget.imageAttachmentTextStyle,
             chatInputFieldColor: widget.chatInputFieldColor,
             recordingNoteHintText: widget.recordingNoteHintText,
             sendMessageHintText: widget.sendMessageHintText,
             disableInput: widget.disableInput,
             chatInputFieldDecoration: widget.chatInputFieldDecoration,
+            chatInputFieldPadding: widget.chatInputFieldPadding,
             handleRecord: widget.handleRecord ??
                 (source, canceled) {
                   if (!canceled && source != null) {
