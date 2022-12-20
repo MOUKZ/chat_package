@@ -1,12 +1,11 @@
 import 'dart:io';
 
 import 'package:chat_package/models/chat_message.dart';
-import 'package:chat_package/utils/constants.dart';
 import 'package:chat_package/utils/transparent_image.dart';
 import 'package:chat_package/screens/photo_gallery_view.dart';
 import 'package:flutter/material.dart';
 
-//TODO add text size and color for the container
+//TODO add text size
 class ImageMessageWidget extends StatelessWidget {
   /// chat message model to get teh data
   final ChatMessage message;
@@ -14,9 +13,14 @@ class ImageMessageWidget extends StatelessWidget {
   ///the color of the sender container
   final Color senderColor;
 
-  const ImageMessageWidget(
-      {Key? key, required this.message, required this.senderColor})
-      : super(key: key);
+  final TextStyle? messageContainerTextStyle;
+
+  const ImageMessageWidget({
+    Key? key,
+    required this.message,
+    required this.senderColor,
+    this.messageContainerTextStyle,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -76,22 +80,11 @@ class ImageMessageWidget extends StatelessWidget {
                   ),
                   child: Text(
                     message.text,
-                    style: TextStyle(fontSize: 12),
+                    style: messageContainerTextStyle ?? TextStyle(fontSize: 12),
                   ),
                 ),
               ),
             ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(
-            // top: 2,
-            left: kDefaultPadding / 2,
-            right: kDefaultPadding / 2,
-          ),
-          child: Text(
-            dateStringFormatter(message.createdAt ?? DateTime.now()),
-            style: TextStyle(fontSize: 12),
           ),
         ),
       ],

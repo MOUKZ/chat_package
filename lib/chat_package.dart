@@ -90,6 +90,12 @@ class ChatScreen extends StatefulWidget {
   /// git the chat input field padding
   final EdgeInsets? chatInputFieldPadding;
 
+  /// text style for the message container
+  final TextStyle? messageContainerTextStyle;
+
+  /// text style for the message container date
+  final TextStyle? sendDateTextStyle;
+
   ChatScreen({
     Key? key,
     this.senderColor,
@@ -115,6 +121,8 @@ class ChatScreen extends StatefulWidget {
     this.imageAttachmentFromGalleryIcon,
     this.imageAttachmentFromCameraIcon,
     this.imageAttachmentCancelIcon,
+    this.messageContainerTextStyle,
+    this.sendDateTextStyle,
   }) : super(key: key);
 
   @override
@@ -140,6 +148,8 @@ class _ChatScreenState extends State<ChatScreen> {
               inActiveAudioSliderColor:
                   widget.inActiveAudioSliderColor ?? kLightColor,
               senderColor: widget.senderColor ?? kPrimaryColor,
+              messageContainerTextStyle: widget.messageContainerTextStyle,
+              sendDateTextStyle: widget.sendDateTextStyle,
             ),
           ),
         ),

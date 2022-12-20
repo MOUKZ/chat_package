@@ -101,20 +101,6 @@ class _AudioMessageWidgetState extends State<AudioMessageWidget> {
             ],
           ),
         ),
-        SizedBox(
-          height: 3,
-        ),
-        Padding(
-          padding: EdgeInsets.only(
-            // top: 2,
-            left: kDefaultPadding / 2,
-            right: kDefaultPadding / 2,
-          ),
-          child: Text(
-            dateStringFormatter(widget.message.createdAt ?? DateTime.now()),
-            style: TextStyle(fontSize: 12),
-          ),
-        ),
       ],
     );
   }
