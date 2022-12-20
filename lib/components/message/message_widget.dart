@@ -6,6 +6,7 @@ import 'package:chat_package/components/message/text_message/text_message_widget
 import 'package:flutter/material.dart';
 
 /// widget used to determine the right message type
+/// //TODO add color support for reciver
 class MessageWidget extends StatelessWidget {
   final Color senderColor;
   final Color inActiveAudioSliderColor;
