@@ -1,12 +1,10 @@
-import 'dart:developer';
-import 'package:chat_package/views/chat_input_field/chat_input_field_provider.dart';
-import 'package:chat_package/views/chat_input_field/widgets/chat_animated_button.dart';
-import 'package:chat_package/views/chat_input_field/widgets/chat_attachment_bottom_sheet.dart';
-import 'package:chat_package/views/chat_input_field/widgets/chat_input_field_container_widget.dart';
+import 'package:chat_package/components/chat_input_field/chat_input_field_provider.dart';
+import 'package:chat_package/components/chat_input_field/widgets/chat_animated_button.dart';
+import 'package:chat_package/components/chat_input_field/widgets/chat_attachment_bottom_sheet.dart';
+import 'package:chat_package/components/chat_input_field/widgets/chat_input_field_container_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'widgets/chat_drag_trail.dart';
 
@@ -74,6 +72,9 @@ class ChatInputField extends StatelessWidget {
   /// use this flag to disable the input
   final bool disableInput;
 
+  /// this is an optional parameter to override the default attachment bottom sheet
+  final Function(BuildContext context)? attachmentClick;
+
   ChatInputField({
     Key? key,
     this.buttonRadios = 35,
@@ -101,6 +102,7 @@ class ChatInputField extends StatelessWidget {
     this.imageAttachmentFromCameraIcon,
     this.imageAttachmentCancelIcon,
     this.imageAttachmentTextStyle,
+    this.attachmentClick,
   });
 
   // : assert(height >= 25);
@@ -115,6 +117,7 @@ class ChatInputField extends StatelessWidget {
         onSlideToCancelRecord: onSlideToCancelRecord,
         cancelPosition: cancelPosition,
         handleRecord: handleRecord,
+        handleImageSelect: handleImageSelect,
       ),
       child: Consumer<ChatInputFieldProvider>(
         builder: (context, provider, child) {
@@ -158,7 +161,10 @@ class ChatInputField extends StatelessWidget {
           recordTime: provider.recordTime,
           textController: _textController,
           sendMessageHintText: sendMessageHintText,
-          attachmentClick: attachmentClick,
+          attachmentClick: attachmentClick ??
+              (context) {
+                _attachmentClick(context, provider);
+              },
           formKey: provider.formKey,
           onSubmitted: provider.onAnimatedButtonTap);
 
@@ -187,7 +193,7 @@ class ChatInputField extends StatelessWidget {
 
   /// show a widget to choose picker type
 
-  void attachmentClick(BuildContext context) {
+  void _attachmentClick(BuildContext context, ChatInputFieldProvider provider) {
     showModalBottomSheet<void>(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -197,16 +203,15 @@ class ChatInputField extends StatelessWidget {
       ),
       context: context,
       builder: (BuildContext context) {
-        //TODO should accep custom chld
         return ChatBottomSheet(
           imageFromCameraOnTap: () {
             Navigator.pop(context);
 
-            pickImage(1);
+            provider.pickImage(1);
           },
           imageFromGalleryOnTap: () {
             Navigator.pop(context);
-            pickImage(2);
+            provider.pickImage(2);
           },
           imageAttachmentFromCameraText: imageAttachmentFromCameraText,
           imageAttachmentTextStyle: imageAttachmentTextStyle,
@@ -218,28 +223,5 @@ class ChatInputField extends StatelessWidget {
         );
       },
     );
-  }
-
-  // TODO: make this custom from user
-  /// open image picker from camera, gallery, or cancel the selection
-  void pickImage(int type) async {
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.camera,
-      Permission.storage,
-    ].request();
-    if (statuses.containsValue(PermissionStatus.denied)) {
-      log('no permission');
-    } else {
-      final result = await ImagePicker().pickImage(
-        imageQuality: 70,
-        maxWidth: 1440,
-        source: type == 1 ? ImageSource.camera : ImageSource.gallery,
-      );
-      if (result != null) {
-        handleImageSelect(result);
-
-        print(result.path);
-      }
-    }
   }
 }

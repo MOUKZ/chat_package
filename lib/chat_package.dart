@@ -2,12 +2,12 @@ library chat_package;
 
 import 'dart:developer';
 
+import 'package:chat_package/components/message/message_widget.dart';
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/models/media/chat_media.dart';
 import 'package:chat_package/models/media/media_type.dart';
 import 'package:chat_package/utils/constants.dart';
-import 'package:chat_package/views/chat_input_field/chat_input_field.dart';
-import 'package:chat_package/views/components/message_widget.dart';
+import 'package:chat_package/components/chat_input_field/chat_input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';
@@ -90,6 +90,15 @@ class ChatScreen extends StatefulWidget {
   /// git the chat input field padding
   final EdgeInsets? chatInputFieldPadding;
 
+  /// text style for the message container
+  final TextStyle? messageContainerTextStyle;
+
+  /// text style for the message container date
+  final TextStyle? sendDateTextStyle;
+
+  /// this is an optional parameter to override the default attachment bottom sheet
+  final Function(BuildContext context)? attachmentClick;
+
   ChatScreen({
     Key? key,
     this.senderColor,
@@ -115,6 +124,9 @@ class ChatScreen extends StatefulWidget {
     this.imageAttachmentFromGalleryIcon,
     this.imageAttachmentFromCameraIcon,
     this.imageAttachmentCancelIcon,
+    this.messageContainerTextStyle,
+    this.sendDateTextStyle,
+    this.attachmentClick,
   }) : super(key: key);
 
   @override
@@ -140,6 +152,8 @@ class _ChatScreenState extends State<ChatScreen> {
               inActiveAudioSliderColor:
                   widget.inActiveAudioSliderColor ?? kLightColor,
               senderColor: widget.senderColor ?? kPrimaryColor,
+              messageContainerTextStyle: widget.messageContainerTextStyle,
+              sendDateTextStyle: widget.sendDateTextStyle,
             ),
           ),
         ),
@@ -160,6 +174,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 widget.imageAttachmentFromGalleryIcon,
             imageAttachmentFromCameraIcon: widget.imageAttachmentFromCameraIcon,
             imageAttachmentCancelIcon: widget.imageAttachmentCancelIcon,
+            attachmentClick: widget.attachmentClick,
             handleRecord: widget.handleRecord ??
                 (source, canceled) {
                   if (!canceled && source != null) {

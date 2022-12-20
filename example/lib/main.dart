@@ -34,6 +34,15 @@ class _MyHomePageState extends State<MyHomePage> {
   List<ChatMessage> messages = [
     ChatMessage(
       isSender: true,
+      text: 'this is a banana',
+      chatMedia: ChatMedia(
+        url:
+            'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
+        mediaType: MediaType.imageMediaType(),
+      ),
+    ),
+    ChatMessage(
+      isSender: false,
       chatMedia: ChatMedia(
         url:
             'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
