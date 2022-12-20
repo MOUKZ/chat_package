@@ -33,7 +33,7 @@ class TextMessageWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(25),
             ),
             child: Text(
-              message.text ?? '',
+              message.text,
               textDirection: TextDirection.rtl,
               style: TextStyle(
                 color: message.isSender

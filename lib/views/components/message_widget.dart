@@ -1,4 +1,3 @@
-import 'package:chat_package/enums/chat_message_type.dart';
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/utils/constants.dart';
 import 'package:chat_package/views/audio_message/audio_message_widget.dart';
@@ -24,37 +23,6 @@ class MessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget messageContent(ChatMessage message) {
-      /// check message type and render the right widget
-      switch (message.getType()) {
-        case ChatMessageType.TextMessage:
-
-          /// render text message
-          return TextMessageWidget(
-            message: message,
-            senderColor: senderColor,
-          );
-        case ChatMessageType.AudioMessage:
-
-          /// render audion message
-          return AudioMessageWidget(
-            message: message,
-            senderColor: senderColor,
-            activeAudioSliderColor: activeAudioSliderColor,
-            inActiveAudioSliderColor: inActiveAudioSliderColor,
-          );
-        case ChatMessageType.ImageMessage:
-
-          /// render image message
-          return ImageMessageWidget(
-            message: message,
-            senderColor: senderColor,
-          );
-        default:
-          return SizedBox();
-      }
-    }
-
     return Padding(
       padding: const EdgeInsets.only(top: kDefaultPadding),
       child: Align(
@@ -65,5 +33,34 @@ class MessageWidget extends StatelessWidget {
         child: messageContent(message),
       ),
     );
+  }
+
+  Widget messageContent(ChatMessage message) {
+    /// check message type and render the right widget
+    if (message.chatMedia == null) {
+      /// render text message
+      return TextMessageWidget(
+        message: message,
+        senderColor: senderColor,
+      );
+    } else {
+      return message.chatMedia!.mediaType.maybeWhen(
+          imageMediaType: () => ImageMessageWidget(
+                message: message,
+                senderColor: senderColor,
+              ),
+          audioMediaType: () => AudioMessageWidget(
+                message: message,
+                senderColor: senderColor,
+                activeAudioSliderColor: activeAudioSliderColor,
+                inActiveAudioSliderColor: inActiveAudioSliderColor,
+              ),
+          //TODO add this
+          videoMediaType: () => Container(),
+          orElse: () => TextMessageWidget(
+                message: message,
+                senderColor: senderColor,
+              ));
+    }
   }
 }

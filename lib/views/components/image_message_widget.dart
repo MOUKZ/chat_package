@@ -45,13 +45,15 @@ class ImageMessageWidget extends StatelessWidget {
               aspectRatio: 1,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: message.imageUrl != null
+                child: Uri.parse(message.chatMedia!.url).isAbsolute
                     ? FadeInImage.memoryNetwork(
                         placeholder: transparentImage,
-                        image: message.imageUrl!,
+                        image: message.chatMedia!.url,
                         fit: BoxFit.cover,
                       )
-                    : Image.file(File(message.imagePath!)),
+                    : Image.file(
+                        File(message.chatMedia!.url),
+                      ),
               ),
             ),
           ),

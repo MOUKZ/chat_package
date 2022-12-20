@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:chat_package/chat_package.dart';
 import 'package:chat_package/models/chat_message.dart';
+import 'package:chat_package/models/media/chat_media.dart';
+import 'package:chat_package/models/media/media_type.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -31,9 +33,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<ChatMessage> messages = [
     ChatMessage(
-        isSender: true,
-        imageUrl:
-            'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260'),
+      isSender: true,
+      chatMedia: ChatMedia(
+        url:
+            'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
+        mediaType: MediaType.imageMediaType(),
+      ),
+    ),
     ChatMessage(isSender: false, text: 'wow that is cool'),
   ];
 
