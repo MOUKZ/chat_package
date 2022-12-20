@@ -3,6 +3,8 @@ library chat_package;
 import 'dart:developer';
 
 import 'package:chat_package/models/chat_message.dart';
+import 'package:chat_package/models/media/chat_media.dart';
+import 'package:chat_package/models/media/media_type.dart';
 import 'package:chat_package/utils/constants.dart';
 import 'package:chat_package/views/chat_input_field/chat_input_field.dart';
 import 'package:chat_package/views/components/message_widget.dart';
@@ -162,8 +164,15 @@ class _ChatScreenState extends State<ChatScreen> {
                 (source, canceled) {
                   if (!canceled && source != null) {
                     setState(() {
-                      widget.messages
-                          .add(ChatMessage(isSender: true, audioPath: source));
+                      widget.messages.add(
+                        ChatMessage(
+                          isSender: true,
+                          chatMedia: ChatMedia(
+                            url: source,
+                            mediaType: MediaType.audioMediaType(),
+                          ),
+                        ),
+                      );
                       widget.scrollController?.jumpTo(
                           widget.scrollController!.position.maxScrollExtent +
                               90);
@@ -176,8 +185,15 @@ class _ChatScreenState extends State<ChatScreen> {
                   // final image = await decodeImageFromList(bytes);
                   // final name = file.path.split('/').last;
                   setState(() {
-                    widget.messages
-                        .add(ChatMessage(isSender: true, imagePath: file.path));
+                    widget.messages.add(
+                      ChatMessage(
+                        isSender: true,
+                        chatMedia: ChatMedia(
+                          url: file.path,
+                          mediaType: MediaType.imageMediaType(),
+                        ),
+                      ),
+                    );
                   });
 
                   setState(() {

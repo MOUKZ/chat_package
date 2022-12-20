@@ -23,11 +23,11 @@ class _PhotoGalleryViewState extends State<PhotoGalleryView> {
     super.initState();
 
     /// check if url is provided or a path to a file
-    if (widget.chatMessage.imageUrl != null) {
-      imageProvider = NetworkImage(widget.chatMessage.imageUrl!);
-    } else {
-      imageProvider = FileImage(File(widget.chatMessage.imagePath!));
-    }
+    bool _validURL = Uri.parse(widget.chatMessage.chatMedia!.url).isAbsolute;
+
+    _validURL
+        ? imageProvider = NetworkImage(widget.chatMessage.chatMedia!.url)
+        : imageProvider = FileImage(File(widget.chatMessage.chatMedia!.url));
   }
 
   @override

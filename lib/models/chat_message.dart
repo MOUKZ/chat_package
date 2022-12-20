@@ -1,96 +1,74 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:chat_package/enums/chat_message_type.dart';
+import 'package:chat_package/models/media/chat_media.dart';
 
 class ChatMessage {
   /// please note that only one of the following [text,imageUrl,imagePath,audioUrl,audioPath ]
   ///must not be null at a time if more is provided an error will occur
-  String? text;
-  String? imageUrl;
-  String? imagePath;
-  String? audioUrl;
-  String? audioPath;
+  String text;
+  final ChatMedia? chatMedia;
   final bool isSender;
   DateTime? createdAt;
   ChatMessage({
-    this.text,
-    this.imageUrl,
-    this.imagePath,
-    this.audioUrl,
-    this.audioPath,
+    this.text = '',
+    this.chatMedia,
     required this.isSender,
     this.createdAt,
   });
 
   ChatMessage copyWith({
     String? text,
-    String? imageUrl,
-    String? imagePath,
-    String? audioUrl,
-    String? audioPath,
+    ChatMedia? chatMedia,
     bool? isSender,
     DateTime? createdAt,
   }) {
     return ChatMessage(
       text: text ?? this.text,
-      imageUrl: imageUrl ?? this.imageUrl,
-      imagePath: imagePath ?? this.imagePath,
-      audioUrl: audioUrl ?? this.audioUrl,
-      audioPath: audioPath ?? this.audioPath,
+      chatMedia: chatMedia ?? this.chatMedia,
       isSender: isSender ?? this.isSender,
       createdAt: createdAt ?? this.createdAt,
     );
   }
 
-  /// convert the ChatMessage object to json
   Map<String, dynamic> toMap() {
-    return {
+    return <String, dynamic>{
       'text': text,
-      'imageUrl': imageUrl,
-      'imagePath': imagePath,
-      'audioUrl': audioUrl,
-      'audioPath': audioPath,
+      'chatMedia': chatMedia?.toMap(),
       'isSender': isSender,
-      'createdAt': createdAt?.toIso8601String(),
+      'createdAt': createdAt?.millisecondsSinceEpoch,
     };
   }
 
-  /// create ChatMessage from json and
-  /// retrieve it from api
   factory ChatMessage.fromMap(Map<String, dynamic> map) {
     return ChatMessage(
-      text: map['text'],
-      imageUrl: map['imageUrl'],
-      imagePath: map['imagePath'],
-      audioUrl: map['audioUrl'],
-      audioPath: map['audioPath'],
-      isSender: map['isSender'],
-      createdAt: DateTime.parse(map['createdAt']),
+      text: map['text'] as String,
+      chatMedia: map['chatMedia'] != null
+          ? ChatMedia.fromMap(map['chatMedia'] as Map<String, dynamic>)
+          : null,
+      isSender: map['isSender'] as bool,
+      createdAt: map['createdAt'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int)
+          : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
   factory ChatMessage.fromJson(String source) =>
-      ChatMessage.fromMap(json.decode(source));
+      ChatMessage.fromMap(json.decode(source) as Map<String, dynamic>);
 
-  /// override the toString function
   @override
   String toString() {
-    return 'ChatMessage(text: $text, imageUrl: $imageUrl, imagePath: $imagePath, audioUrl: $audioUrl, audioPath: $audioPath, isSender: $isSender, createdAt: $createdAt)';
+    return 'ChatMessage(text: $text, chatMedia: $chatMedia, isSender: $isSender, createdAt: $createdAt)';
   }
 
-  /// override the '==' operator
   @override
-  bool operator ==(Object other) {
+  bool operator ==(covariant ChatMessage other) {
     if (identical(this, other)) return true;
 
-    return other is ChatMessage &&
-        other.text == text &&
-        other.imageUrl == imageUrl &&
-        other.imagePath == imagePath &&
-        other.audioUrl == audioUrl &&
-        other.audioPath == audioPath &&
+    return other.text == text &&
+        other.chatMedia == chatMedia &&
         other.isSender == isSender &&
         other.createdAt == createdAt;
   }
@@ -98,29 +76,8 @@ class ChatMessage {
   @override
   int get hashCode {
     return text.hashCode ^
-        imageUrl.hashCode ^
-        imagePath.hashCode ^
-        audioUrl.hashCode ^
-        audioPath.hashCode ^
+        chatMedia.hashCode ^
         isSender.hashCode ^
         createdAt.hashCode;
-  }
-
-  /// check message type to render the right widget
-  ChatMessageType getType() {
-    if (imageUrl != null) {
-      return ChatMessageType.ImageMessage;
-    }
-    if (imagePath != null) {
-      return ChatMessageType.ImageMessage;
-    }
-    if (audioUrl != null) {
-      return ChatMessageType.AudioMessage;
-    }
-    if (audioPath != null) {
-      return ChatMessageType.AudioMessage;
-    }
-
-    return ChatMessageType.TextMessage;
   }
 }

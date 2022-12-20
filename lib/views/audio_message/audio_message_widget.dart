@@ -37,9 +37,9 @@ class _AudioMessageWidgetState extends State<AudioMessageWidget> {
   }
 
   void setData() async {
-    widget.message.audioUrl != null
-        ? duration = await player.setUrl(widget.message.audioUrl!)
-        : duration = await player.setFilePath(widget.message.audioPath!);
+    Uri.parse(widget.message.chatMedia!.url).isAbsolute
+        ? duration = await player.setUrl(widget.message.chatMedia!.url)
+        : duration = await player.setFilePath(widget.message.chatMedia!.url);
 
     setState(() {});
   }
