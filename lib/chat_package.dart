@@ -2,12 +2,12 @@ library chat_package;
 
 import 'dart:developer';
 
+import 'package:chat_package/components/message/message_widget.dart';
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/models/media/chat_media.dart';
 import 'package:chat_package/models/media/media_type.dart';
 import 'package:chat_package/utils/constants.dart';
-import 'package:chat_package/views/chat_input_field/chat_input_field.dart';
-import 'package:chat_package/views/components/message_widget.dart';
+import 'package:chat_package/components/chat_input_field/chat_input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/utils/constants.dart';
 import 'package:chat_package/utils/transparent_image.dart';
-import 'package:chat_package/views/screens/photo_gallery_view.dart';
+import 'package:chat_package/screens/photo_gallery_view.dart';
 import 'package:flutter/material.dart';
 
 class ImageMessageWidget extends StatelessWidget {

@@ -1,8 +1,8 @@
 import 'dart:developer';
-import 'package:chat_package/views/chat_input_field/chat_input_field_provider.dart';
-import 'package:chat_package/views/chat_input_field/widgets/chat_animated_button.dart';
-import 'package:chat_package/views/chat_input_field/widgets/chat_attachment_bottom_sheet.dart';
-import 'package:chat_package/views/chat_input_field/widgets/chat_input_field_container_widget.dart';
+import 'package:chat_package/components/chat_input_field/chat_input_field_provider.dart';
+import 'package:chat_package/components/chat_input_field/widgets/chat_animated_button.dart';
+import 'package:chat_package/components/chat_input_field/widgets/chat_attachment_bottom_sheet.dart';
+import 'package:chat_package/components/chat_input_field/widgets/chat_input_field_container_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';

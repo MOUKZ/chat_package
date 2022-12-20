@@ -1,8 +1,8 @@
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/utils/constants.dart';
-import 'package:chat_package/views/audio_message/audio_message_widget.dart';
-import 'package:chat_package/views/components/image_message_widget.dart';
-import 'package:chat_package/views/components/text_message_widget.dart';
+import 'package:chat_package/components/message/audio_message/audio_message_widget.dart';
+import 'package:chat_package/components/message/image_message/image_message_widget.dart';
+import 'package:chat_package/components/message/text_message/text_message_widget.dart';
 import 'package:flutter/material.dart';
 
 /// widget used to determine the right message type
