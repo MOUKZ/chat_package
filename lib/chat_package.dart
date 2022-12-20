@@ -96,6 +96,9 @@ class ChatScreen extends StatefulWidget {
   /// text style for the message container date
   final TextStyle? sendDateTextStyle;
 
+  /// this is an optional parameter to override the default attachment bottom sheet
+  final Function(BuildContext context)? attachmentClick;
+
   ChatScreen({
     Key? key,
     this.senderColor,
@@ -123,6 +126,7 @@ class ChatScreen extends StatefulWidget {
     this.imageAttachmentCancelIcon,
     this.messageContainerTextStyle,
     this.sendDateTextStyle,
+    this.attachmentClick,
   }) : super(key: key);
 
   @override
@@ -170,6 +174,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 widget.imageAttachmentFromGalleryIcon,
             imageAttachmentFromCameraIcon: widget.imageAttachmentFromCameraIcon,
             imageAttachmentCancelIcon: widget.imageAttachmentCancelIcon,
+            attachmentClick: widget.attachmentClick,
             handleRecord: widget.handleRecord ??
                 (source, canceled) {
                   if (!canceled && source != null) {

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
@@ -8,6 +9,9 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 class ChatInputFieldProvider extends ChangeNotifier {
   final Function(String? path, bool cancel) handleRecord;
   final VoidCallback onSlideToCancelRecord;
+
+  /// function to handle the selected image
+  final Function(XFile) handleImageSelect;
 
   /// The callback when send is pressed.
   final Function(String? text) onTextSubmit;
@@ -40,6 +44,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
     required this.handleRecord,
     required this.onSlideToCancelRecord,
     required this.cancelPosition,
+    required this.handleImageSelect,
   });
 
   /// animated button on tap
@@ -143,6 +148,29 @@ class ChatInputFieldProvider extends ChangeNotifier {
       return cancelPosition - _height;
     } else {
       return _position;
+    }
+  }
+
+  // TODO: make this custom from user
+  /// open image picker from camera, gallery, or cancel the selection
+  void pickImage(int type) async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.camera,
+      Permission.storage,
+    ].request();
+    if (statuses.containsValue(PermissionStatus.denied)) {
+      log('no permission');
+    } else {
+      final result = await ImagePicker().pickImage(
+        imageQuality: 70,
+        maxWidth: 1440,
+        source: type == 1 ? ImageSource.camera : ImageSource.gallery,
+      );
+      if (result != null) {
+        handleImageSelect(result);
+
+        print(result.path);
+      }
     }
   }
 }
