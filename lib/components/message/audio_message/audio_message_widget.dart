@@ -55,7 +55,6 @@ class _AudioMessageWidgetState extends State<AudioMessageWidget> {
           width: MediaQuery.of(context).size.width * 0.7,
           padding: EdgeInsets.symmetric(
             horizontal: kDefaultPadding * 0.75,
-            vertical: kDefaultPadding / 2.5,
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
