@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class SendButton extends StatelessWidget {
-  final bool sendButton;
+  final bool isText;
   final Function() onPressed;
   final Function() onLongPress;
   final Function(double) onDragChange;
   const SendButton({
     Key? key,
-    required this.sendButton,
+    required this.isText,
     required this.onPressed,
     required this.onLongPress,
     required this.onDragChange,
@@ -18,7 +18,7 @@ class SendButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       onLongPressMoveUpdate: (details) {
-        if (!sendButton &&
+        if (!isText &&
             details.localPosition.dx < 0 &&
             details.localPosition.dx >= -20) {
           onDragChange(details.localPosition.dx);
@@ -28,7 +28,7 @@ class SendButton extends StatelessWidget {
         onDragChange(0);
       },
       onLongPress: () {
-        if (!sendButton) {
+        if (!isText) {
           onLongPress();
         }
       },
@@ -36,7 +36,7 @@ class SendButton extends StatelessWidget {
         radius: 25,
         backgroundColor: Color(0xFF128C7E),
         child: Icon(
-          sendButton ? Icons.send : Icons.mic,
+          isText ? Icons.send : Icons.mic,
           color: Colors.white,
         ),
       ),
