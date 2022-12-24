@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
+  final String? textFieldHintText;
+  final TextStyle? textFieldHintTextStyle;
+  final bool? disableCamera;
+  final bool? disableAttachment;
+
+  final IconData? cameraIcon;
+  final IconData? attachmentIcon;
+
   final TextEditingController controller;
   final FocusNode focusNode;
   final Function(String)? onChanged;
@@ -13,6 +21,12 @@ class CustomTextField extends StatelessWidget {
     required this.onChanged,
     required this.onAttachmentClicked,
     required this.width,
+    this.textFieldHintText,
+    required this.textFieldHintTextStyle,
+    required this.disableCamera,
+    required this.disableAttachment,
+    required this.cameraIcon,
+    required this.attachmentIcon,
   });
 
   @override
@@ -34,28 +48,32 @@ class CustomTextField extends StatelessWidget {
           onChanged: onChanged,
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText: "Type a message",
-            hintStyle: TextStyle(color: Colors.grey),
+            hintText: textFieldHintText ?? 'Type a message',
+            hintStyle: textFieldHintTextStyle ?? TextStyle(color: Colors.grey),
             prefixIcon: Icon(
               Icons.keyboard,
             ),
             suffixIcon: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  icon: Icon(Icons.attach_file),
-                  onPressed: onAttachmentClicked,
-                ),
-                IconButton(
-                  icon: Icon(Icons.camera_alt),
-                  onPressed: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (builder) =>
-                    //             CameraApp()));
-                  },
-                ),
+                disableAttachment ?? false
+                    ? Container()
+                    : IconButton(
+                        icon: Icon(attachmentIcon ?? Icons.attach_file),
+                        onPressed: onAttachmentClicked,
+                      ),
+                disableCamera ?? false
+                    ? Container()
+                    : IconButton(
+                        icon: Icon(cameraIcon ?? Icons.camera_alt),
+                        onPressed: () {
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (builder) =>
+                          //             CameraApp()));
+                        },
+                      ),
               ],
             ),
             contentPadding: EdgeInsets.all(5),

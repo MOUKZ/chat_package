@@ -96,11 +96,21 @@ class ChatScreen extends StatefulWidget {
   final Function(BuildContext context)? attachmentClick;
 
   //TODO check for dublickates
+  //send button
   final Color? sendButtonColor;
   final bool? disableRecording;
   final IconData? sendButtonTextIcon;
   final IconData? sendButtonRecordIcon;
   final Color? sendButtonIconColor;
+  //text field
+  //text field
+  final String? textFieldHintText;
+  final TextStyle? textFieldHintTextStyle;
+  final bool? disableCamera;
+  final bool? disableAttachment;
+
+  final IconData? cameraIcon;
+  final IconData? attachmentIcon;
 
   ChatScreen({
     Key? key,
@@ -137,6 +147,14 @@ class ChatScreen extends StatefulWidget {
     this.sendButtonRecordIcon,
     this.sendButtonTextIcon,
     this.sendButtonIconColor,
+
+    ///text field
+    this.textFieldHintTextStyle,
+    this.textFieldHintText,
+    this.disableCamera,
+    this.disableAttachment,
+    this.cameraIcon,
+    this.attachmentIcon,
   }) : super(key: key);
 
   @override
@@ -175,6 +193,12 @@ class _ChatScreenState extends State<ChatScreen> {
             sendButtonRecordIcon: widget.sendButtonRecordIcon,
             sendButtonTextIcon: widget.sendButtonTextIcon,
             sendButtonIconColor: widget.sendButtonIconColor,
+            textFieldHintText: widget.textFieldHintText,
+            textFieldHintTextStyle: widget.textFieldHintTextStyle,
+            disableCamera: widget.disableCamera,
+            disableAttachment: widget.disableAttachment,
+            cameraIcon: widget.cameraIcon,
+            attachmentIcon: widget.attachmentIcon,
           ),
         ),
       ],

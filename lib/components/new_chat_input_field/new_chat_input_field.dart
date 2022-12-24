@@ -7,11 +7,20 @@ import 'widgets/text_field.dart';
 import 'widgets/attachment_bottom_sheet.dart';
 
 class NewChatInputField extends StatelessWidget {
+  //send button
   final Color? sendButtonColor;
   final bool? disableRecording;
   final IconData? sendButtonTextIcon;
   final IconData? sendButtonRecordIcon;
   final Color? sendButtonIconColor;
+  //text field
+  final String? textFieldHintText;
+  final TextStyle? textFieldHintTextStyle;
+  final bool? disableCamera;
+  final bool? disableAttachment;
+
+  final IconData? cameraIcon;
+  final IconData? attachmentIcon;
 
   NewChatInputField({
     Key? key,
@@ -20,6 +29,12 @@ class NewChatInputField extends StatelessWidget {
     this.sendButtonRecordIcon,
     this.sendButtonTextIcon,
     this.sendButtonIconColor,
+    this.textFieldHintText,
+    this.textFieldHintTextStyle,
+    this.disableCamera,
+    this.disableAttachment,
+    this.cameraIcon,
+    this.attachmentIcon,
   }) : super(key: key);
 
   final FocusNode focusNode = FocusNode();
@@ -54,6 +69,12 @@ class NewChatInputField extends StatelessWidget {
                           context: context,
                           builder: (builder) => AttachmentBottomSheet());
                     },
+                    textFieldHintText: textFieldHintText,
+                    textFieldHintTextStyle: textFieldHintTextStyle,
+                    disableCamera: disableCamera,
+                    disableAttachment: disableAttachment,
+                    cameraIcon: cameraIcon,
+                    attachmentIcon: attachmentIcon,
                   ),
                   SendButton(
                     sendButtonColor: sendButtonColor,
