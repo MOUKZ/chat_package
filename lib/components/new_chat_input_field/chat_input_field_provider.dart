@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 class NewChatInputFieldProvider extends ChangeNotifier {
@@ -44,5 +45,20 @@ class NewChatInputFieldProvider extends ChangeNotifier {
     if (!isText) {
       log('start recording');
     }
+  }
+
+  Future<List<CameraDescription>> getCameras() async {
+    final cameras = await availableCameras();
+    return cameras;
+  }
+
+  Future<XFile> takePhoto(CameraController cameraController) async {
+    XFile file = await cameraController.takePicture();
+    print(file.toString());
+    return file;
+  }
+
+  onSubmitMediaFromCamera(String path, String? caption) {
+    log(path);
   }
 }

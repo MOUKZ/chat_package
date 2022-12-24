@@ -1,3 +1,5 @@
+import 'package:chat_package/components/new_chat_input_field/widgets/camera/camera_capture_screen.dart';
+import 'package:chat_package/components/new_chat_input_field/widgets/camera/camptured_media_view.dart';
 import 'package:chat_package/components/new_chat_input_field/widgets/send_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +24,8 @@ class NewChatInputField extends StatelessWidget {
   final IconData? cameraIcon;
   final IconData? attachmentIcon;
 
+  final String? capturedMediaHintText;
+
   NewChatInputField({
     Key? key,
     this.sendButtonColor,
@@ -35,6 +39,7 @@ class NewChatInputField extends StatelessWidget {
     this.disableAttachment,
     this.cameraIcon,
     this.attachmentIcon,
+    this.capturedMediaHintText,
   }) : super(key: key);
 
   final FocusNode focusNode = FocusNode();
@@ -75,6 +80,32 @@ class NewChatInputField extends StatelessWidget {
                     disableAttachment: disableAttachment,
                     cameraIcon: cameraIcon,
                     attachmentIcon: attachmentIcon,
+                    onCameraIconPressed: () async {
+                      final cameras = await provider.getCameras();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (builder) => CameraCaptureScreen(
+                            cameras: cameras,
+                            takeImage: (controller) async {
+                              final file = await provider.takePhoto(controller);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (builder) => CapturedMediaView(
+                                    path: file.path,
+                                    capturedMediaHintText:
+                                        capturedMediaHintText,
+                                    onSubmitMediaFromCamera:
+                                        provider.onSubmitMediaFromCamera,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   SendButton(
                     sendButtonColor: sendButtonColor,

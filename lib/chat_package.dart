@@ -112,6 +112,8 @@ class ChatScreen extends StatefulWidget {
   final IconData? cameraIcon;
   final IconData? attachmentIcon;
 
+  final String? capturedMediaHintText;
+
   ChatScreen({
     Key? key,
     this.senderColor,
@@ -155,6 +157,7 @@ class ChatScreen extends StatefulWidget {
     this.disableAttachment,
     this.cameraIcon,
     this.attachmentIcon,
+    this.capturedMediaHintText,
   }) : super(key: key);
 
   @override
@@ -199,6 +202,7 @@ class _ChatScreenState extends State<ChatScreen> {
             disableAttachment: widget.disableAttachment,
             cameraIcon: widget.cameraIcon,
             attachmentIcon: widget.attachmentIcon,
+            capturedMediaHintText: widget.capturedMediaHintText,
           ),
         ),
       ],

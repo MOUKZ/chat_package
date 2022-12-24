@@ -9,6 +9,8 @@ class CustomTextField extends StatelessWidget {
   final IconData? cameraIcon;
   final IconData? attachmentIcon;
 
+  final Function() onCameraIconPressed;
+
   final TextEditingController controller;
   final FocusNode focusNode;
   final Function(String)? onChanged;
@@ -27,6 +29,7 @@ class CustomTextField extends StatelessWidget {
     required this.disableAttachment,
     required this.cameraIcon,
     required this.attachmentIcon,
+    required this.onCameraIconPressed,
   });
 
   @override
@@ -66,13 +69,7 @@ class CustomTextField extends StatelessWidget {
                     ? Container()
                     : IconButton(
                         icon: Icon(cameraIcon ?? Icons.camera_alt),
-                        onPressed: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (builder) =>
-                          //             CameraApp()));
-                        },
+                        onPressed: onCameraIconPressed,
                       ),
               ],
             ),
