@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 
 class NewChatInputFieldProvider extends ChangeNotifier {
   final TextEditingController textFieldController;
+  final Function(String path, String caption) handleMediaSubmitted;
 
-  NewChatInputFieldProvider({required this.textFieldController});
+  NewChatInputFieldProvider(
+      {required this.textFieldController, required this.handleMediaSubmitted});
 
   double scale = 0;
   bool isText = false;
@@ -59,6 +61,6 @@ class NewChatInputFieldProvider extends ChangeNotifier {
   }
 
   onSubmitMediaFromCamera(String path, String? caption) {
-    log(path);
+    handleMediaSubmitted(path, caption ?? '');
   }
 }

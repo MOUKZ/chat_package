@@ -3,6 +3,8 @@ library chat_package;
 import 'package:chat_package/components/message/message_widget.dart';
 import 'package:chat_package/components/new_chat_input_field/new_chat_input_field.dart';
 import 'package:chat_package/models/chat_message.dart';
+import 'package:chat_package/models/media/chat_media.dart';
+import 'package:chat_package/models/media/media_type.dart';
 import 'package:chat_package/utils/constants.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -114,6 +116,8 @@ class ChatScreen extends StatefulWidget {
 
   final String? capturedMediaHintText;
 
+  final Function(String path, String caption)? handleMediaSubmitted;
+
   ChatScreen({
     Key? key,
     this.senderColor,
@@ -158,6 +162,7 @@ class ChatScreen extends StatefulWidget {
     this.cameraIcon,
     this.attachmentIcon,
     this.capturedMediaHintText,
+    this.handleMediaSubmitted,
   }) : super(key: key);
 
   @override
@@ -172,7 +177,8 @@ class _ChatScreenState extends State<ChatScreen> {
     return Stack(
       children: [
         ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+          padding: const EdgeInsets.only(
+              left: kDefaultPadding, right: kDefaultPadding, bottom: 100),
           controller: widget.scrollController ?? _controller,
           itemCount: widget.messages.length,
           itemBuilder: (context, index) => MessageWidget(
@@ -191,19 +197,42 @@ class _ChatScreenState extends State<ChatScreen> {
           left: 5,
           right: 5,
           child: NewChatInputField(
-            sendButtonColor: widget.sendButtonColor,
-            disableRecording: widget.disableRecording,
-            sendButtonRecordIcon: widget.sendButtonRecordIcon,
-            sendButtonTextIcon: widget.sendButtonTextIcon,
-            sendButtonIconColor: widget.sendButtonIconColor,
-            textFieldHintText: widget.textFieldHintText,
-            textFieldHintTextStyle: widget.textFieldHintTextStyle,
-            disableCamera: widget.disableCamera,
-            disableAttachment: widget.disableAttachment,
-            cameraIcon: widget.cameraIcon,
-            attachmentIcon: widget.attachmentIcon,
-            capturedMediaHintText: widget.capturedMediaHintText,
-          ),
+              sendButtonColor: widget.sendButtonColor,
+              disableRecording: widget.disableRecording,
+              sendButtonRecordIcon: widget.sendButtonRecordIcon,
+              sendButtonTextIcon: widget.sendButtonTextIcon,
+              sendButtonIconColor: widget.sendButtonIconColor,
+              textFieldHintText: widget.textFieldHintText,
+              textFieldHintTextStyle: widget.textFieldHintTextStyle,
+              disableCamera: widget.disableCamera,
+              disableAttachment: widget.disableAttachment,
+              cameraIcon: widget.cameraIcon,
+              attachmentIcon: widget.attachmentIcon,
+              capturedMediaHintText: widget.capturedMediaHintText,
+              handleMediaSubmitted: widget.handleMediaSubmitted ??
+                  (path, caption) {
+                    setState(() {
+                      widget.messages.add(
+                        ChatMessage(
+                          isSender: true,
+                          text: caption,
+                          chatMedia: ChatMedia(
+                            url: path,
+                            mediaType: MediaType.imageMediaType(),
+                          ),
+                        ),
+                      );
+                    });
+
+                    setState(() {
+                      (widget.scrollController ?? _controller).animateTo(
+                          (widget.scrollController ?? _controller)
+                              .position
+                              .maxScrollExtent,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeOut);
+                    });
+                  }),
         ),
       ],
     );

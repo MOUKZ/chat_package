@@ -2,6 +2,7 @@ import 'package:chat_package/components/new_chat_input_field/widgets/camera/came
 import 'package:chat_package/components/new_chat_input_field/widgets/camera/camptured_media_view.dart';
 import 'package:chat_package/components/new_chat_input_field/widgets/send_button.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'chat_input_field_provider.dart';
 import 'widgets/text_field.dart';
@@ -26,6 +27,8 @@ class NewChatInputField extends StatelessWidget {
 
   final String? capturedMediaHintText;
 
+  final Function(String path, String caption) handleMediaSubmitted;
+
   NewChatInputField({
     Key? key,
     this.sendButtonColor,
@@ -40,6 +43,7 @@ class NewChatInputField extends StatelessWidget {
     this.cameraIcon,
     this.attachmentIcon,
     this.capturedMediaHintText,
+    required this.handleMediaSubmitted,
   }) : super(key: key);
 
   final FocusNode focusNode = FocusNode();
@@ -51,8 +55,8 @@ class NewChatInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => NewChatInputFieldProvider(
-        textFieldController: textFieldController,
-      ),
+          textFieldController: textFieldController,
+          handleMediaSubmitted: handleMediaSubmitted),
       child: Consumer<NewChatInputFieldProvider>(
         builder: (context, provider, child) {
           double width =
@@ -93,12 +97,15 @@ class NewChatInputField extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (builder) => CapturedMediaView(
-                                    path: file.path,
-                                    capturedMediaHintText:
-                                        capturedMediaHintText,
-                                    onSubmitMediaFromCamera:
-                                        provider.onSubmitMediaFromCamera,
-                                  ),
+                                      path: file.path,
+                                      capturedMediaHintText:
+                                          capturedMediaHintText,
+                                      onSubmitMediaFromCamera: (path, caption) {
+                                        provider.onSubmitMediaFromCamera(
+                                            path, caption);
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pop();
+                                      }),
                                 ),
                               );
                             },
