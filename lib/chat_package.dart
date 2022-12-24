@@ -1,14 +1,9 @@
 library chat_package;
 
-import 'dart:developer';
-
 import 'package:chat_package/components/message/message_widget.dart';
 import 'package:chat_package/components/new_chat_input_field/new_chat_input_field.dart';
 import 'package:chat_package/models/chat_message.dart';
-import 'package:chat_package/models/media/chat_media.dart';
-import 'package:chat_package/models/media/media_type.dart';
 import 'package:chat_package/utils/constants.dart';
-import 'package:chat_package/components/chat_input_field/chat_input_field.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';
@@ -100,6 +95,13 @@ class ChatScreen extends StatefulWidget {
   /// this is an optional parameter to override the default attachment bottom sheet
   final Function(BuildContext context)? attachmentClick;
 
+  //TODO check for dublickates
+  final Color? sendButtonColor;
+  final bool? disableRecording;
+  final IconData? sendButtonTextIcon;
+  final IconData? sendButtonRecordIcon;
+  final Color? sendButtonIconColor;
+
   ChatScreen({
     Key? key,
     this.senderColor,
@@ -128,6 +130,13 @@ class ChatScreen extends StatefulWidget {
     this.messageContainerTextStyle,
     this.sendDateTextStyle,
     this.attachmentClick,
+
+    ///
+    this.sendButtonColor,
+    this.disableRecording,
+    this.sendButtonRecordIcon,
+    this.sendButtonTextIcon,
+    this.sendButtonIconColor,
   }) : super(key: key);
 
   @override
@@ -160,7 +169,13 @@ class _ChatScreenState extends State<ChatScreen> {
           bottom: 20,
           left: 5,
           right: 5,
-          child: NewChatInputField(),
+          child: NewChatInputField(
+            sendButtonColor: widget.sendButtonColor,
+            disableRecording: widget.disableRecording,
+            sendButtonRecordIcon: widget.sendButtonRecordIcon,
+            sendButtonTextIcon: widget.sendButtonTextIcon,
+            sendButtonIconColor: widget.sendButtonIconColor,
+          ),
         ),
       ],
     );

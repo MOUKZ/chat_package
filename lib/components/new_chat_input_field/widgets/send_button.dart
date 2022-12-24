@@ -1,6 +1,13 @@
+import 'package:chat_package/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class SendButton extends StatelessWidget {
+  final Color? sendButtonColor;
+  final bool disableRecording;
+  final IconData? sendButtonTextIcon;
+  final IconData? sendButtonRecordIcon;
+  final Color? sendButtonIconColor;
+
   final bool isText;
   final Function() onPressed;
   final Function() onLongPress;
@@ -11,6 +18,11 @@ class SendButton extends StatelessWidget {
     required this.onPressed,
     required this.onLongPress,
     required this.onDragChange,
+    this.sendButtonColor = kPrimaryColor,
+    this.disableRecording = false,
+    this.sendButtonRecordIcon,
+    this.sendButtonTextIcon,
+    this.sendButtonIconColor,
   }) : super(key: key);
 
   @override
@@ -20,24 +32,31 @@ class SendButton extends StatelessWidget {
       onLongPressMoveUpdate: (details) {
         if (!isText &&
             details.localPosition.dx < 0 &&
-            details.localPosition.dx >= -20) {
+            details.localPosition.dx >= -20 &&
+            !disableRecording) {
           onDragChange(details.localPosition.dx);
         }
       },
       onLongPressEnd: (details) {
-        onDragChange(0);
+        if (!disableRecording) {
+          onDragChange(0);
+        }
       },
       onLongPress: () {
-        if (!isText) {
+        if (!isText && !disableRecording) {
           onLongPress();
         }
       },
       child: CircleAvatar(
         radius: 25,
-        backgroundColor: Color(0xFF128C7E),
+        backgroundColor: sendButtonColor,
         child: Icon(
-          isText ? Icons.send : Icons.mic,
-          color: Colors.white,
+          isText
+              ? (sendButtonTextIcon ?? Icons.send)
+              : (!disableRecording
+                  ? (sendButtonRecordIcon ?? Icons.mic)
+                  : (sendButtonTextIcon ?? Icons.send)),
+          color: sendButtonIconColor ?? Colors.white,
         ),
       ),
     );

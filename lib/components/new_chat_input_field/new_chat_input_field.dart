@@ -7,8 +7,19 @@ import 'widgets/text_field.dart';
 import 'widgets/attachment_bottom_sheet.dart';
 
 class NewChatInputField extends StatelessWidget {
+  final Color? sendButtonColor;
+  final bool? disableRecording;
+  final IconData? sendButtonTextIcon;
+  final IconData? sendButtonRecordIcon;
+  final Color? sendButtonIconColor;
+
   NewChatInputField({
     Key? key,
+    this.sendButtonColor,
+    this.disableRecording,
+    this.sendButtonRecordIcon,
+    this.sendButtonTextIcon,
+    this.sendButtonIconColor,
   }) : super(key: key);
 
   final FocusNode focusNode = FocusNode();
@@ -45,10 +56,15 @@ class NewChatInputField extends StatelessWidget {
                     },
                   ),
                   SendButton(
+                    sendButtonColor: sendButtonColor,
                     onDragChange: provider.onLongPressDragChange,
                     onPressed: provider.onSendButtonClicked,
                     onLongPress: provider.onLongPress,
                     isText: provider.isText,
+                    disableRecording: disableRecording ?? false,
+                    sendButtonRecordIcon: sendButtonRecordIcon,
+                    sendButtonTextIcon: sendButtonTextIcon,
+                    sendButtonIconColor: sendButtonIconColor,
                   ),
                 ],
               ),
