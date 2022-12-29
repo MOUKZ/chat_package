@@ -33,10 +33,10 @@ and the following permissions are required:
 android.useAndroidX=true
 android.enableJetifier=true
 ```
-2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 30:
+2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 21:
 ```
 android {
-  compileSdkVersion 30
+  compileSdkVersion 21
   ...
 }
 ```
@@ -66,6 +66,28 @@ Add permissions to your `AndroidManifest.xml` file.
     <string>photos</string>
 
 ```
+add this to your Podfile
+```
+  target.build_configurations.each do |config|
+
+      # You can enable the permissions needed here. For example to enable camera
+      # permission, just remove the `#` character in front so it looks like this:
+      #
+      # ## dart: PermissionGroup.camera
+      # 'PERMISSION_CAMERA=1'
+      #
+      #  Preprocessor definitions can be found in: https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+
+        'PERMISSION_CAMERA=1',
+        'PERMISSION_MICROPHONE=1',
+        'PERMISSION_PHOTOS=1',
+
+      ]
+
+    end
+```
 
 ### Calling
 
@@ -74,20 +96,26 @@ the list of ChatMessages is the only required field every thing else is optional
 ```dart
 List<ChatMessage> messages = [
     ChatMessage(
-        isSender: true,
-        imageUrl:
-            'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260'),
+      isSender: true,
+      text: 'this is a banana',
+      chatMedia: ChatMedia(
+        url:
+            'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
+        mediaType: MediaType.imageMediaType(),
+      ),
+    ),
+    ChatMessage(
+      isSender: false,
+      chatMedia: ChatMedia(
+        url:
+            'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
+        mediaType: MediaType.imageMediaType(),
+      ),
+    ),
     ChatMessage(isSender: false, text: 'wow that is cool'),
   ];
 ```
--- please note that only one of the following [text,imageUrl,imagePath,audioUrl,audioPath ] must not be null at a time if more is provided an error will occure 
-```dart
-ChatMessage(isSender: false, text: 'your.text')
-ChatMessage(isSender: false, imageUrl: image.url)
-ChatMessage(isSender: false, imagePath: image.path)
-ChatMessage(isSender: false, audioUrl: 'wow that is cool')
-ChatMessage(isSender: false, audioPath: 'wow that is cool')
-```
+
 ```dart
  ChatScreen(
           messages: messages,

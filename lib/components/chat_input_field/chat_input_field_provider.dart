@@ -66,8 +66,9 @@ class ChatInputFieldProvider extends ChangeNotifier {
   /// animated button on LongPress
   void onAnimatedButtonLongPress() async {
     // HapticFeedback.heavyImpact();
+    final permissionStatus = await micPermission.request();
 
-    if (await micPermission.isGranted) {
+    if (permissionStatus.isGranted) {
       if (!isText) {
         _stopWatchTimer.onStartTimer();
         _stopWatchTimer.rawTime.listen((value) {
@@ -84,8 +85,8 @@ class ChatInputFieldProvider extends ChangeNotifier {
         notifyListeners();
       }
     }
-    if (await micPermission.isDenied) {
-      await Permission.microphone.request();
+    if (permissionStatus.isPermanentlyDenied) {
+      openAppSettings();
     }
   }
 
