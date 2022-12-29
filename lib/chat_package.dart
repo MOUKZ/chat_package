@@ -1,7 +1,5 @@
 library chat_package;
 
-import 'dart:developer';
-
 import 'package:chat_package/components/message/message_widget.dart';
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/models/media/chat_media.dart';
@@ -9,7 +7,6 @@ import 'package:chat_package/models/media/media_type.dart';
 import 'package:chat_package/utils/constants.dart';
 import 'package:chat_package/components/chat_input_field/chat_input_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -138,26 +135,28 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
-            controller: widget.scrollController ?? _controller,
-            itemCount: widget.messages.length,
-            itemBuilder: (context, index) => MessageWidget(
-              message: widget.messages[index],
-              activeAudioSliderColor:
-                  widget.activeAudioSliderColor ?? kSecondaryColor,
-              inActiveAudioSliderColor:
-                  widget.inActiveAudioSliderColor ?? kLightColor,
-              senderColor: widget.senderColor ?? kPrimaryColor,
-              messageContainerTextStyle: widget.messageContainerTextStyle,
-              sendDateTextStyle: widget.sendDateTextStyle,
-            ),
+        ListView.builder(
+          padding: const EdgeInsets.only(
+              left: kDefaultPadding, right: kDefaultPadding, bottom: 100),
+          controller: widget.scrollController ?? _controller,
+          itemCount: widget.messages.length,
+          itemBuilder: (context, index) => MessageWidget(
+            message: widget.messages[index],
+            activeAudioSliderColor:
+                widget.activeAudioSliderColor ?? kSecondaryColor,
+            inActiveAudioSliderColor:
+                widget.inActiveAudioSliderColor ?? kLightColor,
+            senderColor: widget.senderColor ?? kPrimaryColor,
+            messageContainerTextStyle: widget.messageContainerTextStyle,
+            sendDateTextStyle: widget.sendDateTextStyle,
           ),
         ),
-        KeyboardVisibilityProvider(
+        Positioned(
+          bottom: 20,
+          left: 5,
+          right: 5,
           child: ChatInputField(
             imageAttachmentCancelText: widget.imageAttachmentCancelText,
             imageAttachmentFromCameraText: widget.imageAttachmentFromCameraText,
@@ -217,10 +216,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             300);
                   });
                 },
-            onSlideToCancelRecord: widget.onSlideToCancelRecord ??
-                () {
-                  log('slide to cancel');
-                },
+            onSlideToCancelRecord: widget.onSlideToCancelRecord ?? () {},
             onTextSubmit: (text) {
               if (widget.onSubmit != null) {
                 widget.onSubmit!(text);
