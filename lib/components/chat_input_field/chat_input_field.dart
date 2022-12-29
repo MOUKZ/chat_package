@@ -3,7 +3,6 @@ import 'package:chat_package/components/chat_input_field/widgets/chat_animated_b
 import 'package:chat_package/components/chat_input_field/widgets/chat_attachment_bottom_sheet.dart';
 import 'package:chat_package/components/chat_input_field/widgets/chat_input_field_container_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'widgets/chat_drag_trail.dart';
@@ -121,8 +120,6 @@ class ChatInputField extends StatelessWidget {
       ),
       child: Consumer<ChatInputFieldProvider>(
         builder: (context, provider, child) {
-          provider.isText =
-              KeyboardVisibilityProvider.isKeyboardVisible(context);
           return Padding(
             padding: chatInputFieldPadding ?? EdgeInsets.only(bottom: 3),
             child: IgnorePointer(
@@ -161,6 +158,7 @@ class ChatInputField extends StatelessWidget {
           recordTime: provider.recordTime,
           textController: _textController,
           sendMessageHintText: sendMessageHintText,
+          onTextFieldValueChanged: provider.onTextFieldValueChanged,
           attachmentClick: attachmentClick ??
               (context) {
                 _attachmentClick(context, provider);

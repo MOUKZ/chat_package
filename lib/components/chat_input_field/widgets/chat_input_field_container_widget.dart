@@ -14,6 +14,8 @@ class ChatInputFieldContainerWidget extends StatefulWidget {
   final Function(BuildContext context) attachmentClick;
   final Function()? onSubmitted;
 
+  final Function(String)? onTextFieldValueChanged;
+
   //TODO should add container shape
 
   const ChatInputFieldContainerWidget({
@@ -26,6 +28,7 @@ class ChatInputFieldContainerWidget extends StatefulWidget {
     required this.sendMessageHintText,
     required this.formKey,
     required this.attachmentClick,
+    required this.onTextFieldValueChanged,
     this.onSubmitted,
   });
 
@@ -67,6 +70,7 @@ class _ChatTextViewWidgetState extends State<ChatInputFieldContainerWidget> {
                       )
                     : TextFormField(
                         controller: widget.textController,
+                        onChanged: widget.onTextFieldValueChanged,
                         decoration: InputDecoration(
                           hintText: widget.sendMessageHintText,
                           border: InputBorder.none,

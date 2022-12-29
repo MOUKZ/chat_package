@@ -54,6 +54,8 @@ class ChatInputFieldProvider extends ChangeNotifier {
       onTextSubmit(textController.text);
     }
     textController.clear();
+    isText = false;
+    notifyListeners();
   }
 
   /// animated button on LongPress
@@ -172,5 +174,22 @@ class ChatInputFieldProvider extends ChangeNotifier {
         print(result.path);
       }
     }
+  }
+
+  void onTextFieldValueChanged(String value) {
+    if (value.length > 0) {
+      textController.text = value;
+      isText = true;
+      notifyListeners();
+    } else {
+      isText = false;
+      notifyListeners();
+    }
+  }
+
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
   }
 }
