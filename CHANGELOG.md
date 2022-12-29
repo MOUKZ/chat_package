@@ -23,3 +23,5 @@
 * Add Support For Flutter 3.
 ## 1.0.1-beta
 * bug fixes.
+## 1.0.0
+* bug fixes.
