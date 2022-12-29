@@ -63,7 +63,10 @@ class ImageMessageWidget extends StatelessWidget {
                               fit: BoxFit.cover,
                             )
                           : Image.file(
-                              File(message.chatMedia!.url),
+                              File(
+                                message.chatMedia!.url,
+                              ),
+                              fit: BoxFit.cover,
                             ),
                     ),
                   ),

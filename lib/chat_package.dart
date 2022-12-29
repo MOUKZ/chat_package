@@ -2,12 +2,9 @@ library chat_package;
 
 import 'package:chat_package/components/message/message_widget.dart';
 import 'package:chat_package/models/chat_message.dart';
-import 'package:chat_package/models/media/chat_media.dart';
-import 'package:chat_package/models/media/media_type.dart';
 import 'package:chat_package/utils/constants.dart';
 import 'package:chat_package/components/chat_input_field/chat_input_field.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ChatScreen extends StatefulWidget {
   ///color of all message containers if its belongs to the user
@@ -71,7 +68,7 @@ class ChatScreen extends StatefulWidget {
   final Function(ChatMessage? audioMessage, bool canceled) handleRecord;
 
   /// function to handel image selection
-  final Function(XFile)? handleImageSelect;
+  final Function(ChatMessage? imageMessage) handleImageSelect;
 
   /// to handel canceling of the record
   final VoidCallback? onSlideToCancelRecord;
@@ -111,7 +108,7 @@ class ChatScreen extends StatefulWidget {
     this.chatInputFieldColor = const Color(0xFFCFD8DC),
     this.imageAttachmentTextStyle,
     required this.handleRecord,
-    this.handleImageSelect,
+    required this.handleImageSelect,
     this.onSlideToCancelRecord,
     this.textEditingController,
     this.disableInput = false,
@@ -173,28 +170,7 @@ class _ChatScreenState extends State<ChatScreen> {
             imageAttachmentCancelIcon: widget.imageAttachmentCancelIcon,
             attachmentClick: widget.attachmentClick,
             handleRecord: widget.handleRecord,
-            handleImageSelect: widget.handleImageSelect ??
-                (file) async {
-                  // final bytes = await file.readAsBytes();
-                  // final image = await decodeImageFromList(bytes);
-                  // final name = file.path.split('/').last;
-                  setState(() {
-                    widget.messages.add(
-                      ChatMessage(
-                        isSender: true,
-                        chatMedia: ChatMedia(
-                          url: file.path,
-                          mediaType: MediaType.imageMediaType(),
-                        ),
-                      ),
-                    );
-                  });
-
-                  setState(() {
-                    widget.scrollController.jumpTo(
-                        widget.scrollController.position.maxScrollExtent + 300);
-                  });
-                },
+            handleImageSelect: widget.handleImageSelect,
             onSlideToCancelRecord: widget.onSlideToCancelRecord ?? () {},
             onTextSubmit: widget.onTextSubmit,
           ),

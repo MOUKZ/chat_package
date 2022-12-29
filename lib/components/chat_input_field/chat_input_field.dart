@@ -60,7 +60,7 @@ class ChatInputField extends StatelessWidget {
   final Function(ChatMessage text) onTextSubmit;
 
   /// function to handle the selected image
-  final Function(XFile) handleImageSelect;
+  final Function(ChatMessage? imageMessage) handleImageSelect;
 
   /// function to handle the recorded audio
   final Function(ChatMessage? audioMessage, bool canceled) handleRecord;

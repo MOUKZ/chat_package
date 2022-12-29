@@ -79,6 +79,17 @@ class _MyHomePageState extends State<MyHomePage> {
             });
           }
         },
+        handleImageSelect: (imageMessage) async {
+          if (imageMessage != null) {
+            setState(() {
+              messages.add(
+                imageMessage,
+              );
+              scrollController
+                  .jumpTo(scrollController.position.maxScrollExtent + 300);
+            });
+          }
+        },
       ),
     );
   }
