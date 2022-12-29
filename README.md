@@ -21,8 +21,8 @@ An easy to implement whatsapp like chat ui. with voice note feature and image vi
 ## Usage
 
 ### Permission Setup
-This package uses [permission_handler](https://pub.dev/packages/permission_handler) plugin to access permissions,
-and the following permissions are required:
+You only have to add permissions in your project and the package will do the rest.
+The following permissions are required:
  1. camera
  2. microphone
  3. local storage
@@ -33,7 +33,7 @@ and the following permissions are required:
 android.useAndroidX=true
 android.enableJetifier=true
 ```
-2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 21:
+2. In order to use the recording feature, make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 21:
 ```
 android {
   compileSdkVersion 21
@@ -67,16 +67,8 @@ Add permissions to your `AndroidManifest.xml` file.
 
 ```
 add this to your Podfile
-```
+```ruby
   target.build_configurations.each do |config|
-
-      # You can enable the permissions needed here. For example to enable camera
-      # permission, just remove the `#` character in front so it looks like this:
-      #
-      # ## dart: PermissionGroup.camera
-      # 'PERMISSION_CAMERA=1'
-      #
-      #  Preprocessor definitions can be found in: https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)',
 
@@ -92,7 +84,9 @@ add this to your Podfile
 ### Calling
 
 
-the list of ChatMessages is the only required field every thing else is optional
+Simply call the ChatScreen which takes multiple required fields such as:
+ChatMessages: the chat screen requires a list of chat messages, and the ```ChatMessage``` model contains a ```fromJson()``` method
+so you can get a list of stored ```ChatMessage``` from your back-end.
 ```dart
 List<ChatMessage> messages = [
     ChatMessage(
@@ -115,11 +109,45 @@ List<ChatMessage> messages = [
     ChatMessage(isSender: false, text: 'wow that is cool'),
   ];
 ```
+This package also provides you with a ```ChatMessage``` model when using these required methods```onTextSubmit```, ```handleRecord``` ,
+```handleImageSelect`` and the full code will be like this: 
 
 ```dart
  ChatScreen(
-          messages: messages,
-        )
+        scrollController: scrollController,
+        messages: messages,
+        onSlideToCancelRecord: () {
+          log('not sent');
+        },
+        onTextSubmit: (textMessage) {
+          setState(() {
+            messages.add(textMessage);
+
+            scrollController
+                .jumpTo(scrollController.position.maxScrollExtent + 50);
+          });
+        },
+        handleRecord: (audioMessage, canceled) {
+          if (!canceled) {
+            setState(() {
+              messages.add(audioMessage!);
+              scrollController
+                  .jumpTo(scrollController.position.maxScrollExtent + 90);
+            });
+          }
+        },
+        handleImageSelect: (imageMessage) async {
+          if (imageMessage != null) {
+            setState(() {
+              messages.add(
+                imageMessage,
+              );
+              scrollController
+                  .jumpTo(scrollController.position.maxScrollExtent + 300);
+            });
+          }
+        },
+      )
 ```
 
 ## Properties
