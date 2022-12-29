@@ -1,17 +1,15 @@
 # chat_package
-![Pub Version](https://img.shields.io/pub/v/chat_package?color=blue) ![likes](https://img.shields.io/pub/likes/chat_package) ![popularity](https://img.shields.io/pub/popularity/chat_package) <a href="https://github.com/MOUKZ/chat_package" target="_blank">![GitHub](https://img.shields.io/github/stars/MOUKZ/chat_package)</a>
+![Pub Version](https://img.shields.io/pub/v/chat_package?color=blue) ![likes](https://img.shields.io/pub/likes/chat_package) ![popularity](https://img.shields.io/pub/popularity/chat_package) <a href="https://github.com/MOUKZ/chat_package" target="_blank">![GitHub](https://img.shields.io/github/stars/MOUKZ/chat_package)</a> ![Pub](https://img.shields.io/pub/v/chat_package)
 
 
 
-Flutter chat ui with full voice record/note functionality and image sending
+This package provides an easy-to-implement chat UI in your flutter project with audio recording and image-sending support.<br>
+This package also is highly customizable to suit your project.
+ 
 
 ### Created by Omar Mouki
 <a href="https://github.com/MOUKZ">![GitHub](https://img.shields.io/badge/Github-808080?style=for-the-badge&logo=github&logoColor=white)</a> <a href="https://www.linkedin.com/in/omar-mouki"> ![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)</a> <a href="mailto:omar.mouki@gmail.com"><img src="https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white"></a>
 
-# Chat UI Package
-![Pub](https://img.shields.io/pub/v/chat_package)
-
-An easy to implement whatsapp like chat ui. with voice note feature and image viewing. 
 
 ## Screenshots
 
@@ -84,12 +82,11 @@ add this to your Podfile
 ### Calling
 
 
-Simply call the ChatScreen which takes multiple required fields such as:
-ChatMessages: the chat screen requires a list of chat messages, and the ```ChatMessage``` model contains a ```fromJson()``` method
-so you can get a list of stored ```ChatMessage``` from your back-end.
+Simply call the ```ChatScreen```<br>
+ChatMessages: the chat screen requires a list of chat messages, and to make it easy, the ```ChatMessage``` model contains a ```fromJson()``` method
+so you can iterate the list of stored ```ChatMessage``` from your back-end, and an example of a ```ChatMessage```
 ```dart
-List<ChatMessage> messages = [
-    ChatMessage(
+ChatMessage(
       isSender: true,
       text: 'this is a banana',
       chatMedia: ChatMedia(
@@ -97,20 +94,10 @@ List<ChatMessage> messages = [
             'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
         mediaType: MediaType.imageMediaType(),
       ),
-    ),
-    ChatMessage(
-      isSender: false,
-      chatMedia: ChatMedia(
-        url:
-            'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
-        mediaType: MediaType.imageMediaType(),
-      ),
-    ),
-    ChatMessage(isSender: false, text: 'wow that is cool'),
-  ];
+    )
 ```
 This package also provides you with a ```ChatMessage``` model when using these required methods```onTextSubmit```, ```handleRecord``` ,
-```handleImageSelect`` and the full code will be like this: 
+```handleImageSelect``` and the full code will be like this: 
 
 ```dart
  ChatScreen(
