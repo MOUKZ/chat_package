@@ -1,5 +1,8 @@
 import 'dart:developer';
 
+import 'package:chat_package/models/chat_message.dart';
+import 'package:chat_package/models/media/chat_media.dart';
+import 'package:chat_package/models/media/media_type.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -7,14 +10,14 @@ import 'package:record/record.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class ChatInputFieldProvider extends ChangeNotifier {
-  final Function(String? path, bool cancel) handleRecord;
+  final Function(ChatMessage? audioMessage, bool cancel) handleRecord;
   final VoidCallback onSlideToCancelRecord;
 
   /// function to handle the selected image
-  final Function(XFile) handleImageSelect;
+  final Function(ChatMessage? imageMessage) handleImageSelect;
 
   /// The callback when send is pressed.
-  final Function(String? text) onTextSubmit;
+  final Function(ChatMessage text) onTextSubmit;
   final TextEditingController textController;
   final double cancelPosition;
 
@@ -51,7 +54,9 @@ class ChatInputFieldProvider extends ChangeNotifier {
   void onAnimatedButtonTap() {
     _formKey.currentState?.save();
     if (isText && textController.text.isNotEmpty) {
-      onTextSubmit(textController.text);
+      final textMessage =
+          ChatMessage(isSender: true, text: textController.text);
+      onTextSubmit(textMessage);
     }
     textController.clear();
     isText = false;
@@ -61,8 +66,9 @@ class ChatInputFieldProvider extends ChangeNotifier {
   /// animated button on LongPress
   void onAnimatedButtonLongPress() async {
     // HapticFeedback.heavyImpact();
+    final permissionStatus = await micPermission.request();
 
-    if (await micPermission.isGranted) {
+    if (permissionStatus.isGranted) {
       if (!isText) {
         _stopWatchTimer.onStartTimer();
         _stopWatchTimer.rawTime.listen((value) {
@@ -79,8 +85,8 @@ class ChatInputFieldProvider extends ChangeNotifier {
         notifyListeners();
       }
     }
-    if (await micPermission.isDenied) {
-      await Permission.microphone.request();
+    if (permissionStatus.isPermanentlyDenied) {
+      openAppSettings();
     }
   }
 
@@ -96,7 +102,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
 
   /// animated button on Long Press End
   void onAnimatedButtonLongPressEnd(LongPressEndDetails details) async {
-    final res = await stopRecord();
+    final source = await stopRecord();
     // Stop
     _stopWatchTimer.onStopTimer();
 
@@ -104,14 +110,21 @@ class ChatInputFieldProvider extends ChangeNotifier {
     _stopWatchTimer.onResetTimer();
 
     if (!isText && await micPermission.isGranted) {
-      if (_position > cancelPosition - _height) {
+      if (_position > cancelPosition - _height || source == null) {
         log('canceled');
 
-        handleRecord(res, true);
+        handleRecord(null, true);
 
         onSlideToCancelRecord();
       } else {
-        handleRecord(res, false);
+        final audioMessage = ChatMessage(
+          isSender: true,
+          chatMedia: ChatMedia(
+            url: source,
+            mediaType: MediaType.audioMediaType(),
+          ),
+        );
+        handleRecord(audioMessage, false);
       }
 
       _duration = 600;
@@ -156,23 +169,54 @@ class ChatInputFieldProvider extends ChangeNotifier {
   // TODO: make this custom from user
   /// open image picker from camera, gallery, or cancel the selection
   void pickImage(int type) async {
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.camera,
-      Permission.storage,
-    ].request();
-    if (statuses.containsValue(PermissionStatus.denied)) {
-      log('no permission');
-    } else {
-      final result = await ImagePicker().pickImage(
-        imageQuality: 70,
-        maxWidth: 1440,
-        source: type == 1 ? ImageSource.camera : ImageSource.gallery,
-      );
-      if (result != null) {
-        handleImageSelect(result);
-
-        print(result.path);
+    final cameraPermission = Permission.camera;
+    final storagePermission = Permission.camera;
+    if (type == 1) {
+      final permissionStatus = await cameraPermission.request();
+      if (permissionStatus.isGranted) {
+        final path = await _getImagePathFromSource(1);
+        final imageMessage = _getImageMEssageFromPath(path);
+        handleImageSelect(imageMessage);
+        return;
+      } else {
+        handleImageSelect(null);
+        return;
       }
+    } else {
+      final permissionStatus = await storagePermission.request();
+      if (permissionStatus.isGranted) {
+        final path = await _getImagePathFromSource(2);
+        final imageMessage = _getImageMEssageFromPath(path);
+        handleImageSelect(imageMessage);
+        return;
+      } else {
+        handleImageSelect(null);
+        return;
+      }
+    }
+  }
+
+  Future<String?> _getImagePathFromSource(int type) async {
+    final result = await ImagePicker().pickImage(
+      imageQuality: 70,
+      maxWidth: 1440,
+      source: type == 1 ? ImageSource.camera : ImageSource.gallery,
+    );
+    return result?.path;
+  }
+
+  ChatMessage? _getImageMEssageFromPath(String? path) {
+    if (path != null) {
+      final imageMessage = ChatMessage(
+        isSender: true,
+        chatMedia: ChatMedia(
+          url: path,
+          mediaType: MediaType.imageMediaType(),
+        ),
+      );
+      return imageMessage;
+    } else {
+      return null;
     }
   }
 

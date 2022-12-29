@@ -51,15 +51,44 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
     ChatMessage(isSender: false, text: 'wow that is cool'),
   ];
-
+  final scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: ChatScreen(
+        scrollController: scrollController,
         messages: messages,
         onSlideToCancelRecord: () {
           log('not sent');
+        },
+        onTextSubmit: (textMessage) {
+          setState(() {
+            messages.add(textMessage);
+
+            scrollController
+                .jumpTo(scrollController.position.maxScrollExtent + 50);
+          });
+        },
+        handleRecord: (audioMessage, canceled) {
+          if (!canceled) {
+            setState(() {
+              messages.add(audioMessage!);
+              scrollController
+                  .jumpTo(scrollController.position.maxScrollExtent + 90);
+            });
+          }
+        },
+        handleImageSelect: (imageMessage) async {
+          if (imageMessage != null) {
+            setState(() {
+              messages.add(
+                imageMessage,
+              );
+              scrollController
+                  .jumpTo(scrollController.position.maxScrollExtent + 300);
+            });
+          }
         },
       ),
     );

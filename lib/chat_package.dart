@@ -2,12 +2,9 @@ library chat_package;
 
 import 'package:chat_package/components/message/message_widget.dart';
 import 'package:chat_package/models/chat_message.dart';
-import 'package:chat_package/models/media/chat_media.dart';
-import 'package:chat_package/models/media/media_type.dart';
 import 'package:chat_package/utils/constants.dart';
 import 'package:chat_package/components/chat_input_field/chat_input_field.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ChatScreen extends StatefulWidget {
   ///color of all message containers if its belongs to the user
@@ -19,8 +16,8 @@ class ChatScreen extends StatefulWidget {
   ///color of the active part of the audio slider
   final Color? activeAudioSliderColor;
 
-  ///scrollController for the chat screen
-  final ScrollController? scrollController;
+  ///[required]scrollController for the chat screen
+  final ScrollController scrollController;
 
   /// the color of the outer container and the color used to hide
   /// the text on slide
@@ -61,17 +58,20 @@ class ChatScreen extends StatefulWidget {
   ///hint text to be shown for recording voice note
   final String recordingNoteHintText;
 
-  /// handel [text message] on submit
-  final Function(String? text)? onSubmit;
+  /// [required] handel [text message] on submit
+  /// this method will pass a [ChatMessage]
+  final Function(ChatMessage textMessage) onTextSubmit;
 
   /// [required] the list of chat messages
   final List<ChatMessage> messages;
 
-  /// function to handel successful recordings, bass to override
-  final Function(String? path, bool canceled)? handleRecord;
+  /// [required] function to handel successful recordings, bass to override
+  /// this method will pass a [ChatMessage] and if the used [canceled] the recording
+  final Function(ChatMessage? audioMessage, bool canceled) handleRecord;
 
-  /// function to handel image selection
-  final Function(XFile)? handleImageSelect;
+  /// [required] function to handel image selection
+  /// this method will pass a [ChatMessage]
+  final Function(ChatMessage? imageMessage) handleImageSelect;
 
   /// to handel canceling of the record
   final VoidCallback? onSlideToCancelRecord;
@@ -79,6 +79,7 @@ class ChatScreen extends StatefulWidget {
   ///TextEditingController to handel input text
   final TextEditingController? textEditingController;
 
+  /// to change the appearance of the chat input field
   final BoxDecoration? chatInputFieldDecoration;
 
   /// use this flag to disable the input
@@ -102,7 +103,7 @@ class ChatScreen extends StatefulWidget {
     this.inActiveAudioSliderColor,
     this.activeAudioSliderColor,
     required this.messages,
-    this.scrollController,
+    required this.scrollController,
     this.sendMessageHintText = 'Enter message here',
     this.recordingNoteHintText = 'Now Recording',
     this.imageAttachmentFromGalleryText = 'From Gallery',
@@ -110,13 +111,13 @@ class ChatScreen extends StatefulWidget {
     this.imageAttachmentCancelText = 'Cancel',
     this.chatInputFieldColor = const Color(0xFFCFD8DC),
     this.imageAttachmentTextStyle,
-    this.handleRecord,
-    this.handleImageSelect,
+    required this.handleRecord,
+    required this.handleImageSelect,
     this.onSlideToCancelRecord,
     this.textEditingController,
     this.disableInput = false,
     this.chatInputFieldDecoration,
-    this.onSubmit,
+    required this.onTextSubmit,
     this.chatInputFieldPadding,
     this.imageAttachmentFromGalleryIcon,
     this.imageAttachmentFromCameraIcon,
@@ -131,8 +132,6 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final _controller = ScrollController();
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -140,7 +139,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ListView.builder(
           padding: const EdgeInsets.only(
               left: kDefaultPadding, right: kDefaultPadding, bottom: 100),
-          controller: widget.scrollController ?? _controller,
+          controller: widget.scrollController,
           itemCount: widget.messages.length,
           itemBuilder: (context, index) => MessageWidget(
             message: widget.messages[index],
@@ -174,64 +173,10 @@ class _ChatScreenState extends State<ChatScreen> {
             imageAttachmentFromCameraIcon: widget.imageAttachmentFromCameraIcon,
             imageAttachmentCancelIcon: widget.imageAttachmentCancelIcon,
             attachmentClick: widget.attachmentClick,
-            handleRecord: widget.handleRecord ??
-                (source, canceled) {
-                  if (!canceled && source != null) {
-                    setState(() {
-                      widget.messages.add(
-                        ChatMessage(
-                          isSender: true,
-                          chatMedia: ChatMedia(
-                            url: source,
-                            mediaType: MediaType.audioMediaType(),
-                          ),
-                        ),
-                      );
-                      widget.scrollController?.jumpTo(
-                          widget.scrollController!.position.maxScrollExtent +
-                              90);
-                    });
-                  }
-                },
-            handleImageSelect: widget.handleImageSelect ??
-                (file) async {
-                  // final bytes = await file.readAsBytes();
-                  // final image = await decodeImageFromList(bytes);
-                  // final name = file.path.split('/').last;
-                  setState(() {
-                    widget.messages.add(
-                      ChatMessage(
-                        isSender: true,
-                        chatMedia: ChatMedia(
-                          url: file.path,
-                          mediaType: MediaType.imageMediaType(),
-                        ),
-                      ),
-                    );
-                  });
-
-                  setState(() {
-                    widget.scrollController?.jumpTo(
-                        widget.scrollController!.position.maxScrollExtent +
-                            300);
-                  });
-                },
+            handleRecord: widget.handleRecord,
+            handleImageSelect: widget.handleImageSelect,
             onSlideToCancelRecord: widget.onSlideToCancelRecord ?? () {},
-            onTextSubmit: (text) {
-              if (widget.onSubmit != null) {
-                widget.onSubmit!(text);
-              } else {
-                if (text != null) {
-                  setState(() {
-                    widget.messages
-                        .add(ChatMessage(isSender: true, text: text));
-
-                    widget.scrollController?.jumpTo(
-                        widget.scrollController!.position.maxScrollExtent + 50);
-                  });
-                }
-              }
-            },
+            onTextSubmit: widget.onTextSubmit,
           ),
         ),
       ],
