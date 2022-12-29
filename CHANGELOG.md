@@ -3,10 +3,10 @@
 * initial release.
 ## 0.0.2
 
-* documinting the package and general improvments.
+* documenting the package and general improvements.
 ## 0.0.3
 
-* adding example and more functionality for hundling record sliding.
+* adding example and more functionality for handling record sliding.
 
 ## 0.0.4
 
@@ -18,6 +18,8 @@
 ## 0.0.6
 * textController bug fix.
 ## 0.0.7
-* more documintation.
+* more documentation.
 ## 1.0.0-beta
 * Add Support For Flutter 3.
+## 1.0.1-beta
+* bug fixes.
