@@ -1,5 +1,8 @@
 import 'dart:developer';
 
+import 'package:chat_package/models/chat_message.dart';
+import 'package:chat_package/models/media/chat_media.dart';
+import 'package:chat_package/models/media/media_type.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -7,14 +10,14 @@ import 'package:record/record.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class ChatInputFieldProvider extends ChangeNotifier {
-  final Function(String? path, bool cancel) handleRecord;
+  final Function(ChatMessage? audioMessage, bool cancel) handleRecord;
   final VoidCallback onSlideToCancelRecord;
 
   /// function to handle the selected image
   final Function(XFile) handleImageSelect;
 
   /// The callback when send is pressed.
-  final Function(String? text) onTextSubmit;
+  final Function(ChatMessage text) onTextSubmit;
   final TextEditingController textController;
   final double cancelPosition;
 
@@ -51,7 +54,9 @@ class ChatInputFieldProvider extends ChangeNotifier {
   void onAnimatedButtonTap() {
     _formKey.currentState?.save();
     if (isText && textController.text.isNotEmpty) {
-      onTextSubmit(textController.text);
+      final textMessage =
+          ChatMessage(isSender: true, text: textController.text);
+      onTextSubmit(textMessage);
     }
     textController.clear();
     isText = false;
@@ -96,7 +101,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
 
   /// animated button on Long Press End
   void onAnimatedButtonLongPressEnd(LongPressEndDetails details) async {
-    final res = await stopRecord();
+    final source = await stopRecord();
     // Stop
     _stopWatchTimer.onStopTimer();
 
@@ -104,14 +109,21 @@ class ChatInputFieldProvider extends ChangeNotifier {
     _stopWatchTimer.onResetTimer();
 
     if (!isText && await micPermission.isGranted) {
-      if (_position > cancelPosition - _height) {
+      if (_position > cancelPosition - _height || source == null) {
         log('canceled');
 
-        handleRecord(res, true);
+        handleRecord(null, true);
 
         onSlideToCancelRecord();
       } else {
-        handleRecord(res, false);
+        final audioMessage = ChatMessage(
+          isSender: true,
+          chatMedia: ChatMedia(
+            url: source,
+            mediaType: MediaType.audioMediaType(),
+          ),
+        );
+        handleRecord(audioMessage, false);
       }
 
       _duration = 600;

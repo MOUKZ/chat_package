@@ -2,6 +2,7 @@ import 'package:chat_package/components/chat_input_field/chat_input_field_provid
 import 'package:chat_package/components/chat_input_field/widgets/chat_animated_button.dart';
 import 'package:chat_package/components/chat_input_field/widgets/chat_attachment_bottom_sheet.dart';
 import 'package:chat_package/components/chat_input_field/widgets/chat_input_field_container_widget.dart';
+import 'package:chat_package/models/chat_message.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -56,13 +57,13 @@ class ChatInputField extends StatelessWidget {
   final VoidCallback onSlideToCancelRecord;
 
   /// The callback when send is pressed.
-  final Function(String? text) onTextSubmit;
+  final Function(ChatMessage text) onTextSubmit;
 
   /// function to handle the selected image
   final Function(XFile) handleImageSelect;
 
   /// function to handle the recorded audio
-  final Function(String? path, bool canceled) handleRecord;
+  final Function(ChatMessage? audioMessage, bool canceled) handleRecord;
 
   final TextEditingController _textController = TextEditingController();
 
