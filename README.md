@@ -16,6 +16,10 @@ This package also is highly customizable to suit your project.
 
 <img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/home_screen.png" height="400em"> <img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/recording.png" height="400em"> <img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/bottom_sheet.png" height="400em"> <img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/permission.png" height="400em">
 
+
+## Coming Soon
+
+The next update of this package will add the support of recording videos, adding caption to captured/storage images, and much more features.
 ## Usage
 
 ### Permission Setup
@@ -138,6 +142,7 @@ This package also provides you with a ```ChatMessage``` model when using these r
 ```
 
 ## Properties
+You can customize almost everything in this package and here is the entire properties that you can change.
 ```dart
  ///color of all message containers if its belongs to the user
   final Color? senderColor;
@@ -148,8 +153,8 @@ This package also provides you with a ```ChatMessage``` model when using these r
   ///color of the active part of the audio slider
   final Color? activeAudioSliderColor;
 
-  ///scrollController for the chat screen
-  final ScrollController? scrollController;
+  ///[required]scrollController for the chat screen
+  final ScrollController scrollController;
 
   /// the color of the outer container and the color used to hide
   /// the text on slide
@@ -158,26 +163,52 @@ This package also provides you with a ```ChatMessage``` model when using these r
   ///hint text to be shown for sending messages
   final String sendMessageHintText;
 
-  /// texts shown wen trying to chose image attachment
+  /// these parameters for changing the text and icons in the [attachment-bottom-sheet]
+  /// text shown wen trying to chose image attachment from gallery in attachment
+  /// bottom sheet
   final String imageAttachmentFromGalleryText;
+
+  /// Icon shown wen trying to chose image attachment from gallery in attachment
+  /// bottom sheet
+  final Icon? imageAttachmentFromGalleryIcon;
+
+  /// text shown wen trying to chose image attachment from camera in attachment
+  /// bottom sheet
   final String imageAttachmentFromCameraText;
+
+  /// Icon shown wen trying to chose image attachment from camera in attachment
+  /// bottom sheet
+  final Icon? imageAttachmentFromCameraIcon;
+
+  /// text shown wen trying to chose image attachment cancel text in attachment
+  /// bottom sheet
   final String imageAttachmentCancelText;
+
+  /// Icon shown wen trying to chose image attachment cancel text in attachment
+  /// bottom sheet
+  final Icon? imageAttachmentCancelIcon;
+
+  /// image attachment text style in attachment
+  /// bottom sheet
   final TextStyle? imageAttachmentTextStyle;
 
   ///hint text to be shown for recording voice note
   final String recordingNoteHintText;
 
-  /// handel [text message] on submit
-  final Function(String? text)? onSubmit;
+  /// [required] handel [text message] on submit
+  /// this method will pass a [ChatMessage]
+  final Function(ChatMessage textMessage) onTextSubmit;
 
   /// [required] the list of chat messages
   final List<ChatMessage> messages;
 
-  /// function to handel successful recordings, bass to override
-  final Function(String? path, bool canceled)? handleRecord;
+  /// [required] function to handel successful recordings, bass to override
+  /// this method will pass a [ChatMessage] and if the used [canceled] the recording
+  final Function(ChatMessage? audioMessage, bool canceled) handleRecord;
 
-  /// function to handel image selection
-  final Function(XFile)? handleImageSelect;
+  /// [required] function to handel image selection
+  /// this method will pass a [ChatMessage]
+  final Function(ChatMessage? imageMessage) handleImageSelect;
 
   /// to handel canceling of the record
   final VoidCallback? onSlideToCancelRecord;
@@ -185,6 +216,7 @@ This package also provides you with a ```ChatMessage``` model when using these r
   ///TextEditingController to handel input text
   final TextEditingController? textEditingController;
 
+  /// to change the appearance of the chat input field
   final BoxDecoration? chatInputFieldDecoration;
 
   /// use this flag to disable the input
@@ -192,6 +224,15 @@ This package also provides you with a ```ChatMessage``` model when using these r
 
   /// git the chat input field padding
   final EdgeInsets? chatInputFieldPadding;
+
+  /// text style for the message container
+  final TextStyle? messageContainerTextStyle;
+
+  /// text style for the message container date
+  final TextStyle? sendDateTextStyle;
+
+  /// this is an optional parameter to override the default attachment bottom sheet
+  final Function(BuildContext context)? attachmentClick;
 
 ```
 ## Found this project useful?

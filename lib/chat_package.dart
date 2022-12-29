@@ -16,7 +16,7 @@ class ChatScreen extends StatefulWidget {
   ///color of the active part of the audio slider
   final Color? activeAudioSliderColor;
 
-  ///scrollController for the chat screen
+  ///[required]scrollController for the chat screen
   final ScrollController scrollController;
 
   /// the color of the outer container and the color used to hide
@@ -58,16 +58,19 @@ class ChatScreen extends StatefulWidget {
   ///hint text to be shown for recording voice note
   final String recordingNoteHintText;
 
-  /// handel [text message] on submit
+  /// [required] handel [text message] on submit
+  /// this method will pass a [ChatMessage]
   final Function(ChatMessage textMessage) onTextSubmit;
 
   /// [required] the list of chat messages
   final List<ChatMessage> messages;
 
-  /// function to handel successful recordings, bass to override
+  /// [required] function to handel successful recordings, bass to override
+  /// this method will pass a [ChatMessage] and if the used [canceled] the recording
   final Function(ChatMessage? audioMessage, bool canceled) handleRecord;
 
-  /// function to handel image selection
+  /// [required] function to handel image selection
+  /// this method will pass a [ChatMessage]
   final Function(ChatMessage? imageMessage) handleImageSelect;
 
   /// to handel canceling of the record
@@ -76,6 +79,7 @@ class ChatScreen extends StatefulWidget {
   ///TextEditingController to handel input text
   final TextEditingController? textEditingController;
 
+  /// to change the appearance of the chat input field
   final BoxDecoration? chatInputFieldDecoration;
 
   /// use this flag to disable the input
