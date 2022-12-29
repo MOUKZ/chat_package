@@ -4,7 +4,6 @@ import 'package:chat_package/components/chat_input_field/widgets/chat_attachment
 import 'package:chat_package/components/chat_input_field/widgets/chat_input_field_container_widget.dart';
 import 'package:chat_package/models/chat_message.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'widgets/chat_drag_trail.dart';
 
