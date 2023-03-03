@@ -79,7 +79,7 @@ class ChatInputField extends StatelessWidget {
     this.buttonRadios = 35,
     required this.sendMessageHintText,
     required this.recordingNoteHintText,
-    this.textDirection = TextDirection.rtl,
+    this.textDirection,
     this.chatInputFieldDecoration,
     this.sliderButtonContent = const Icon(
       Icons.chevron_right,
