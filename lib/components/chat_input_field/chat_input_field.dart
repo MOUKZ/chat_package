@@ -49,7 +49,7 @@ class ChatInputField extends StatelessWidget {
   final Color chatInputFieldColor;
 
   // TODO  right description
-  final TextDirection textDirection;
+  final TextDirection? textDirection;
   final BoxDecoration? chatInputFieldDecoration;
 
   /// The callback when slider is completed. This is the only required field.
@@ -125,7 +125,7 @@ class ChatInputField extends StatelessWidget {
             child: IgnorePointer(
               ignoring: disableInput,
               child: Directionality(
-                textDirection: textDirection,
+                textDirection: textDirection ?? TextDirection.rtl,
                 child: AnimatedContainer(
                   duration: Duration(milliseconds: provider.duration),
                   curve: Curves.ease,
