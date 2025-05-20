@@ -11,15 +11,12 @@ class ChatInputFieldContainerWidget extends StatefulWidget {
   final TextEditingController textController;
   final String sendMessageHintText;
   final GlobalKey<FormState> formKey;
-  final Function(BuildContext context) attachmentClick;
-  final Function()? onSubmitted;
-
-  final Function(String)? onTextFieldValueChanged;
-
-  //TODO should add container shape
+  final void Function(BuildContext context) attachmentClick;
+  final ValueChanged<String>? onTextFieldValueChanged;
+  final VoidCallback? onSubmitted;
 
   const ChatInputFieldContainerWidget({
-    super.key,
+    Key? key,
     required this.chatInputFieldColor,
     required this.isRecording,
     required this.recordingNoteHintText,
@@ -28,79 +25,65 @@ class ChatInputFieldContainerWidget extends StatefulWidget {
     required this.sendMessageHintText,
     required this.formKey,
     required this.attachmentClick,
-    required this.onTextFieldValueChanged,
+    this.onTextFieldValueChanged,
     this.onSubmitted,
-  });
+  }) : super(key: key);
 
   @override
-  State<ChatInputFieldContainerWidget> createState() =>
-      _ChatTextViewWidgetState();
+  _ChatInputFieldContainerWidgetState createState() =>
+      _ChatInputFieldContainerWidgetState();
 }
 
-class _ChatTextViewWidgetState extends State<ChatInputFieldContainerWidget> {
+class _ChatInputFieldContainerWidgetState
+    extends State<ChatInputFieldContainerWidget> {
   @override
   Widget build(BuildContext context) {
+    final isRecording = widget.isRecording;
+    final iconData = isRecording ? Icons.delete : Icons.camera_alt_outlined;
+    final iconColor = isRecording
+        ? kErrorColor
+        : Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.64);
+
     return Container(
       decoration: BoxDecoration(
         color: widget.chatInputFieldColor,
-        //TODO the shape should be from user
-        borderRadius: BorderRadius.circular(40),
+        borderRadius: BorderRadius.circular(40), // TODO: allow custom shape
       ),
       child: Row(
         children: [
-          SizedBox(
-            width: 50,
-          ),
+          const SizedBox(width: 50),
           Expanded(
             child: Form(
               key: widget.formKey,
-              child: Container(
-                padding: const EdgeInsets.only(top: 0.0, right: 10),
-                child: widget.isRecording
-                    ? Container(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: isRecording
+                    ? SizedBox(
                         height: 50,
                         child: Center(
                           child: Text(
-                            widget.recordingNoteHintText +
-                                " " +
-                                StopWatchTimer.getDisplayTime(
-                                    widget.recordTime),
+                            '${widget.recordingNoteHintText} ${StopWatchTimer.getDisplayTime(widget.recordTime)}',
                           ),
                         ),
                       )
                     : TextFormField(
                         controller: widget.textController,
                         onChanged: widget.onTextFieldValueChanged,
+                        onFieldSubmitted: (_) => widget.onSubmitted?.call(),
+                        textDirection: TextDirection.ltr,
                         decoration: InputDecoration(
                           hintText: widget.sendMessageHintText,
                           border: InputBorder.none,
                         ),
-                        onFieldSubmitted: (_) {
-                          if (widget.onSubmitted != null) widget.onSubmitted!();
-                        },
-                        textDirection: TextDirection.ltr,
                       ),
               ),
             ),
           ),
           InkWell(
-            onTap: () {
-              widget.attachmentClick(context);
-            },
-            child: Icon(
-              widget.isRecording ? Icons.delete : Icons.camera_alt_outlined,
-              color: widget.isRecording
-                  ? kErrorColor
-                  : Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .color!
-                      .withOpacity(0.64),
-            ),
+            onTap: () => widget.attachmentClick(context),
+            child: Icon(iconData, color: iconColor),
           ),
-          SizedBox(
-            width: 10,
-          ),
+          const SizedBox(width: 10),
         ],
       ),
     );

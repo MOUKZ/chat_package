@@ -1,32 +1,67 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+/// media_type.dart
+sealed class MediaType {
+  const MediaType._();
 
-part 'media_type.freezed.dart';
-
-@freezed
-class MediaType with _$MediaType {
   const factory MediaType.imageMediaType() = ImageMediaType;
   const factory MediaType.audioMediaType() = AudioMediaType;
   const factory MediaType.videoMediaType() = VideoMediaType;
+
+  T when<T>({
+    required T Function() imageMediaType,
+    required T Function() audioMediaType,
+    required T Function() videoMediaType,
+  });
+
   @override
-  String toString() {
-    return this.when(
-      imageMediaType: () => 'image',
-      audioMediaType: () => 'audio',
-      videoMediaType: () => 'video',
-    );
-  }
+  String toString() => when(
+        imageMediaType: () => 'image',
+        audioMediaType: () => 'audio',
+        videoMediaType: () => 'video',
+      );
 
   factory MediaType.fromString(String type) {
     switch (type) {
       case 'image':
-        return MediaType.imageMediaType();
+        return const MediaType.imageMediaType();
       case 'audio':
-        return MediaType.audioMediaType();
+        return const MediaType.audioMediaType();
       case 'video':
-        return MediaType.videoMediaType();
-
+        return const MediaType.videoMediaType();
       default:
-        return MediaType.imageMediaType();
+        return const MediaType.imageMediaType();
     }
   }
+}
+
+final class ImageMediaType extends MediaType {
+  const ImageMediaType() : super._();
+  @override
+  T when<T>({
+    required T Function() imageMediaType,
+    required T Function() audioMediaType,
+    required T Function() videoMediaType,
+  }) =>
+      imageMediaType();
+}
+
+final class AudioMediaType extends MediaType {
+  const AudioMediaType() : super._();
+  @override
+  T when<T>({
+    required T Function() imageMediaType,
+    required T Function() audioMediaType,
+    required T Function() videoMediaType,
+  }) =>
+      audioMediaType();
+}
+
+final class VideoMediaType extends MediaType {
+  const VideoMediaType() : super._();
+  @override
+  T when<T>({
+    required T Function() imageMediaType,
+    required T Function() audioMediaType,
+    required T Function() videoMediaType,
+  }) =>
+      videoMediaType();
 }
