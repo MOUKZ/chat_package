@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ChatInputFieldProvider extends ChangeNotifier {
   final Function(ChatMessage? audioMessage, bool cancel) handleRecord;
@@ -21,7 +22,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
   final TextEditingController textController;
   final double cancelPosition;
 
-  late Record _record = Record();
+  late AudioRecorder _record = AudioRecorder();
   double _position = 0;
   int _duration = 0;
   bool _isRecording = false;
@@ -136,15 +137,13 @@ class ChatInputFieldProvider extends ChangeNotifier {
 
   /// function used to record audio
   void recordAudio() async {
+    final tempDir = await getTemporaryDirectory();
+    final path = '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
+
     if (await _record.isRecording()) {
       _record.stop();
     }
-
-    await _record.start(
-      // path: 'aFullPath/myFile.m4a', // required
-      bitRate: 128000, // by default
-      // sampleRate: 44100, // by default
-    );
+    await _record.start(const RecordConfig(), path: path);
   }
 
   /// function used to stop recording
@@ -229,6 +228,11 @@ class ChatInputFieldProvider extends ChangeNotifier {
       isText = false;
       notifyListeners();
     }
+  }
+
+  Future<String> getAppTempDirectoryPath() async {
+    final dir = await getTemporaryDirectory();
+    return dir.path;
   }
 
   @override
