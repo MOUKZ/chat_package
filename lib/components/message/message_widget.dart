@@ -64,24 +64,21 @@ class MessageWidget extends StatelessWidget {
         senderColor: senderColor,
       );
     } else {
-      return message.chatMedia!.mediaType.maybeWhen(
-          imageMediaType: () => ImageMessageWidget(
-                message: message,
-                senderColor: senderColor,
-                messageContainerTextStyle: messageContainerTextStyle,
-              ),
-          audioMediaType: () => AudioMessageWidget(
-                message: message,
-                senderColor: senderColor,
-                activeAudioSliderColor: activeAudioSliderColor,
-                inActiveAudioSliderColor: inActiveAudioSliderColor,
-              ),
-          //TODO add this
-          videoMediaType: () => Container(),
-          orElse: () => TextMessageWidget(
-                message: message,
-                senderColor: senderColor,
-              ));
+      return message.chatMedia!.mediaType.when(
+        imageMediaType: () => ImageMessageWidget(
+          message: message,
+          senderColor: senderColor,
+          messageContainerTextStyle: messageContainerTextStyle,
+        ),
+        audioMediaType: () => AudioMessageWidget(
+          message: message,
+          senderColor: senderColor,
+          activeAudioSliderColor: activeAudioSliderColor,
+          inActiveAudioSliderColor: inActiveAudioSliderColor,
+        ),
+        //TODO add this
+        videoMediaType: () => Container(),
+      );
     }
   }
 }
