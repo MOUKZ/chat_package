@@ -119,6 +119,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
         onSlideToCancelRecord();
       } else {
         final audioMessage = ChatMessage(
+          text: '',
           isSender: true,
           chatMedia: ChatMedia(
             url: source,
@@ -207,6 +208,7 @@ class ChatInputFieldProvider extends ChangeNotifier {
   ChatMessage? _getImageMEssageFromPath(String? path) {
     if (path != null) {
       final imageMessage = ChatMessage(
+        text: '',
         isSender: true,
         chatMedia: ChatMedia(
           url: path,

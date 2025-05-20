@@ -13,6 +13,8 @@ class ChatScreen extends StatefulWidget {
   ///color of the inactive part of the audio slider
   final Color? inActiveAudioSliderColor;
 
+  final Color? receiverColor;
+
   ///color of the active part of the audio slider
   final Color? activeAudioSliderColor;
 
@@ -105,6 +107,7 @@ class ChatScreen extends StatefulWidget {
     this.senderColor,
     this.inActiveAudioSliderColor,
     this.activeAudioSliderColor,
+    this.receiverColor,
     required this.messages,
     required this.scrollController,
     this.sendMessageHintText = 'Enter message here',
@@ -146,10 +149,11 @@ class _ChatScreenState extends State<ChatScreen> {
           controller: widget.scrollController,
           itemCount: widget.messages.length,
           itemBuilder: (context, index) => MessageWidget(
+            receiverColor: widget.receiverColor ?? kSecondaryColor,
             message: widget.messages[index],
             activeAudioSliderColor:
                 widget.activeAudioSliderColor ?? kSecondaryColor,
-            inActiveAudioSliderColor:
+            inactiveAudioSliderColor:
                 widget.inActiveAudioSliderColor ?? kLightColor,
             senderColor: widget.senderColor ?? kPrimaryColor,
             messageContainerTextStyle: widget.messageContainerTextStyle,

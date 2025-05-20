@@ -42,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     ),
     ChatMessage(
+      text: '',
       isSender: false,
       chatMedia: ChatMedia(
         url:
