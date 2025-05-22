@@ -1,22 +1,49 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
+import 'package:flutter/foundation.dart';
 import 'package:chat_package/models/media/chat_media.dart';
 
+@immutable
 class ChatMessage {
-  /// please note that only one of the following [text,imageUrl,imagePath,audioUrl,audioPath ]
-  ///must not be null at a time if more is provided an error will occur
-  String text;
+  // JSON keys
+  static const _keyText = 'text';
+  static const _keyChatMedia = 'chatMedia';
+  static const _keyIsSender = 'isSender';
+  static const _keyCreatedAt = 'createdAt';
+
+  /// The textual content of the message.
+  /// Mutually exclusive with [chatMedia].
+  final String text;
+
+  /// The media content of the message.
+  /// Mutually exclusive with [text].
   final ChatMedia? chatMedia;
+
+  /// Whether this message was sent by the local user.
   final bool isSender;
-  DateTime? createdAt;
+
+  /// When the message was created.
+  final DateTime? createdAt;
+
+  /// Creates a chat message containing either [text] or [chatMedia], but not both.
+  ///
+  /// ```dart
+  /// // A text message:
+  /// final m1 = ChatMessage(text: 'Hello!', isSender: true);
+  ///
+  /// // A media message:
+  /// final m2 = ChatMessage(
+  ///   chatMedia: ChatMedia(url: 'https://…', mediaType: MediaType.imageMediaType()),
+  ///   isSender: false,
+  /// );
+  /// ```
   ChatMessage({
-    this.text = '',
+    required this.text,
     this.chatMedia,
     required this.isSender,
     this.createdAt,
   });
 
+  /// Returns a copy of this message, replacing only the given fields.
   ChatMessage copyWith({
     String? text,
     ChatMedia? chatMedia,
@@ -31,53 +58,51 @@ class ChatMessage {
     );
   }
 
+  /// Converts this message to a JSON‐compatible map.
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'text': text,
-      'chatMedia': chatMedia?.toMap(),
-      'isSender': isSender,
-      'createdAt': createdAt?.millisecondsSinceEpoch,
+    return {
+      _keyText: text,
+      _keyChatMedia: chatMedia?.toMap(),
+      _keyIsSender: isSender,
+      _keyCreatedAt: createdAt?.millisecondsSinceEpoch,
     };
   }
 
+  /// Creates a message from a `Map`, e.g. from decoded JSON.
   factory ChatMessage.fromMap(Map<String, dynamic> map) {
     return ChatMessage(
-      text: map['text'] as String,
-      chatMedia: map['chatMedia'] != null
-          ? ChatMedia.fromMap(map['chatMedia'] as Map<String, dynamic>)
+      text: (map[_keyText] as String?) ?? '',
+      chatMedia: map[_keyChatMedia] != null
+          ? ChatMedia.fromMap(map[_keyChatMedia] as Map<String, dynamic>)
           : null,
-      isSender: map['isSender'] as bool,
-      createdAt: map['createdAt'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int)
+      isSender: map[_keyIsSender] as bool,
+      createdAt: map[_keyCreatedAt] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map[_keyCreatedAt] as int)
           : null,
     );
   }
 
-  String toJson() => json.encode(toMap());
+  /// Encodes this message to a JSON string.
+  String toJson() => jsonEncode(toMap());
 
-  factory ChatMessage.fromJson(String source) =>
-      ChatMessage.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() {
-    return 'ChatMessage(text: $text, chatMedia: $chatMedia, isSender: $isSender, createdAt: $createdAt)';
-  }
+  /// Decodes a JSON string into a [ChatMessage].
+  factory ChatMessage.fromJson(String jsonStr) =>
+      ChatMessage.fromMap(jsonDecode(jsonStr) as Map<String, dynamic>);
 
   @override
-  bool operator ==(covariant ChatMessage other) {
+  String toString() =>
+      'ChatMessage(text: $text, chatMedia: $chatMedia, isSender: $isSender, createdAt: $createdAt)';
+
+  @override
+  bool operator ==(Object other) {
     if (identical(this, other)) return true;
-
-    return other.text == text &&
+    return other is ChatMessage &&
+        other.text == text &&
         other.chatMedia == chatMedia &&
         other.isSender == isSender &&
         other.createdAt == createdAt;
   }
 
   @override
-  int get hashCode {
-    return text.hashCode ^
-        chatMedia.hashCode ^
-        isSender.hashCode ^
-        createdAt.hashCode;
-  }
+  int get hashCode => Object.hash(text, chatMedia, isSender, createdAt);
 }

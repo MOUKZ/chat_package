@@ -1,239 +1,213 @@
-import 'dart:developer';
+import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:record/record.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/models/media/chat_media.dart';
 import 'package:chat_package/models/media/media_type.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:record/record.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-class ChatInputFieldProvider extends ChangeNotifier {
-  final Function(ChatMessage? audioMessage, bool cancel) handleRecord;
-  final VoidCallback onSlideToCancelRecord;
+/// Defines the source for picking images: camera or gallery.
+enum ImageSourceType { camera, gallery }
 
-  /// function to handle the selected image
-  final Function(ChatMessage? imageMessage) handleImageSelect;
+/// Manages chat input logic: text entry, image picking, and audio recording gestures.
+///
+/// - Tracks recording state and drag threshold for slide-to-cancel.
+/// - Requests permissions, starts/stops audio recording.
+/// - Emits callbacks for text submission, image selection, and audio recording.
+class ChatInputProvider extends ChangeNotifier {
+  // ======== Callbacks ========
+  /// Invoked with a [ChatMessage] when audio recording completes successfully.
+  final ValueChanged<ChatMessage> onRecordComplete;
 
-  /// The callback when send is pressed.
-  final Function(ChatMessage text) onTextSubmit;
+  /// Invoked with a [ChatMessage] on text submission.
+  final ValueChanged<ChatMessage> onTextSubmit;
+
+  /// Invoked with a [ChatMessage] when an image is picked, or `null` on cancel.
+  final ValueChanged<ChatMessage> onImageSelected;
+
+  // ======== Controllers & Config ========
+  /// Controller for the text input field.
   final TextEditingController textController;
-  final double cancelPosition;
 
-  late Record _record = Record();
-  double _position = 0;
-  int _duration = 0;
+  /// Horizontal drag distance threshold to cancel recording (in pixels).
+  final double cancelThreshold;
+
+  // ======== Internal State ========
+  final _audioRecorder = AudioRecorder();
   bool _isRecording = false;
-  int _recordTime = 0;
-  bool isText = false;
-  double _height = 70;
-  final StopWatchTimer _stopWatchTimer = StopWatchTimer();
-  final _formKey = GlobalKey<FormState>();
+  double _dragOffset = 0.0;
 
-  /// getters
-  int get duration => _duration;
-  bool get isRecording => _isRecording;
-  int get recordTime => _recordTime;
-  GlobalKey<FormState> get formKey => _formKey;
-
-  /// setters
-  set height(double val) => _height = val;
-
-  Permission micPermission = Permission.microphone;
-  ChatInputFieldProvider({
+  /// Constructs a [ChatInputProvider].
+  ///
+  /// - [onRecordComplete]: callback when audio recording is done.
+  /// - [onTextSubmit]: callback for text messages.
+  /// - [onImageSelected]: callback for image selection or cancellation.
+  /// - [textController]: controller for text input.
+  /// - [cancelThreshold]: pixels user must drag to cancel recording.
+  ChatInputProvider({
+    required this.onRecordComplete,
     required this.onTextSubmit,
+    required this.onImageSelected,
     required this.textController,
-    required this.handleRecord,
-    required this.onSlideToCancelRecord,
-    required this.cancelPosition,
-    required this.handleImageSelect,
-  });
+    required this.cancelThreshold,
+  }) {
+    textController.addListener(_onTextChanged);
+  }
 
-  /// animated button on tap
-  void onAnimatedButtonTap() {
-    _formKey.currentState?.save();
-    if (isText && textController.text.isNotEmpty) {
-      final textMessage =
-          ChatMessage(isSender: true, text: textController.text);
-      onTextSubmit(textMessage);
+  /// Whether the provider is currently recording audio.
+  bool get isRecording => _isRecording;
+
+  /// Current drag offset along the X axis (negative when dragging left).
+  double get dragOffset => _dragOffset;
+
+  /// True if the text input contains non-whitespace characters.
+  bool get hasText => textController.text.trim().isNotEmpty;
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Permission & Recording Helpers
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /// Requests [perm] and opens app settings if permanently denied.
+  Future<bool> _requestPermission(Permission perm) async {
+    final status = await perm.request();
+    if (status.isPermanentlyDenied) {
+      await openAppSettings();
+      return false;
     }
-    textController.clear();
-    isText = false;
+    return status.isGranted;
+  }
+
+  /// Starts recording to a timestamped `.m4a` file in the temp directory.
+  Future<void> _startAudioRecord() async {
+    final dir = await getTemporaryDirectory();
+    final filePath = '${dir.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
+    if (await _audioRecorder.isRecording()) {
+      await _audioRecorder.stop();
+    }
+    await _audioRecorder.start(
+      const RecordConfig(),
+      path: filePath,
+    );
+  }
+
+  /// Stops recording and returns the recorded file path, or `null`.
+  Future<String?> _stopAudioRecord() => _audioRecorder.stop();
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Recording Gesture Handlers
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /// Initiates audio recording on long-press start if no text is present.
+  Future<void> startRecording() async {
+    if (hasText) return;
+    if (!await _requestPermission(Permission.microphone)) return;
+
+    await _startAudioRecord();
+    _isRecording = true;
+    _dragOffset = 0.0;
     notifyListeners();
   }
 
-  /// animated button on LongPress
-  void onAnimatedButtonLongPress() async {
-    // HapticFeedback.heavyImpact();
-    final permissionStatus = await micPermission.request();
-
-    if (permissionStatus.isGranted) {
-      if (!isText) {
-        _stopWatchTimer.onStartTimer();
-        _stopWatchTimer.rawTime.listen((value) {
-          _recordTime = value;
-
-          print('rawTime $value ${StopWatchTimer.getDisplayTime(_recordTime)}');
-          notifyListeners();
-        });
-
-        textController.clear();
-        recordAudio();
-
-        _isRecording = true;
-        notifyListeners();
-      }
+  /// Updates drag offset. Cancels recording if threshold is exceeded.
+  void onMove(Offset offset) {
+    if (!_isRecording || hasText) return;
+    _dragOffset = offset.dx.clamp(-cancelThreshold, 0.0);
+    if (_dragOffset <= -cancelThreshold) {
+      _resetRecordingState();
     }
-    if (permissionStatus.isPermanentlyDenied) {
-      openAppSettings();
-    }
+    notifyListeners();
   }
 
-  /// animated button on Long Press Move Update
-  void onAnimatedButtonLongPressMoveUpdate(
-      LongPressMoveUpdateDetails details) async {
-    if (!isText && _isRecording == true) {
-      _duration = 0;
-      _position = details.localPosition.dx * -1;
-      notifyListeners();
-    }
-  }
+  /// Ends recording on long-press release; completes or cancels accordingly.
+  Future<void> endRecording() async {
+    if (!_isRecording) return;
 
-  /// animated button on Long Press End
-  void onAnimatedButtonLongPressEnd(LongPressEndDetails details) async {
-    final source = await stopRecord();
-    // Stop
-    _stopWatchTimer.onStopTimer();
+    final recordedPath = await _stopAudioRecord();
+    final canceled =
+        (recordedPath == null) || (_dragOffset <= -cancelThreshold);
 
-    // Reset
-    _stopWatchTimer.onResetTimer();
-
-    if (!isText && await micPermission.isGranted) {
-      if (_position > cancelPosition - _height || source == null) {
-        log('canceled');
-
-        handleRecord(null, true);
-
-        onSlideToCancelRecord();
-      } else {
-        final audioMessage = ChatMessage(
-          isSender: true,
-          chatMedia: ChatMedia(
-            url: source,
-            mediaType: MediaType.audioMediaType(),
-          ),
-        );
-        handleRecord(audioMessage, false);
-      }
-
-      _duration = 600;
-      _position = 0;
-      _isRecording = false;
-      notifyListeners();
-    }
-  }
-
-  /// function used to record audio
-  void recordAudio() async {
-    if (await _record.isRecording()) {
-      _record.stop();
-    }
-
-    await _record.start(
-      // path: 'aFullPath/myFile.m4a', // required
-      bitRate: 128000, // by default
-      // sampleRate: 44100, // by default
-    );
-  }
-
-  /// function used to stop recording
-  /// and returns the record path as a string
-
-  Future<String?> stopRecord() async {
-    return await _record.stop();
-  }
-
-  /// get the animated button position
-  double getPosition() {
-    log(_position.toString());
-    if (_position < 0) {
-      return 0;
-    } else if (_position > cancelPosition - _height) {
-      return cancelPosition - _height;
-    } else {
-      return _position;
-    }
-  }
-
-  // TODO: make this custom from user
-  /// open image picker from camera, gallery, or cancel the selection
-  void pickImage(int type) async {
-    final cameraPermission = Permission.camera;
-    final storagePermission = Permission.camera;
-    if (type == 1) {
-      final permissionStatus = await cameraPermission.request();
-      if (permissionStatus.isGranted) {
-        final path = await _getImagePathFromSource(1);
-        final imageMessage = _getImageMEssageFromPath(path);
-        handleImageSelect(imageMessage);
-        return;
-      } else {
-        handleImageSelect(null);
-        return;
-      }
-    } else {
-      final permissionStatus = await storagePermission.request();
-      if (permissionStatus.isGranted) {
-        final path = await _getImagePathFromSource(2);
-        final imageMessage = _getImageMEssageFromPath(path);
-        handleImageSelect(imageMessage);
-        return;
-      } else {
-        handleImageSelect(null);
-        return;
-      }
-    }
-  }
-
-  Future<String?> _getImagePathFromSource(int type) async {
-    final result = await ImagePicker().pickImage(
-      imageQuality: 70,
-      maxWidth: 1440,
-      source: type == 1 ? ImageSource.camera : ImageSource.gallery,
-    );
-    return result?.path;
-  }
-
-  ChatMessage? _getImageMEssageFromPath(String? path) {
-    if (path != null) {
-      final imageMessage = ChatMessage(
+    _resetRecordingState();
+    if (!canceled) {
+      final message = ChatMessage(
+        text: '',
         isSender: true,
         chatMedia: ChatMedia(
-          url: path,
+          url: recordedPath,
+          mediaType: MediaType.audioMediaType(),
+        ),
+      );
+      onRecordComplete(message);
+    }
+    notifyListeners();
+  }
+
+  /// Sends the current text message if non-empty, then clears the input.
+  void sendTextMessage() {
+    if (!hasText) return;
+    final message = ChatMessage(
+      text: textController.text,
+      isSender: true,
+    );
+    onTextSubmit(message);
+
+    textController.clear();
+    notifyListeners();
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Image Picking
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /// Picks an image from [sourceType], then invokes [onImageSelected].
+  Future<void> pickImage(ImageSourceType sourceType) async {
+    final permission = sourceType == ImageSourceType.camera
+        ? Permission.camera
+        : Permission.photos;
+    if (!await _requestPermission(permission)) {
+      return;
+    }
+
+    final picker = ImagePicker();
+    final source = sourceType == ImageSourceType.camera
+        ? ImageSource.camera
+        : ImageSource.gallery;
+    final file = await picker.pickImage(
+      source: source,
+      imageQuality: 70,
+      maxWidth: 1440,
+    );
+
+    if (file == null) {
+    } else {
+      final message = ChatMessage(
+        text: '',
+        isSender: true,
+        chatMedia: ChatMedia(
+          url: file.path,
           mediaType: MediaType.imageMediaType(),
         ),
       );
-      return imageMessage;
-    } else {
-      return null;
+      onImageSelected(message);
     }
   }
 
-  void onTextFieldValueChanged(String value) {
-    if (value.length > 0) {
-      textController.text = value;
-      isText = true;
-      notifyListeners();
-    } else {
-      isText = false;
-      notifyListeners();
-    }
+  // ─────────────────────────────────────────────────────────────────────────
+  // Internal Helpers
+  // ─────────────────────────────────────────────────────────────────────────
+
+  void _onTextChanged() => notifyListeners();
+
+  void _resetRecordingState() {
+    _isRecording = false;
+    _dragOffset = 0.0;
   }
 
   @override
   void dispose() {
-    textController.dispose();
+    textController.removeListener(_onTextChanged);
+    _audioRecorder.dispose();
     super.dispose();
   }
 }
