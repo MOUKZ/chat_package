@@ -101,7 +101,6 @@ class ChatInputProvider extends ChangeNotifier {
     if (_recordTimer == null) {
       _recordTimer = Timer.periodic(const Duration(seconds: 1), (_) {
         _recordDuration += const Duration(seconds: 1);
-        print('omar hello');
         notifyListeners();
       });
     }
@@ -217,7 +216,9 @@ class ChatInputProvider extends ChangeNotifier {
   // Internal Helpers
   // ─────────────────────────────────────────────────────────────────────────
 
-  void _onTextChanged() => notifyListeners();
+  void _onTextChanged() {
+    notifyListeners();
+  }
 
   void _resetRecordingState() {
     _isRecording = false;

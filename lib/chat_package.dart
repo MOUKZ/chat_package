@@ -190,7 +190,6 @@ class ChatScreen extends StatelessWidget {
   /// Color used for receiver message bubble.
   final Color? receiverColor;
 
-
   /// Active color for the audio slider.
   final Color? activeAudioSliderColor;
 
@@ -199,56 +198,54 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
       children: <Widget>[
-        ListView.builder(
-          padding: const EdgeInsets.symmetric(
-            horizontal: kDefaultPadding,
-            vertical: kDefaultPadding / 2,
-          ).copyWith(bottom: 100),
-          controller: scrollController,
-          itemCount: messages.length,
-          itemBuilder: (context, index) {
-            final message = messages[index];
-            return MessageWidget(
-              receiverColor: receiverColor ?? kSecondaryColor,
-              senderColor: senderColor ?? kPrimaryColor,
-              activeAudioSliderColor: activeAudioSliderColor ?? kSecondaryColor,
-              inactiveAudioSliderColor: inactiveAudioSliderColor ?? kLightColor,
-              message: message,
-              messageContainerTextStyle: null,
-              sendDateTextStyle: null,
-            );
-          },
-        ),
-        Positioned(
-          bottom: 20,
-          left: 5,
-          right: 5,
-          child: ChatInputField(
-            textController: textEditingController,
-            onTextSubmit: onTextSubmit,
-            onImageSelected: onImageSelected,
-            onRecordComplete: onRecordComplete,
-            enableInput: enableInput,
-            recordingNoteHintText: recordingNoteHintText,
-            cameraText: cameraText,
-            cameraIcon: cameraIcon,
-            galleryText: galleryText,
-            galleryIcon: galleryIcon,
-            cancelText: cancelText,
-            cancelIcon: cancelIcon,
-            chatBottomSheetTextStyle: chatBottomSheetTextStyle,
-            textFieldDecoration: textFieldDecoration,
-            chatFieldPadding: chatFieldPadding,
-            chatFieldMargin: chatFieldMargin,
-            showWaveAnimation: showWaveAnimation,
-            waveDuration: waveDuration,
-            waveStyle: waveStyle,
-            buttonStyle: buttonStyle,
-            textDirection: textDirection,
-
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(
+              horizontal: kDefaultPadding,
+              vertical: kDefaultPadding / 2,
+            ).copyWith(bottom: 100),
+            controller: scrollController,
+            itemCount: messages.length,
+            itemBuilder: (context, index) {
+              final message = messages[index];
+              return MessageWidget(
+                receiverColor: receiverColor ?? kSecondaryColor,
+                senderColor: senderColor ?? kPrimaryColor,
+                activeAudioSliderColor:
+                    activeAudioSliderColor ?? kSecondaryColor,
+                inactiveAudioSliderColor:
+                    inactiveAudioSliderColor ?? kLightColor,
+                message: message,
+                messageContainerTextStyle: null,
+                sendDateTextStyle: null,
+              );
+            },
           ),
+        ),
+        ChatInputField(
+          textController: textEditingController,
+          onTextSubmit: onTextSubmit,
+          onImageSelected: onImageSelected,
+          onRecordComplete: onRecordComplete,
+          enableInput: enableInput,
+          recordingNoteHintText: recordingNoteHintText,
+          cameraText: cameraText,
+          cameraIcon: cameraIcon,
+          galleryText: galleryText,
+          galleryIcon: galleryIcon,
+          cancelText: cancelText,
+          cancelIcon: cancelIcon,
+          chatBottomSheetTextStyle: chatBottomSheetTextStyle,
+          textFieldDecoration: textFieldDecoration,
+          chatFieldPadding: chatFieldPadding,
+          chatFieldMargin: chatFieldMargin,
+          showWaveAnimation: showWaveAnimation,
+          waveDuration: waveDuration,
+          waveStyle: waveStyle,
+          buttonStyle: buttonStyle,
+          textDirection: textDirection,
         ),
       ],
     );

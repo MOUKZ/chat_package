@@ -75,7 +75,7 @@ class _ChatPageState extends State<ChatPage> {
           messages.add(imageMessage);
           setState(() {});
         },
-        textEditingController: TextEditingController(),
+        textEditingController: textEditingController,
         onTextSubmit: (textMessage) {
           messages.add(textMessage);
           setState(() {});
