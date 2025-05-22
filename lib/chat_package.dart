@@ -190,6 +190,7 @@ class ChatScreen extends StatelessWidget {
   /// Color used for receiver message bubble.
   final Color? receiverColor;
 
+
   /// Active color for the audio slider.
   final Color? activeAudioSliderColor;
 
@@ -246,6 +247,7 @@ class ChatScreen extends StatelessWidget {
             waveStyle: waveStyle,
             buttonStyle: buttonStyle,
             textDirection: textDirection,
+
           ),
         ),
       ],

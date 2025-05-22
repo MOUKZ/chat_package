@@ -50,6 +50,7 @@ class ChatInputField extends StatefulWidget {
   /// used for [ChatBottomSheet]
   final String cameraText;
 
+
   /// Icon for the “From Camera” option.
   /// used for [ChatBottomSheet]
   final Icon? cameraIcon;
@@ -86,6 +87,7 @@ class ChatInputField extends StatefulWidget {
     Key? key,
     required this.onRecordComplete,
     required this.textController,
+
     required this.onTextSubmit,
     required this.onImageSelected,
     this.cameraText = 'From Camera',
@@ -248,6 +250,7 @@ class _ChatInputFieldState extends State<ChatInputField>
                               ),
                             ],
                           ),
+
                   ),
                 ),
                 SizedBox(
