@@ -1,5 +1,7 @@
 import 'package:chat_package/chat_package.dart';
 import 'package:chat_package/models/chat_message.dart';
+import 'package:chat_package/models/media/chat_media.dart';
+import 'package:chat_package/models/media/media_type.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MyApp());
@@ -38,6 +40,19 @@ class _ChatPageState extends State<ChatPage> {
     ChatMessage(
       text: 'hi omar',
       isSender: true,
+    ),
+    ChatMessage(
+      text: 'hello',
+      isSender: false,
+    ),
+    ChatMessage(
+      isSender: true,
+      text: 'this is a banana',
+      chatMedia: const ChatMedia(
+        url:
+            'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
+        mediaType: MediaType.imageMediaType(),
+      ),
     ),
   ];
 

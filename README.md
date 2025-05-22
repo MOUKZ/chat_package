@@ -13,7 +13,7 @@ Created by Omar Mouki ([GitHub](https://github.com/MOUKZ)) [![LinkedIn](https
 
 ## 📸 Screenshots
 
-<img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/home_screen.png" height="250"> <img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/recording.png" height="250"> <img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/bottom_sheet.png" height="250"> <img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/permission.png" height="250">
+<img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/home_screen.png" height="250"> <img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/recording.png" height="250"> <img src="https://raw.githubusercontent.com/MOUKZ/chat_package/main/screenShots/bottom_sheet.png" height="250">
 
 ---
 

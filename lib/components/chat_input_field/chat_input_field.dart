@@ -51,7 +51,6 @@ class ChatInputField extends StatefulWidget {
   /// used for [ChatBottomSheet]
   final String cameraText;
 
-
   /// Icon for the “From Camera” option.
   /// used for [ChatBottomSheet]
   final Icon? cameraIcon;
@@ -88,7 +87,6 @@ class ChatInputField extends StatefulWidget {
     Key? key,
     required this.onRecordComplete,
     required this.textController,
-
     required this.onTextSubmit,
     required this.onImageSelected,
     this.cameraText = 'From Camera',
@@ -161,6 +159,9 @@ class _ChatInputFieldState extends State<ChatInputField>
       ),
       child: Consumer<ChatInputProvider>(
         builder: (context, provider, _) {
+          final d = provider.recordDuration;
+          final minutes = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+          final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');
           return Container(
             padding: widget.chatFieldPadding,
             margin: widget.chatFieldMargin,
@@ -189,13 +190,15 @@ class _ChatInputFieldState extends State<ChatInputField>
                                     style: widget.waveStyle,
                                   ),
                                 ),
-                              Text(
-                                '00:00',
-                                // style: widget.waveStyle.timerTextStyle,
+                              Flexible(
+                                child: Text(
+                                  widget.recordingNoteHintText,
+                                  // style: widget.waveStyle.timerTextStyle,
+                                ),
                               ),
                               SizedBox(width: 2),
                               Text(
-                                widget.recordingNoteHintText,
+                                '${minutes}:${seconds}',
                                 // style: widget.waveStyle.timerTextStyle,
                               ),
                               const SizedBox(width: 12),
@@ -251,7 +254,6 @@ class _ChatInputFieldState extends State<ChatInputField>
                               ),
                             ],
                           ),
-
                   ),
                 ),
                 SizedBox(
