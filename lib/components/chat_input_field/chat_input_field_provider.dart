@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
@@ -38,6 +40,8 @@ class ChatInputProvider extends ChangeNotifier {
   final _audioRecorder = AudioRecorder();
   bool _isRecording = false;
   double _dragOffset = 0.0;
+  Duration _recordDuration = Duration.zero;
+  Timer? _recordTimer;
 
   /// Constructs a [ChatInputProvider].
   ///
@@ -65,6 +69,9 @@ class ChatInputProvider extends ChangeNotifier {
   /// True if the text input contains non-whitespace characters.
   bool get hasText => textController.text.trim().isNotEmpty;
 
+  /// Elapsed recording duration.
+  Duration get recordDuration => _recordDuration;
+
   // ─────────────────────────────────────────────────────────────────────────
   // Permission & Recording Helpers
   // ─────────────────────────────────────────────────────────────────────────
@@ -86,10 +93,18 @@ class ChatInputProvider extends ChangeNotifier {
     if (await _audioRecorder.isRecording()) {
       await _audioRecorder.stop();
     }
+
     await _audioRecorder.start(
       const RecordConfig(),
       path: filePath,
     );
+    if (_recordTimer == null) {
+      _recordTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+        _recordDuration += const Duration(seconds: 1);
+        print('omar hello');
+        notifyListeners();
+      });
+    }
   }
 
   /// Stops recording and returns the recorded file path, or `null`.
@@ -117,12 +132,17 @@ class ChatInputProvider extends ChangeNotifier {
     if (_dragOffset <= -cancelThreshold) {
       _resetRecordingState();
     }
+    _recordDuration = Duration.zero;
+
     notifyListeners();
   }
 
   /// Ends recording on long-press release; completes or cancels accordingly.
   Future<void> endRecording() async {
     if (!_isRecording) return;
+    _recordDuration = Duration.zero;
+    _recordTimer?.cancel();
+    _recordTimer = null;
 
     final recordedPath = await _stopAudioRecord();
     final canceled =
@@ -202,11 +222,15 @@ class ChatInputProvider extends ChangeNotifier {
   void _resetRecordingState() {
     _isRecording = false;
     _dragOffset = 0.0;
+    _recordTimer?.cancel();
+    _recordTimer = null;
   }
 
   @override
   void dispose() {
     textController.removeListener(_onTextChanged);
+    _recordTimer?.cancel();
+    _recordTimer = null;
     _audioRecorder.dispose();
     super.dispose();
   }
