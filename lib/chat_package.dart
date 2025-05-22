@@ -94,9 +94,6 @@ class ChatScreen extends StatefulWidget {
   /// text style for the message container date
   final TextStyle? sendDateTextStyle;
 
-  /// text direction for chat input field
-  final TextDirection? textDirection;
-
   /// this is an optional parameter to override the default attachment bottom sheet
   final Function(BuildContext context)? attachmentClick;
 
@@ -128,7 +125,6 @@ class ChatScreen extends StatefulWidget {
     this.messageContainerTextStyle,
     this.sendDateTextStyle,
     this.attachmentClick,
-    this.textDirection,
   }) : super(key: key);
 
   @override
@@ -181,7 +177,6 @@ class _ChatScreenState extends State<ChatScreen> {
             handleImageSelect: widget.handleImageSelect,
             onSlideToCancelRecord: widget.onSlideToCancelRecord ?? () {},
             onTextSubmit: widget.onTextSubmit,
-            textDirection: widget.textDirection,
           ),
         ),
       ],
