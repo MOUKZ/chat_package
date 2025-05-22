@@ -5,20 +5,19 @@ homepage: https://github.com/MOUKZ/chat_package
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-  flutter: 3.24.2
+  flutter: ">=3.24.2"
 
 dependencies:
   flutter:
     sdk: flutter
-  permission_handler: ^10.2.0
-  image_picker: ^0.8.6
-  just_audio: ^0.9.30
+  permission_handler: ^12.0.0+1
+  image_picker: ^1.1.2
+  just_audio: ^0.9.3
   record: ^6.0.0
-  intl: ^0.17.0
-  photo_view: ^0.14.0
-  stop_watch_timer: ^2.0.0
-  path_provider: ^2.0.15
-  provider: ^6.0.4
+  intl: ^0.20.2
+  photo_view: ^0.15.0
+  path_provider: ^2.1.5
+  provider: ^6.1.5
 
 dev_dependencies:
   flutter_test:

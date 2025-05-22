@@ -48,3 +48,4 @@
 ## 2.0.1
 
 - **hotfix** – use a column instead of a stack to place the input text under the chat list
+- **Support up-to-date dependencies**
