@@ -1,191 +1,251 @@
+/// lib/src/presentation/widgets/chat_screen.dart
 library chat_package;
 
+import 'package:flutter/material.dart';
+import 'package:chat_package/components/chat_input_field/chat_input_field.dart';
+import 'package:chat_package/components/chat_input_field/widgets/recording_button.dart';
+import 'package:chat_package/components/chat_input_field/widgets/wave_animation.dart';
 import 'package:chat_package/components/message/message_widget.dart';
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/utils/constants.dart';
-import 'package:chat_package/components/chat_input_field/chat_input_field.dart';
-import 'package:flutter/material.dart';
 
-class ChatScreen extends StatefulWidget {
-  ///color of all message containers if its belongs to the user
-  final Color? senderColor;
-
-  ///color of the inactive part of the audio slider
-  final Color? inActiveAudioSliderColor;
-
-  final Color? receiverColor;
-
-  ///color of the active part of the audio slider
-  final Color? activeAudioSliderColor;
-
-  ///[required]scrollController for the chat screen
-  final ScrollController scrollController;
-
-  /// the color of the outer container and the color used to hide
-  /// the text on slide
-  final Color chatInputFieldColor;
-
-  ///hint text to be shown for sending messages
-  final String sendMessageHintText;
-
-  /// these parameters for changing the text and icons in the [attachment-bottom-sheet]
-  /// text shown wen trying to chose image attachment from gallery in attachment
-  /// bottom sheet
-  final String imageAttachmentFromGalleryText;
-
-  /// Icon shown wen trying to chose image attachment from gallery in attachment
-  /// bottom sheet
-  final Icon? imageAttachmentFromGalleryIcon;
-
-  /// text shown wen trying to chose image attachment from camera in attachment
-  /// bottom sheet
-  final String imageAttachmentFromCameraText;
-
-  /// Icon shown wen trying to chose image attachment from camera in attachment
-  /// bottom sheet
-  final Icon? imageAttachmentFromCameraIcon;
-
-  /// text shown wen trying to chose image attachment cancel text in attachment
-  /// bottom sheet
-  final String imageAttachmentCancelText;
-
-  /// Icon shown wen trying to chose image attachment cancel text in attachment
-  /// bottom sheet
-  final Icon? imageAttachmentCancelIcon;
-
-  /// image attachment text style in attachment
-  /// bottom sheet
-  final TextStyle? imageAttachmentTextStyle;
-
-  ///hint text to be shown for recording voice note
-  final String recordingNoteHintText;
-
-  /// [required] handel [text message] on submit
-  /// this method will pass a [ChatMessage]
-  final Function(ChatMessage textMessage) onTextSubmit;
-
-  /// [required] the list of chat messages
-  final List<ChatMessage> messages;
-
-  /// [required] function to handel successful recordings, bass to override
-  /// this method will pass a [ChatMessage] and if the used [canceled] the recording
-  final Function(ChatMessage? audioMessage, bool canceled) handleRecord;
-
-  /// [required] function to handel image selection
-  /// this method will pass a [ChatMessage]
-  final Function(ChatMessage? imageMessage) handleImageSelect;
-
-  /// to handel canceling of the record
-  final VoidCallback? onSlideToCancelRecord;
-
-  ///TextEditingController to handel input text
-  final TextEditingController? textEditingController;
-
-  /// to change the appearance of the chat input field
-  final BoxDecoration? chatInputFieldDecoration;
-
-  /// use this flag to disable the input
-  final bool disableInput;
-
-  /// git the chat input field padding
-  final EdgeInsets? chatInputFieldPadding;
-
-  /// text style for the message container
-  final TextStyle? messageContainerTextStyle;
-
-  /// text style for the message container date
-  final TextStyle? sendDateTextStyle;
-
-  /// text direction for chat input field
-  final TextDirection? textDirection;
-
-  /// this is an optional parameter to override the default attachment bottom sheet
-  final Function(BuildContext context)? attachmentClick;
-
-  ChatScreen({
+/// A full-screen chat UI consisting of a message list and an input field.
+///
+/// Displays [messages] in a scrollable list and a [ChatInputField] at the bottom.
+/// Supports text, image, and audio messages, with customizable styling and callbacks.
+///
+/// Example:
+/// ```dart
+/// ChatScreen(
+///   messages: messages,
+///   scrollController: _scrollController,
+///   textEditingController: _textController,
+///   onTextSubmit: (msg) => sendText(msg),
+///   onImageSelected: (msg) => sendImage(msg),
+///   onRecordComplete: (msg) => sendAudio(msg),
+/// );
+/// ```
+class ChatScreen extends StatelessWidget {
+  /// Creates a new [ChatScreen].
+  ///
+  /// Requires [messages], [scrollController], [textEditingController],
+  /// [onTextSubmit], [onImageSelected], and [onRecordComplete].
+  const ChatScreen({
     Key? key,
-    this.senderColor,
-    this.inActiveAudioSliderColor,
-    this.activeAudioSliderColor,
-    this.receiverColor,
+
+    /// The list of chat messages to display.
     required this.messages,
+
+    /// Controller for the message list scrolling.
     required this.scrollController,
-    this.sendMessageHintText = 'Enter message here',
-    this.recordingNoteHintText = 'Now Recording',
-    this.imageAttachmentFromGalleryText = 'From Gallery',
-    this.imageAttachmentFromCameraText = 'From Camera',
-    this.imageAttachmentCancelText = 'Cancel',
-    this.chatInputFieldColor = const Color(0xFFCFD8DC),
-    this.imageAttachmentTextStyle,
-    required this.handleRecord,
-    required this.handleImageSelect,
-    this.onSlideToCancelRecord,
-    this.textEditingController,
-    this.disableInput = false,
-    this.chatInputFieldDecoration,
+
+    /// Controller for the text input field.
+    required this.textEditingController,
+
+    /// Callback invoked when a text message is submitted.
     required this.onTextSubmit,
-    this.chatInputFieldPadding,
-    this.imageAttachmentFromGalleryIcon,
-    this.imageAttachmentFromCameraIcon,
-    this.imageAttachmentCancelIcon,
-    this.messageContainerTextStyle,
-    this.sendDateTextStyle,
-    this.attachmentClick,
+
+    /// Callback invoked when an image message is selected.
+    required this.onImageSelected,
+
+    /// Callback invoked when audio recording is completed.
+    required this.onRecordComplete,
+
+    /// Flag to enable or disable user input.
+    this.enableInput = true,
+
+    /// Hint text displayed when recording audio.
+    this.recordingNoteHintText = 'Now Recording',
+
+    /// Text for the “From Camera” option in the attachment sheet.
+    this.cameraText = 'From Camera',
+
+    /// Icon for the “From Camera” option.
+    this.cameraIcon,
+
+    /// Text for the “From Gallery” option.
+    this.galleryText = 'From Gallery',
+
+    /// Icon for the “From Gallery” option.
+    this.galleryIcon,
+
+    /// Text for the “Cancel” option.
+    this.cancelText = 'Cancel',
+
+    /// Icon for the “Cancel” option.
+    this.cancelIcon,
+
+    /// Style for the option labels in the bottom sheet.
+    this.chatBottomSheetTextStyle,
+
+    /// Decoration for the text input field.
+    this.textFieldDecoration,
+
+    /// Padding around the chat field.
+    this.chatFieldPadding,
+
+    /// Margin around the chat field.
+    this.chatFieldMargin,
+
+    /// Whether to show the wave animation during recording.
+    this.showWaveAnimation = true,
+
+    /// Duration of the wave animation.
+    this.waveDuration,
+
+    /// Style of the wave animation.
+    this.waveStyle,
+
+    /// Style of the recording button.
+    this.buttonStyle,
+
+    /// Text direction for the input field.
     this.textDirection,
+
+    /// Color used for sender message bubble.
+    this.senderColor,
+
+    /// Color used for receiver message bubble.
+    this.receiverColor,
+
+    /// Active color for the audio slider.
+    this.activeAudioSliderColor,
+
+    /// Inactive color for the audio slider.
+    this.inactiveAudioSliderColor,
   }) : super(key: key);
 
-  @override
-  _ChatScreenState createState() => _ChatScreenState();
-}
+  /// The list of chat messages to display.
+  final List<ChatMessage> messages;
 
-class _ChatScreenState extends State<ChatScreen> {
+  /// Controller for the message list scrolling.
+  final ScrollController scrollController;
+
+  /// Controller for the text input field.
+  final TextEditingController textEditingController;
+
+  /// Callback invoked when a text message is submitted.
+  final ValueChanged<ChatMessage> onTextSubmit;
+
+  /// Callback invoked when an image message is selected.
+  final ValueChanged<ChatMessage> onImageSelected;
+
+  /// Callback invoked when audio recording is completed.
+  final ValueChanged<ChatMessage> onRecordComplete;
+
+  /// Flag to enable or disable user input.
+  final bool enableInput;
+
+  /// Hint text displayed when recording audio.
+  final String recordingNoteHintText;
+
+  /// Text for the “From Camera” option in the attachment sheet.
+  final String cameraText;
+
+  /// Icon for the “From Camera” option.
+  final Icon? cameraIcon;
+
+  /// Text for the “From Gallery” option.
+  final String galleryText;
+
+  /// Icon for the “From Gallery” option.
+  final Icon? galleryIcon;
+
+  /// Text for the “Cancel” option.
+  final String cancelText;
+
+  /// Icon for the “Cancel” option.
+  final Icon? cancelIcon;
+
+  /// Style for the option labels in the bottom sheet.
+  final TextStyle? chatBottomSheetTextStyle;
+
+  /// Decoration for the text input field.
+  final InputDecoration? textFieldDecoration;
+
+  /// Padding around the chat field.
+  final EdgeInsetsGeometry? chatFieldPadding;
+
+  /// Margin around the chat field.
+  final EdgeInsetsGeometry? chatFieldMargin;
+
+  /// Whether to show the wave animation during recording.
+  final bool showWaveAnimation;
+
+  /// Duration of the wave animation.
+  final Duration? waveDuration;
+
+  /// Style of the wave animation.
+  final WaveAnimationStyle? waveStyle;
+
+  /// Style of the recording button.
+  final RecordingButtonStyle? buttonStyle;
+
+  /// Text direction for the input field.
+  final TextDirection? textDirection;
+
+  /// Color used for sender message bubble.
+  final Color? senderColor;
+
+  /// Color used for receiver message bubble.
+  final Color? receiverColor;
+
+  /// Active color for the audio slider.
+  final Color? activeAudioSliderColor;
+
+  /// Inactive color for the audio slider.
+  final Color? inactiveAudioSliderColor;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
-      children: [
+      children: <Widget>[
         ListView.builder(
-          padding: const EdgeInsets.only(
-              left: kDefaultPadding, right: kDefaultPadding, bottom: 100),
-          controller: widget.scrollController,
-          itemCount: widget.messages.length,
-          itemBuilder: (context, index) => MessageWidget(
-            receiverColor: widget.receiverColor ?? kSecondaryColor,
-            message: widget.messages[index],
-            activeAudioSliderColor:
-                widget.activeAudioSliderColor ?? kSecondaryColor,
-            inactiveAudioSliderColor:
-                widget.inActiveAudioSliderColor ?? kLightColor,
-            senderColor: widget.senderColor ?? kPrimaryColor,
-            messageContainerTextStyle: widget.messageContainerTextStyle,
-            sendDateTextStyle: widget.sendDateTextStyle,
-          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: kDefaultPadding,
+            vertical: kDefaultPadding / 2,
+          ).copyWith(bottom: 100),
+          controller: scrollController,
+          itemCount: messages.length,
+          itemBuilder: (context, index) {
+            final message = messages[index];
+            return MessageWidget(
+              receiverColor: receiverColor ?? kSecondaryColor,
+              senderColor: senderColor ?? kPrimaryColor,
+              activeAudioSliderColor: activeAudioSliderColor ?? kSecondaryColor,
+              inactiveAudioSliderColor: inactiveAudioSliderColor ?? kLightColor,
+              message: message,
+              messageContainerTextStyle: null,
+              sendDateTextStyle: null,
+            );
+          },
         ),
         Positioned(
           bottom: 20,
           left: 5,
           right: 5,
           child: ChatInputField(
-            imageAttachmentCancelText: widget.imageAttachmentCancelText,
-            imageAttachmentFromCameraText: widget.imageAttachmentFromCameraText,
-            imageAttachmentFromGalleryText:
-                widget.imageAttachmentFromGalleryText,
-            chatInputFieldColor: widget.chatInputFieldColor,
-            recordingNoteHintText: widget.recordingNoteHintText,
-            sendMessageHintText: widget.sendMessageHintText,
-            disableInput: widget.disableInput,
-            chatInputFieldDecoration: widget.chatInputFieldDecoration,
-            chatInputFieldPadding: widget.chatInputFieldPadding,
-            imageAttachmentTextStyle: widget.imageAttachmentTextStyle,
-            imageAttachmentFromGalleryIcon:
-                widget.imageAttachmentFromGalleryIcon,
-            imageAttachmentFromCameraIcon: widget.imageAttachmentFromCameraIcon,
-            imageAttachmentCancelIcon: widget.imageAttachmentCancelIcon,
-            attachmentClick: widget.attachmentClick,
-            handleRecord: widget.handleRecord,
-            handleImageSelect: widget.handleImageSelect,
-            onSlideToCancelRecord: widget.onSlideToCancelRecord ?? () {},
-            onTextSubmit: widget.onTextSubmit,
-            textDirection: widget.textDirection,
+            textController: textEditingController,
+            onTextSubmit: onTextSubmit,
+            onImageSelected: onImageSelected,
+            onRecordComplete: onRecordComplete,
+            enableInput: enableInput,
+            recordingNoteHintText: recordingNoteHintText,
+            cameraText: cameraText,
+            cameraIcon: cameraIcon,
+            galleryText: galleryText,
+            galleryIcon: galleryIcon,
+            cancelText: cancelText,
+            cancelIcon: cancelIcon,
+            chatBottomSheetTextStyle: chatBottomSheetTextStyle,
+            textFieldDecoration: textFieldDecoration,
+            chatFieldPadding: chatFieldPadding,
+            chatFieldMargin: chatFieldMargin,
+            showWaveAnimation: showWaveAnimation,
+            waveDuration: waveDuration,
+            waveStyle: waveStyle,
+            buttonStyle: buttonStyle,
+            textDirection: textDirection,
           ),
         ),
       ],

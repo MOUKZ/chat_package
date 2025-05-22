@@ -6,31 +6,36 @@ import 'package:chat_package/components/message/text_message/text_message_widget
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/utils/constants.dart';
 
-/// Renders a chat bubble (text, image, audio, or video) plus its timestamp.
+/// A chat bubble that renders text, image, audio (or future video) messages,
+/// along with a timestamp.
 ///
-/// Supports custom bubble colors for sender and receiver.
+/// Aligns to the right for sender messages and to the left for receiver messages,
+/// applying distinct bubble colors and styles.
 class MessageWidget extends StatelessWidget {
-  /// The chat message data.
+  /// Data for this chat message (text, media, timestamp, sender flag).
   final ChatMessage message;
 
-  /// Base color for the sender’s bubble.
+  /// Bubble color for messages sent by the user.
   final Color senderColor;
 
-  /// Base color for the receiver’s bubble.
+  /// Bubble color for messages received from others.
   final Color receiverColor;
 
-  /// Color of the inactive portion of the audio slider.
+  /// Inactive track color for audio message slider.
   final Color inactiveAudioSliderColor;
 
-  /// Color of the active portion of the audio slider.
+  /// Active track color for audio message slider.
   final Color activeAudioSliderColor;
 
-  /// Optional text style for message content (used by ImageMessageWidget).
+  /// Optional text style applied inside image message containers.
   final TextStyle? messageContainerTextStyle;
 
-  /// Optional text style for the timestamp.
+  /// Optional style for the timestamp text.
   final TextStyle? sendDateTextStyle;
 
+  /// Creates a [MessageWidget].
+  ///
+  /// All color parameters are required to ensure consistent theming.
   const MessageWidget({
     Key? key,
     required this.message,
@@ -44,44 +49,21 @@ class MessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSender = message.isSender;
-    final alignment = isSender ? Alignment.centerRight : Alignment.centerLeft;
-    final crossAxis =
+    final bool isSender = message.isSender;
+    final Alignment alignment =
+        isSender ? Alignment.centerRight : Alignment.centerLeft;
+    final CrossAxisAlignment crossAxisAlignment =
         isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-    final bubbleColor = isSender ? senderColor : receiverColor;
-
-    // Choose the correct content widget based on message type
-    final content = message.chatMedia == null
-        ? TextMessageWidget(
-            message: message,
-            senderColor: bubbleColor,
-          )
-        : message.chatMedia!.mediaType.when(
-            imageMediaType: () => ImageMessageWidget(
-              message: message,
-              senderColor: bubbleColor,
-              messageContainerTextStyle: messageContainerTextStyle,
-            ),
-            audioMediaType: () => AudioMessageWidget(
-              message: message,
-              senderColor: bubbleColor,
-              inactiveAudioSliderColor: inactiveAudioSliderColor,
-              activeAudioSliderColor: activeAudioSliderColor,
-            ),
-            videoMediaType: () {
-              // TODO: implement a VideoMessageWidget
-              return const SizedBox.shrink();
-            },
-          );
+    final Color bubbleColor = isSender ? senderColor : receiverColor;
 
     return Padding(
       padding: const EdgeInsets.only(top: kDefaultPadding),
       child: Align(
         alignment: alignment,
         child: Column(
-          crossAxisAlignment: crossAxis,
+          crossAxisAlignment: crossAxisAlignment,
           children: [
-            content,
+            _buildContent(bubbleColor),
             const SizedBox(height: 3),
             DateTimeWidget(
               message: message,
@@ -90,6 +72,39 @@ class MessageWidget extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  /// Chooses and returns the correct content widget based on [message].
+  ///
+  /// - Text messages render with [TextMessageWidget].
+  /// - Image messages use [ImageMessageWidget].
+  /// - Audio messages use [AudioMessageWidget].
+  /// - Video messages are not yet implemented.
+  Widget _buildContent(Color bubbleColor) {
+    if (message.chatMedia == null) {
+      return TextMessageWidget(
+        message: message,
+        senderColor: bubbleColor,
+      );
+    }
+
+    return message.chatMedia!.mediaType.when(
+      imageMediaType: () => ImageMessageWidget(
+        message: message,
+        senderColor: bubbleColor,
+        messageContainerTextStyle: messageContainerTextStyle,
+      ),
+      audioMediaType: () => AudioMessageWidget(
+        message: message,
+        senderColor: bubbleColor,
+        inactiveAudioSliderColor: inactiveAudioSliderColor,
+        activeAudioSliderColor: activeAudioSliderColor,
+      ),
+      videoMediaType: () {
+        // TODO: Replace with VideoMessageWidget when available
+        return const SizedBox.shrink();
+      },
     );
   }
 }
