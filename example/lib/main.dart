@@ -1,94 +1,69 @@
-import 'dart:developer';
-
 import 'package:chat_package/chat_package.dart';
 import 'package:chat_package/models/chat_message.dart';
-import 'package:chat_package/models/media/chat_media.dart';
-import 'package:chat_package/models/media/media_type.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'chat ui example',
+      title: 'Chat Ui example',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: const Color(0xFF075E54),
+        scaffoldBackgroundColor: Colors.white,
       ),
-      home: MyHomePage(),
+      home: const ChatPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key}) : super(key: key);
+class ChatPage extends StatefulWidget {
+  const ChatPage({super.key});
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<ChatPage> createState() => _ChatPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  List<ChatMessage> messages = [
+class _ChatPageState extends State<ChatPage> {
+  final textEditingController = TextEditingController();
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
+
+  final messages = [
     ChatMessage(
+      text: 'hi omar',
       isSender: true,
-      text: 'this is a banana',
-      chatMedia: ChatMedia(
-        url:
-            'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
-        mediaType: MediaType.imageMediaType(),
-      ),
     ),
-    ChatMessage(
-      isSender: false,
-      chatMedia: ChatMedia(
-        url:
-            'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
-        mediaType: MediaType.imageMediaType(),
-      ),
-    ),
-    ChatMessage(isSender: false, text: 'wow that is cool'),
   ];
-  final scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        title: const Text('Chat'),
+        backgroundColor: const Color(0xFF075E54),
+      ),
       body: ChatScreen(
-        scrollController: scrollController,
         messages: messages,
-        onSlideToCancelRecord: () {
-          log('not sent');
+        scrollController: ScrollController(),
+        onRecordComplete: (audioMessage) {
+          messages.add(audioMessage);
+          setState(() {});
         },
+        onImageSelected: (imageMessage) {
+          messages.add(imageMessage);
+          setState(() {});
+        },
+        textEditingController: TextEditingController(),
         onTextSubmit: (textMessage) {
-          setState(() {
-            messages.add(textMessage);
-
-            scrollController
-                .jumpTo(scrollController.position.maxScrollExtent + 50);
-          });
-        },
-        handleRecord: (audioMessage, canceled) {
-          if (!canceled) {
-            setState(() {
-              messages.add(audioMessage!);
-              scrollController
-                  .jumpTo(scrollController.position.maxScrollExtent + 90);
-            });
-          }
-        },
-        handleImageSelect: (imageMessage) async {
-          if (imageMessage != null) {
-            setState(() {
-              messages.add(
-                imageMessage,
-              );
-              scrollController
-                  .jumpTo(scrollController.position.maxScrollExtent + 300);
-            });
-          }
+          messages.add(textMessage);
+          setState(() {});
         },
       ),
     );
