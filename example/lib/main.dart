@@ -49,8 +49,7 @@ class _ChatPageState extends State<ChatPage> {
       isSender: true,
       text: 'this is a banana',
       chatMedia: const ChatMedia(
-        url:
-            'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
+        url: 'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
         mediaType: MediaType.imageMediaType(),
       ),
     ),
@@ -67,7 +66,7 @@ class _ChatPageState extends State<ChatPage> {
       body: ChatScreen(
         messages: messages,
         scrollController: ScrollController(),
-        onRecordComplete: (audioMessage) {
+        onRecordComplete: (audioMessage, duration) {
           messages.add(audioMessage);
           setState(() {});
         },

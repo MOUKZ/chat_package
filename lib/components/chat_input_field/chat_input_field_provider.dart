@@ -1,14 +1,13 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:record/record.dart';
-import 'package:image_picker/image_picker.dart';
-
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/models/media/chat_media.dart';
 import 'package:chat_package/models/media/media_type.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:record/record.dart';
 
 /// Defines the source for picking images: camera or gallery.
 enum ImageSourceType { camera, gallery }
@@ -21,7 +20,7 @@ enum ImageSourceType { camera, gallery }
 class ChatInputProvider extends ChangeNotifier {
   // ======== Callbacks ========
   /// Invoked with a [ChatMessage] when audio recording completes successfully.
-  final ValueChanged<ChatMessage> onRecordComplete;
+  final void Function(ChatMessage, Duration) onRecordComplete;
 
   /// Invoked with a [ChatMessage] on text submission.
   final ValueChanged<ChatMessage> onTextSubmit;
@@ -130,22 +129,19 @@ class ChatInputProvider extends ChangeNotifier {
     _dragOffset = offset.dx.clamp(-cancelThreshold, 0.0);
     if (_dragOffset <= -cancelThreshold) {
       _resetRecordingState();
+      _recordDuration = Duration.zero;
     }
-    _recordDuration = Duration.zero;
-
     notifyListeners();
   }
 
   /// Ends recording on long-press release; completes or cancels accordingly.
   Future<void> endRecording() async {
     if (!_isRecording) return;
-    _recordDuration = Duration.zero;
     _recordTimer?.cancel();
     _recordTimer = null;
 
     final recordedPath = await _stopAudioRecord();
-    final canceled =
-        (recordedPath == null) || (_dragOffset <= -cancelThreshold);
+    final canceled = (recordedPath == null) || (_dragOffset <= -cancelThreshold);
 
     _resetRecordingState();
     if (!canceled) {
@@ -157,8 +153,9 @@ class ChatInputProvider extends ChangeNotifier {
           mediaType: MediaType.audioMediaType(),
         ),
       );
-      onRecordComplete(message);
+      onRecordComplete(message, _recordDuration);
     }
+    _recordDuration = Duration.zero;
     notifyListeners();
   }
 
@@ -181,17 +178,13 @@ class ChatInputProvider extends ChangeNotifier {
 
   /// Picks an image from [sourceType], then invokes [onImageSelected].
   Future<void> pickImage(ImageSourceType sourceType) async {
-    final permission = sourceType == ImageSourceType.camera
-        ? Permission.camera
-        : Permission.photos;
+    final permission = sourceType == ImageSourceType.camera ? Permission.camera : Permission.photos;
     if (!await _requestPermission(permission)) {
       return;
     }
 
     final picker = ImagePicker();
-    final source = sourceType == ImageSourceType.camera
-        ? ImageSource.camera
-        : ImageSource.gallery;
+    final source = sourceType == ImageSourceType.camera ? ImageSource.camera : ImageSource.gallery;
     final file = await picker.pickImage(
       source: source,
       imageQuality: 70,

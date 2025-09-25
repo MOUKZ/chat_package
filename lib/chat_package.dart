@@ -1,13 +1,13 @@
 /// lib/src/presentation/widgets/chat_screen.dart
 library chat_package;
 
-import 'package:flutter/material.dart';
 import 'package:chat_package/components/chat_input_field/chat_input_field.dart';
 import 'package:chat_package/components/chat_input_field/widgets/recording_button.dart';
 import 'package:chat_package/components/chat_input_field/widgets/wave_animation.dart';
 import 'package:chat_package/components/message/message_widget.dart';
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/utils/constants.dart';
+import 'package:flutter/material.dart';
 
 /// A full-screen chat UI consisting of a message list and an input field.
 ///
@@ -131,7 +131,7 @@ class ChatScreen extends StatelessWidget {
   final ValueChanged<ChatMessage> onImageSelected;
 
   /// Callback invoked when audio recording is completed.
-  final ValueChanged<ChatMessage> onRecordComplete;
+  final void Function(ChatMessage, Duration) onRecordComplete;
 
   /// Flag to enable or disable user input.
   final bool enableInput;
@@ -213,10 +213,8 @@ class ChatScreen extends StatelessWidget {
               return MessageWidget(
                 receiverColor: receiverColor ?? kSecondaryColor,
                 senderColor: senderColor ?? kPrimaryColor,
-                activeAudioSliderColor:
-                    activeAudioSliderColor ?? kSecondaryColor,
-                inactiveAudioSliderColor:
-                    inactiveAudioSliderColor ?? kLightColor,
+                activeAudioSliderColor: activeAudioSliderColor ?? kSecondaryColor,
+                inactiveAudioSliderColor: inactiveAudioSliderColor ?? kLightColor,
                 message: message,
                 messageContainerTextStyle: null,
                 sendDateTextStyle: null,

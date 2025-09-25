@@ -12,7 +12,7 @@ class ChatInputField extends StatefulWidget {
   /// Called when non‑empty text is submitted.
 
   /// Called when an audio recording successfully completes.
-  final ValueChanged<ChatMessage> onRecordComplete;
+  final void Function(ChatMessage, Duration) onRecordComplete;
 
   /// Invoked with a [ChatMessage] when an image is picked, or `null` on cancel.
   final ValueChanged<ChatMessage> onImageSelected;
@@ -77,6 +77,12 @@ class ChatInputField extends StatefulWidget {
 
   final ValueChanged<ChatMessage> onTextSubmit;
 
+  // Maximum number of lines for the text input.
+  final int maxLines;
+
+  // Minimum number of lines for the text input.
+  final int minLines;
+
   ///
   final bool enableInput;
   final TextDirection? textDirection;
@@ -99,6 +105,8 @@ class ChatInputField extends StatefulWidget {
     this.cancelThreshold = 100.0,
     this.showWaveAnimation = true,
     this.enableInput = true,
+    this.maxLines = 1,
+    this.minLines = 1,
     this.textDirection,
     required this.recordingNoteHintText,
     Duration? waveDuration,
@@ -109,13 +117,9 @@ class ChatInputField extends StatefulWidget {
     WaveAnimationStyle? waveStyle,
     RecordingButtonStyle? buttonStyle,
   })  : waveDuration = waveDuration ?? const Duration(milliseconds: 600),
-        chatFieldPadding =
-            chatFieldPadding ?? const EdgeInsets.symmetric(vertical: 6),
-        chatFieldMargin =
-            chatFieldMargin ?? const EdgeInsets.symmetric(horizontal: 6),
-        decoration = decoration ??
-            BoxDecoration(
-                color: Colors.black12, borderRadius: BorderRadius.circular(26)),
+        chatFieldPadding = chatFieldPadding ?? const EdgeInsets.symmetric(vertical: 6),
+        chatFieldMargin = chatFieldMargin ?? const EdgeInsets.symmetric(horizontal: 6),
+        decoration = decoration ?? BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(26)),
         textFieldDecoration = textFieldDecoration ??
             const InputDecoration.collapsed(
               hintText: 'Type a message',
@@ -128,8 +132,7 @@ class ChatInputField extends StatefulWidget {
   _ChatInputFieldState createState() => _ChatInputFieldState();
 }
 
-class _ChatInputFieldState extends State<ChatInputField>
-    with SingleTickerProviderStateMixin {
+class _ChatInputFieldState extends State<ChatInputField> with SingleTickerProviderStateMixin {
   late final AnimationController _waveController;
 
   @override
@@ -168,10 +171,7 @@ class _ChatInputFieldState extends State<ChatInputField>
             decoration: widget.decoration,
             child: Row(
               children: [
-                AnimatedPadding(
-                    padding:
-                        EdgeInsets.only(left: provider.isRecording ? 12 : 4),
-                    duration: const Duration(milliseconds: 100)),
+                AnimatedPadding(padding: EdgeInsets.only(left: provider.isRecording ? 12 : 4), duration: const Duration(milliseconds: 100)),
                 const SizedBox(width: 4),
                 Expanded(
                   child: AnimatedSwitcher(
@@ -224,17 +224,14 @@ class _ChatInputFieldState extends State<ChatInputField>
                                         cameraIcon: widget.cameraIcon,
                                         galleryIcon: widget.galleryIcon,
                                         cancelIcon: widget.cancelIcon,
-                                        textStyle:
-                                            widget.chatBottomSheetTextStyle,
+                                        textStyle: widget.chatBottomSheetTextStyle,
                                         onCameraTap: () {
                                           Navigator.pop(context);
 
-                                          provider.pickImage(
-                                              ImageSourceType.camera);
+                                          provider.pickImage(ImageSourceType.camera);
                                         },
                                         onGalleryTap: () {
-                                          provider.pickImage(
-                                              ImageSourceType.gallery);
+                                          provider.pickImage(ImageSourceType.gallery);
                                         },
                                       );
                                     },
@@ -244,26 +241,24 @@ class _ChatInputFieldState extends State<ChatInputField>
                               ),
                               Expanded(
                                 child: TextField(
+                                  maxLines: widget.maxLines,
+                                  minLines: widget.minLines,
                                   enabled: widget.enableInput,
                                   controller: widget.textController,
                                   decoration: widget.textFieldDecoration,
                                   textDirection: widget.textDirection,
-                                  textCapitalization:
-                                      TextCapitalization.sentences,
+                                  textCapitalization: TextCapitalization.sentences,
                                 ),
                               ),
                             ],
                           ),
                   ),
                 ),
-                SizedBox(
-                    width:
-                        provider.isRecording ? (20 - provider.dragOffset) : 5),
+                SizedBox(width: provider.isRecording ? (20 - provider.dragOffset) : 5),
                 RecordingButton(
                   dragOffset: provider.dragOffset,
                   onLongPressStart: (_) => provider.startRecording(),
-                  onLongPressMoveUpdate: (details) =>
-                      provider.onMove(details.offsetFromOrigin),
+                  onLongPressMoveUpdate: (details) => provider.onMove(details.offsetFromOrigin),
                   onLongPressEnd: (_) => provider.endRecording(),
                   onTap: provider.sendTextMessage,
                   hasText: provider.hasText,
