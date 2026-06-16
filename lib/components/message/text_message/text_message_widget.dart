@@ -8,11 +8,19 @@ class TextMessageWidget extends StatelessWidget {
   final ChatMessage message;
   final Color senderColor;
 
+  /// Text direction of the message content. Defaults to [TextDirection.ltr].
+  final TextDirection textDirection;
+
+  /// Maximum width of the bubble as a fraction of the available width.
+  final double widthFraction;
+
   const TextMessageWidget({
-    Key? key,
+    super.key,
     required this.message,
     required this.senderColor,
-  }) : super(key: key);
+    this.textDirection = TextDirection.ltr,
+    this.widthFraction = 0.5,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,23 +30,24 @@ class TextMessageWidget extends StatelessWidget {
       children: [
         ConstrainedBox(
           constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width / 2, minWidth: 50),
+              maxWidth: MediaQuery.of(context).size.width * widthFraction,
+              minWidth: 50),
           child: Container(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: kDefaultPadding * 0.75,
               vertical: kDefaultPadding / 2,
             ),
             decoration: BoxDecoration(
-              color: senderColor.withOpacity(message.isSender ? 1 : 0.1),
+              color: senderColor.withValues(alpha: message.isSender ? 1 : 0.1),
               borderRadius: BorderRadius.circular(25),
             ),
             child: Text(
               message.text,
-              textDirection: TextDirection.rtl,
+              textDirection: textDirection,
               style: TextStyle(
                 color: message.isSender
                     ? Colors.white
-                    : Theme.of(context).textTheme.bodyText1!.color,
+                    : Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
           ),

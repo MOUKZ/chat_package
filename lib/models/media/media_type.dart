@@ -1,32 +1,27 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+/// The kind of media carried by a [ChatMedia].
+///
+/// Replaces the previous Freezed union (`MediaType.imageMediaType()` etc.)
+/// with a plain Dart enum, removing the code-generation dependency.
+enum MediaType {
+  image,
+  audio,
+  video;
 
-part 'media_type.freezed.dart';
-
-@freezed
-class MediaType with _$MediaType {
-  const factory MediaType.imageMediaType() = ImageMediaType;
-  const factory MediaType.audioMediaType() = AudioMediaType;
-  const factory MediaType.videoMediaType() = VideoMediaType;
-  @override
-  String toString() {
-    return this.when(
-      imageMediaType: () => 'image',
-      audioMediaType: () => 'audio',
-      videoMediaType: () => 'video',
-    );
-  }
-
+  /// Parses a [MediaType] from its string representation
+  /// (`'image'`, `'audio'` or `'video'`). Falls back to [MediaType.image].
   factory MediaType.fromString(String type) {
     switch (type) {
-      case 'image':
-        return MediaType.imageMediaType();
       case 'audio':
-        return MediaType.audioMediaType();
+        return MediaType.audio;
       case 'video':
-        return MediaType.videoMediaType();
-
+        return MediaType.video;
+      case 'image':
       default:
-        return MediaType.imageMediaType();
+        return MediaType.image;
     }
   }
+
+  /// The string representation used for serialization (`'image'`, `'audio'`,
+  /// `'video'`).
+  String get value => name;
 }

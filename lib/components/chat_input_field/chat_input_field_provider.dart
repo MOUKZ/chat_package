@@ -1,35 +1,60 @@
-import 'dart:developer';
+import 'dart:async';
 
+import 'package:chat_package/models/captured_media.dart';
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/models/media/chat_media.dart';
 import 'package:chat_package/models/media/media_type.dart';
+import 'package:chat_package/utils/permission_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
+/// Holds and drives the state of the chat input field: text entry, voice-note
+/// recording (with slide-to-cancel) and image/video selection.
 class ChatInputFieldProvider extends ChangeNotifier {
+  /// Called with the recorded voice note, or `(null, true)` when canceled.
   final Function(ChatMessage? audioMessage, bool cancel) handleRecord;
+
+  /// Called when the user slides to cancel a recording.
   final VoidCallback onSlideToCancelRecord;
 
-  /// function to handle the selected image
+  /// Called with the selected/captured image message (or `null` when canceled).
   final Function(ChatMessage? imageMessage) handleImageSelect;
 
-  /// The callback when send is pressed.
+  /// Called with the captured video message (or `null` when canceled).
+  final Function(ChatMessage? videoMessage)? handleVideoSelect;
+
+  /// Called when the send button is pressed with a non-empty text message.
   final Function(ChatMessage text) onTextSubmit;
+
   final TextEditingController textController;
   final double cancelPosition;
 
-  late Record _record = Record();
+  /// Service used for all runtime permission requests.
+  final PermissionService permissionService;
+
+  /// Bit rate (bits/sec) used when recording voice notes.
+  final int audioBitRate;
+
+  /// Quality (0-100) applied to images picked from the gallery.
+  final int imageQuality;
+
+  /// Maximum width (px) applied to images picked from the gallery.
+  final double imageMaxWidth;
+
+  final AudioRecorder _record = AudioRecorder();
+  final StopWatchTimer _stopWatchTimer = StopWatchTimer();
+  final _formKey = GlobalKey<FormState>();
+  StreamSubscription<int>? _timerSubscription;
+
   double _position = 0;
   int _duration = 0;
   bool _isRecording = false;
   int _recordTime = 0;
   bool isText = false;
   double _height = 70;
-  final StopWatchTimer _stopWatchTimer = StopWatchTimer();
-  final _formKey = GlobalKey<FormState>();
 
   /// getters
   int get duration => _duration;
@@ -40,7 +65,6 @@ class ChatInputFieldProvider extends ChangeNotifier {
   /// setters
   set height(double val) => _height = val;
 
-  Permission micPermission = Permission.microphone;
   ChatInputFieldProvider({
     required this.onTextSubmit,
     required this.textController,
@@ -48,9 +72,14 @@ class ChatInputFieldProvider extends ChangeNotifier {
     required this.onSlideToCancelRecord,
     required this.cancelPosition,
     required this.handleImageSelect,
+    this.handleVideoSelect,
+    this.permissionService = const PermissionService(),
+    this.audioBitRate = 128000,
+    this.imageQuality = 70,
+    this.imageMaxWidth = 1440,
   });
 
-  /// animated button on tap
+  /// animated button on tap -> submit the typed text message
   void onAnimatedButtonTap() {
     _formKey.currentState?.save();
     if (isText && textController.text.isNotEmpty) {
@@ -63,177 +92,148 @@ class ChatInputFieldProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// animated button on LongPress
+  /// animated button on long press -> start recording a voice note
   void onAnimatedButtonLongPress() async {
-    // HapticFeedback.heavyImpact();
-    final permissionStatus = await micPermission.request();
+    if (isText) return;
 
-    if (permissionStatus.isGranted) {
-      if (!isText) {
-        _stopWatchTimer.onStartTimer();
-        _stopWatchTimer.rawTime.listen((value) {
-          _recordTime = value;
+    final granted = await permissionService.requestMicrophone();
+    if (!granted) return;
 
-          print('rawTime $value ${StopWatchTimer.getDisplayTime(_recordTime)}');
-          notifyListeners();
-        });
+    _stopWatchTimer.onStartTimer();
+    _timerSubscription ??= _stopWatchTimer.rawTime.listen((value) {
+      _recordTime = value;
+      notifyListeners();
+    });
 
-        textController.clear();
-        recordAudio();
+    textController.clear();
+    await recordAudio();
 
-        _isRecording = true;
-        notifyListeners();
-      }
-    }
-    if (permissionStatus.isPermanentlyDenied) {
-      openAppSettings();
-    }
+    _isRecording = true;
+    notifyListeners();
   }
 
-  /// animated button on Long Press Move Update
-  void onAnimatedButtonLongPressMoveUpdate(
-      LongPressMoveUpdateDetails details) async {
-    if (!isText && _isRecording == true) {
+  /// animated button on long press move -> track the slide-to-cancel position
+  void onAnimatedButtonLongPressMoveUpdate(LongPressMoveUpdateDetails details) {
+    if (!isText && _isRecording) {
       _duration = 0;
       _position = details.localPosition.dx * -1;
       notifyListeners();
     }
   }
 
-  /// animated button on Long Press End
+  /// animated button on long press end -> stop and either send or cancel
   void onAnimatedButtonLongPressEnd(LongPressEndDetails details) async {
-    final source = await stopRecord();
-    // Stop
-    _stopWatchTimer.onStopTimer();
+    if (isText || !_isRecording) return;
 
-    // Reset
+    final source = await stopRecord();
+    _stopWatchTimer.onStopTimer();
     _stopWatchTimer.onResetTimer();
 
-    if (!isText && await micPermission.isGranted) {
-      if (_position > cancelPosition - _height || source == null) {
-        log('canceled');
-
-        handleRecord(null, true);
-
-        onSlideToCancelRecord();
-      } else {
-        final audioMessage = ChatMessage(
-          isSender: true,
-          chatMedia: ChatMedia(
-            url: source,
-            mediaType: MediaType.audioMediaType(),
-          ),
-        );
-        handleRecord(audioMessage, false);
-      }
-
-      _duration = 600;
-      _position = 0;
-      _isRecording = false;
-      notifyListeners();
+    if (_position > cancelPosition - _height || source == null) {
+      handleRecord(null, true);
+      onSlideToCancelRecord();
+    } else {
+      final audioMessage = ChatMessage(
+        isSender: true,
+        chatMedia: ChatMedia(url: source, mediaType: MediaType.audio),
+      );
+      handleRecord(audioMessage, false);
     }
+
+    _duration = 600;
+    _position = 0;
+    _isRecording = false;
+    notifyListeners();
   }
 
-  /// function used to record audio
-  void recordAudio() async {
+  /// start recording audio to a temporary file
+  Future<void> recordAudio() async {
     if (await _record.isRecording()) {
-      _record.stop();
+      await _record.stop();
     }
 
+    final dir = await getTemporaryDirectory();
+    final path =
+        '${dir.path}/chat_voice_note_${DateTime.now().millisecondsSinceEpoch}.m4a';
+
     await _record.start(
-      // path: 'aFullPath/myFile.m4a', // required
-      bitRate: 128000, // by default
-      // sampleRate: 44100, // by default
+      RecordConfig(bitRate: audioBitRate),
+      path: path,
     );
   }
 
-  /// function used to stop recording
-  /// and returns the record path as a string
+  /// stop recording and return the recorded file path (or `null`)
+  Future<String?> stopRecord() => _record.stop();
 
-  Future<String?> stopRecord() async {
-    return await _record.stop();
-  }
-
-  /// get the animated button position
+  /// clamp the animated button position between 0 and the cancel threshold
   double getPosition() {
-    log(_position.toString());
     if (_position < 0) {
       return 0;
     } else if (_position > cancelPosition - _height) {
       return cancelPosition - _height;
-    } else {
-      return _position;
     }
+    return _position;
   }
 
-  // TODO: make this custom from user
-  /// open image picker from camera, gallery, or cancel the selection
-  void pickImage(int type) async {
-    final cameraPermission = Permission.camera;
-    final storagePermission = Permission.camera;
-    if (type == 1) {
-      final permissionStatus = await cameraPermission.request();
-      if (permissionStatus.isGranted) {
-        final path = await _getImagePathFromSource(1);
-        final imageMessage = _getImageMEssageFromPath(path);
-        handleImageSelect(imageMessage);
-        return;
-      } else {
-        handleImageSelect(null);
-        return;
-      }
-    } else {
-      final permissionStatus = await storagePermission.request();
-      if (permissionStatus.isGranted) {
-        final path = await _getImagePathFromSource(2);
-        final imageMessage = _getImageMEssageFromPath(path);
-        handleImageSelect(imageMessage);
-        return;
-      } else {
-        handleImageSelect(null);
-        return;
-      }
+  /// pick an image from the gallery and forward it through [handleImageSelect]
+  Future<void> pickImageFromGallery() async {
+    final granted = await permissionService.requestGallery();
+    if (!granted) {
+      handleImageSelect(null);
+      return;
     }
-  }
 
-  Future<String?> _getImagePathFromSource(int type) async {
     final result = await ImagePicker().pickImage(
-      imageQuality: 70,
-      maxWidth: 1440,
-      source: type == 1 ? ImageSource.camera : ImageSource.gallery,
+      imageQuality: imageQuality,
+      maxWidth: imageMaxWidth,
+      source: ImageSource.gallery,
     );
-    return result?.path;
+    handleImageSelect(_imageMessageFromPath(result?.path));
   }
 
-  ChatMessage? _getImageMEssageFromPath(String? path) {
-    if (path != null) {
-      final imageMessage = ChatMessage(
-        isSender: true,
-        chatMedia: ChatMedia(
-          url: path,
-          mediaType: MediaType.imageMediaType(),
-        ),
-      );
-      return imageMessage;
+  /// build a chat message from the result of the in-app camera flow and
+  /// forward it through the matching callback
+  void handleCapturedMedia(CapturedMedia? media) {
+    if (media == null) return;
+
+    final message = ChatMessage(
+      isSender: true,
+      text: media.caption,
+      chatMedia: ChatMedia(
+        url: media.path,
+        mediaType: media.isVideo ? MediaType.video : MediaType.image,
+      ),
+    );
+
+    if (media.isVideo) {
+      (handleVideoSelect ?? handleImageSelect)(message);
     } else {
-      return null;
+      handleImageSelect(message);
     }
+  }
+
+  ChatMessage? _imageMessageFromPath(String? path) {
+    if (path == null) return null;
+    return ChatMessage(
+      isSender: true,
+      chatMedia: ChatMedia(url: path, mediaType: MediaType.image),
+    );
   }
 
   void onTextFieldValueChanged(String value) {
-    if (value.length > 0) {
-      textController.text = value;
-      isText = true;
-      notifyListeners();
-    } else {
-      isText = false;
+    final hasText = value.isNotEmpty;
+    if (hasText != isText) {
+      isText = hasText;
       notifyListeners();
     }
   }
 
   @override
   void dispose() {
-    textController.dispose();
+    _timerSubscription?.cancel();
+    _stopWatchTimer.dispose();
+    _record.dispose();
+    // The text controller is owned by [ChatInputField]; it is disposed there.
     super.dispose();
   }
 }

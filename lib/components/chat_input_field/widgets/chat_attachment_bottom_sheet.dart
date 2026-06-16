@@ -35,7 +35,7 @@ class ChatBottomSheet extends StatelessWidget {
       child: Wrap(
         children: [
           ListTile(
-            leading: imageAttachmentFromCameraIcon ?? Icon(Icons.camera),
+            leading: imageAttachmentFromCameraIcon ?? const Icon(Icons.camera),
             title: Text(
               imageAttachmentFromCameraText,
               style: imageAttachmentTextStyle,
@@ -43,7 +43,7 @@ class ChatBottomSheet extends StatelessWidget {
             onTap: imageFromCameraOnTap,
           ),
           ListTile(
-            leading: imageAttachmentFromGalleryIcon ?? Icon(Icons.image),
+            leading: imageAttachmentFromGalleryIcon ?? const Icon(Icons.image),
             title: Text(
               imageAttachmentFromGalleryText,
               style: imageAttachmentTextStyle,
@@ -51,7 +51,7 @@ class ChatBottomSheet extends StatelessWidget {
             onTap: imageFromGalleryOnTap,
           ),
           ListTile(
-            leading: imageAttachmentCancelIcon ?? Icon(Icons.cancel),
+            leading: imageAttachmentCancelIcon ?? const Icon(Icons.cancel),
             title: Text(
               imageAttachmentCancelText,
               style: imageAttachmentTextStyle,

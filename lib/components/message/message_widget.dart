@@ -1,29 +1,39 @@
 import 'package:chat_package/components/message/date_time_widget.dart';
 import 'package:chat_package/models/chat_message.dart';
+import 'package:chat_package/models/media/media_type.dart';
 import 'package:chat_package/utils/constants.dart';
 import 'package:chat_package/components/message/audio_message/audio_message_widget.dart';
 import 'package:chat_package/components/message/image_message/image_message_widget.dart';
 import 'package:chat_package/components/message/text_message/text_message_widget.dart';
+import 'package:chat_package/components/message/video_message/video_message_widget.dart';
 import 'package:flutter/material.dart';
 
-/// widget used to determine the right message type
-/// //TODO add color support for reciver
+/// Determines the message type ([MediaType]) of a [ChatMessage] and renders the
+/// matching message widget (text, image, audio or video).
 class MessageWidget extends StatelessWidget {
   final Color senderColor;
   final Color inActiveAudioSliderColor;
   final Color activeAudioSliderColor;
   final TextStyle? messageContainerTextStyle;
   final TextStyle? sendDateTextStyle;
+  final TextDirection textDirection;
+  final double textMessageWidthFraction;
+  final double imageMessageWidthFraction;
+  final double audioMessageWidthFraction;
 
   const MessageWidget({
-    Key? key,
+    super.key,
     required this.message,
     required this.senderColor,
     required this.inActiveAudioSliderColor,
     required this.activeAudioSliderColor,
     this.messageContainerTextStyle,
     this.sendDateTextStyle,
-  }) : super(key: key);
+    this.textDirection = TextDirection.ltr,
+    this.textMessageWidthFraction = 0.5,
+    this.imageMessageWidthFraction = 0.45,
+    this.audioMessageWidthFraction = 0.7,
+  });
 
   final ChatMessage message;
 
@@ -42,7 +52,7 @@ class MessageWidget extends StatelessWidget {
               : CrossAxisAlignment.start,
           children: [
             messageContent(message),
-            SizedBox(
+            const SizedBox(
               height: 3,
             ),
             DateTimeWidget(
@@ -62,26 +72,34 @@ class MessageWidget extends StatelessWidget {
       return TextMessageWidget(
         message: message,
         senderColor: senderColor,
+        textDirection: textDirection,
+        widthFraction: textMessageWidthFraction,
       );
-    } else {
-      return message.chatMedia!.mediaType.maybeWhen(
-          imageMediaType: () => ImageMessageWidget(
-                message: message,
-                senderColor: senderColor,
-                messageContainerTextStyle: messageContainerTextStyle,
-              ),
-          audioMediaType: () => AudioMessageWidget(
-                message: message,
-                senderColor: senderColor,
-                activeAudioSliderColor: activeAudioSliderColor,
-                inActiveAudioSliderColor: inActiveAudioSliderColor,
-              ),
-          //TODO add this
-          videoMediaType: () => Container(),
-          orElse: () => TextMessageWidget(
-                message: message,
-                senderColor: senderColor,
-              ));
+    }
+
+    switch (message.chatMedia!.mediaType) {
+      case MediaType.image:
+        return ImageMessageWidget(
+          message: message,
+          senderColor: senderColor,
+          messageContainerTextStyle: messageContainerTextStyle,
+          widthFraction: imageMessageWidthFraction,
+        );
+      case MediaType.audio:
+        return AudioMessageWidget(
+          message: message,
+          senderColor: senderColor,
+          activeAudioSliderColor: activeAudioSliderColor,
+          inActiveAudioSliderColor: inActiveAudioSliderColor,
+          widthFraction: audioMessageWidthFraction,
+        );
+      case MediaType.video:
+        return VideoMessageWidget(
+          message: message,
+          senderColor: senderColor,
+          messageContainerTextStyle: messageContainerTextStyle,
+          widthFraction: imageMessageWidthFraction,
+        );
     }
   }
 }

@@ -23,7 +23,7 @@ class ChatMedia {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'url': url,
-      'mediaType': mediaType.toString(),
+      'mediaType': mediaType.value,
     };
   }
 

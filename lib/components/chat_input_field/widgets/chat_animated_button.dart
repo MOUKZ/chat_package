@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ChatAnimatedButton extends StatelessWidget {
   final int duration;
-  final rightPosition;
+  final double? rightPosition;
   final bool isRecording;
   final bool isText;
   final Widget? animatedButtonWidget;
@@ -14,7 +14,6 @@ class ChatAnimatedButton extends StatelessWidget {
   final Function(LongPressEndDetails details) onAnimatedButtonLongPressEnd;
   final BorderRadiusGeometry? borderRadius;
   final IconData sendTextIcon;
-  //TODO SHould add button shape
 
   const ChatAnimatedButton(
       {super.key,
@@ -45,7 +44,7 @@ class ChatAnimatedButton extends StatelessWidget {
         onLongPressEnd: onAnimatedButtonLongPressEnd,
         child: AnimatedSize(
           curve: Curves.easeIn,
-          duration: Duration(milliseconds: 100),
+          duration: const Duration(milliseconds: 100),
           child: Container(
             height: 50,
             width: 50,
