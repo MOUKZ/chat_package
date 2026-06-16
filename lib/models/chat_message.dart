@@ -36,7 +36,7 @@ class ChatMessage {
   ///   isSender: false,
   /// );
   /// ```
-  ChatMessage({
+  const ChatMessage({
     required this.text,
     this.chatMedia,
     required this.isSender,

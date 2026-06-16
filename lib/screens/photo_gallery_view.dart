@@ -9,11 +9,11 @@ class PhotoGalleryView extends StatefulWidget {
   final ChatMessage chatMessage;
 
   const PhotoGalleryView({
-    Key? key,
+    super.key,
     required this.chatMessage,
-  }) : super(key: key);
+  });
   @override
-  _PhotoGalleryViewState createState() => _PhotoGalleryViewState();
+  State<PhotoGalleryView> createState() => _PhotoGalleryViewState();
 }
 
 class _PhotoGalleryViewState extends State<PhotoGalleryView> {
@@ -23,9 +23,9 @@ class _PhotoGalleryViewState extends State<PhotoGalleryView> {
     super.initState();
 
     /// check if url is provided or a path to a file
-    bool _validURL = Uri.parse(widget.chatMessage.chatMedia!.url).isAbsolute;
+    bool validURL = Uri.parse(widget.chatMessage.chatMedia!.url).isAbsolute;
 
-    _validURL
+    validURL
         ? imageProvider = NetworkImage(widget.chatMessage.chatMedia!.url)
         : imageProvider = FileImage(File(widget.chatMessage.chatMedia!.url));
   }
@@ -34,15 +34,15 @@ class _PhotoGalleryViewState extends State<PhotoGalleryView> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.9),
+      backgroundColor: Colors.black.withValues(alpha: 0.9),
       body: Stack(
         children: [
           PhotoView(
-            heroAttributes: PhotoViewHeroAttributes(
+            heroAttributes: const PhotoViewHeroAttributes(
               tag: 'photo_gallery_hero',
             ),
             loadingBuilder: (context, event) => Center(
-              child: Container(
+              child: SizedBox(
                 width: 20.0,
                 height: 20.0,
                 child: CircularProgressIndicator(
@@ -61,16 +61,14 @@ class _PhotoGalleryViewState extends State<PhotoGalleryView> {
                 vertical: MediaQuery.of(context).padding.top + 16,
                 horizontal: size.width / 18,
               ),
-              child: Container(
-                /// icon to cancel and return to the previous view
-                child: IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 30,
-                    )),
-              ),
+              /// icon to cancel and return to the previous view
+              child: IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: 30,
+                  )),
             ),
           ),
         ],

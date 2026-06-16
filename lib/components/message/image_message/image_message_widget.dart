@@ -15,12 +15,16 @@ class ImageMessageWidget extends StatelessWidget {
 
   final TextStyle? messageContainerTextStyle;
 
+  /// Width of the image as a fraction of the available width. Defaults to 0.45.
+  final double widthFraction;
+
   const ImageMessageWidget({
-    Key? key,
+    super.key,
     required this.message,
     required this.senderColor,
     this.messageContainerTextStyle,
-  }) : super(key: key);
+    this.widthFraction = 0.45,
+  });
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -29,7 +33,7 @@ class ImageMessageWidget extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: senderColor.withOpacity(0.3),
+            color: senderColor.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Column(
@@ -48,9 +52,8 @@ class ImageMessageWidget extends StatelessWidget {
                     ),
                   );
                 },
-                child: Container(
-                  /// 45% of total width
-                  width: MediaQuery.of(context).size.width * 0.45,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * widthFraction,
 
                   child: AspectRatio(
                     aspectRatio: 1,
@@ -83,7 +86,7 @@ class ImageMessageWidget extends StatelessWidget {
                   ),
                   child: Text(
                     message.text,
-                    style: messageContainerTextStyle ?? TextStyle(fontSize: 12),
+                    style: messageContainerTextStyle ?? const TextStyle(fontSize: 12),
                   ),
                 ),
               ),

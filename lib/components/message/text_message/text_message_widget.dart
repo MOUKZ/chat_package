@@ -2,53 +2,57 @@ import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/utils/constants.dart';
 import 'package:flutter/material.dart';
 
-/// Renders a single text message bubble.
+/// this widget is used to render a text message container
+
 class TextMessageWidget extends StatelessWidget {
   final ChatMessage message;
   final Color senderColor;
 
+  /// Text direction of the message content. Defaults to [TextDirection.ltr].
+  final TextDirection textDirection;
+
+  /// Maximum width of the bubble as a fraction of the available width.
+  final double widthFraction;
+
   const TextMessageWidget({
-    Key? key,
+    super.key,
     required this.message,
     required this.senderColor,
-  }) : super(key: key);
+    this.textDirection = TextDirection.ltr,
+    this.widthFraction = 0.5,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final isSender = message.isSender;
-    final maxBubbleWidth = MediaQuery.of(context).size.width * 0.5;
-    final backgroundColor = senderColor.withOpacity(isSender ? 1 : 0.1);
-    final textColor = isSender
-        ? Colors.white
-        : Theme.of(context).textTheme.bodyMedium!.color!;
-    final alignment = isSender ? Alignment.centerRight : Alignment.centerLeft;
-
-    return Align(
-      alignment: alignment,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: maxBubbleWidth,
-          minWidth: 50,
-        ),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: kDefaultPadding * 0.75,
-            vertical: kDefaultPadding * 0.5,
-          ),
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: Text(
-            message.text,
-            textDirection: TextDirection.rtl,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: textColor),
+    return Column(
+      crossAxisAlignment:
+          message.isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      children: [
+        ConstrainedBox(
+          constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * widthFraction,
+              minWidth: 50),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: kDefaultPadding * 0.75,
+              vertical: kDefaultPadding / 2,
+            ),
+            decoration: BoxDecoration(
+              color: senderColor.withValues(alpha: message.isSender ? 1 : 0.1),
+              borderRadius: BorderRadius.circular(25),
+            ),
+            child: Text(
+              message.text,
+              textDirection: textDirection,
+              style: TextStyle(
+                color: message.isSender
+                    ? Colors.white
+                    : Theme.of(context).textTheme.bodyLarge?.color,
+              ),
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

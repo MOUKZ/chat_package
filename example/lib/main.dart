@@ -1,84 +1,89 @@
+import 'dart:developer';
+
 import 'package:chat_package/chat_package.dart';
-import 'package:chat_package/models/chat_message.dart';
-import 'package:chat_package/models/media/chat_media.dart';
-import 'package:chat_package/models/media/media_type.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Chat Ui example',
-      theme: ThemeData(
-        primaryColor: const Color(0xFF075E54),
-        scaffoldBackgroundColor: Colors.white,
-      ),
-      home: const ChatPage(),
+      title: 'chat_package example',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const MyHomePage(),
     );
   }
 }
 
-class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
-  final textEditingController = TextEditingController();
-  @override
-  void dispose() {
-    textEditingController.dispose();
-    super.dispose();
-  }
-
-  final messages = [
-    ChatMessage(
-      text: 'hi omar',
-      isSender: true,
-    ),
-    ChatMessage(
-      text: 'hello',
-      isSender: false,
-    ),
-    ChatMessage(
+class _MyHomePageState extends State<MyHomePage> {
+  final List<ChatMessage> messages = [
+    const ChatMessage(
       isSender: true,
       text: 'this is a banana',
-      chatMedia: const ChatMedia(
+      chatMedia: ChatMedia(
         url:
             'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
-        mediaType: MediaType.imageMediaType(),
+        mediaType: MediaType.image,
       ),
     ),
+    const ChatMessage(
+      text: '',
+      isSender: false,
+      chatMedia: ChatMedia(
+        url:
+            'https://images.pexels.com/photos/7194915/pexels-photo-7194915.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260',
+        mediaType: MediaType.image,
+      ),
+    ),
+    const ChatMessage(isSender: false, text: 'wow that is cool'),
   ];
+
+  final scrollController = ScrollController();
+
+  void _addMessage(ChatMessage message) {
+    setState(() => messages.add(message));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: const Text('Chat'),
-        backgroundColor: const Color(0xFF075E54),
-      ),
+      appBar: AppBar(title: const Text('chat_package')),
       body: ChatScreen(
+        scrollController: scrollController,
         messages: messages,
-        scrollController: ScrollController(),
-        onRecordComplete: (audioMessage) {
-          messages.add(audioMessage);
-          setState(() {});
+        onSlideToCancelRecord: () => log('recording canceled'),
+        onTextSubmit: (textMessage) => _addMessage(textMessage),
+        handleRecord: (audioMessage, canceled) {
+          if (!canceled && audioMessage != null) _addMessage(audioMessage);
         },
-        onImageSelected: (imageMessage) {
-          messages.add(imageMessage);
-          setState(() {});
+        handleImageSelect: (imageMessage) {
+          if (imageMessage != null) _addMessage(imageMessage);
         },
-        textEditingController: textEditingController,
-        onTextSubmit: (textMessage) {
-          messages.add(textMessage);
-          setState(() {});
+        handleVideoSelect: (videoMessage) {
+          if (videoMessage != null) _addMessage(videoMessage);
         },
       ),
     );

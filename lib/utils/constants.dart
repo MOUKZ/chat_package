@@ -15,3 +15,7 @@ String dateStringFormatter(DateTime date) {
   var dateString = format.format(date);
   return dateString;
 }
+
+/// Returns `true` when [url] points to a remote resource (has a scheme such as
+/// `http`/`https`), and `false` when it is a local file path.
+bool isNetworkSource(String url) => Uri.parse(url).isAbsolute;
