@@ -21,8 +21,6 @@ screenshots:
     path: screenShots/recording.png
   - description: Attachment bottom sheet
     path: screenShots/bottom_sheet.png
-  - description: Permission request
-    path: screenShots/permission.png
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

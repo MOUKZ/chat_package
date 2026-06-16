@@ -29,7 +29,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<ChatMessage> messages = [
-    ChatMessage(
+    const ChatMessage(
       isSender: true,
       text: 'this is a banana',
       chatMedia: ChatMedia(
@@ -38,7 +38,8 @@ class _MyHomePageState extends State<MyHomePage> {
         mediaType: MediaType.image,
       ),
     ),
-    ChatMessage(
+    const ChatMessage(
+      text: '',
       isSender: false,
       chatMedia: ChatMedia(
         url:
@@ -46,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
         mediaType: MediaType.image,
       ),
     ),
-    ChatMessage(isSender: false, text: 'wow that is cool'),
+    const ChatMessage(isSender: false, text: 'wow that is cool'),
   ];
 
   final scrollController = ScrollController();
